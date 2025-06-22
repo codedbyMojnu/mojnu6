@@ -1,1 +1,18 @@
 @import "tailwindcss";
+/* keyframes অ্যানিমেশনকে সংজ্ঞায়িত করে */
+@keyframes pulseAndPop {
+  0%,
+  100% {
+    transform: scale(1); /* স্বাভাবিক আকার */
+    box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+  }
+  50% {
+    transform: scale(1.05); /* কিছুটা বড় আকার, মনে হবে বেরিয়ে আসছে */
+    box-shadow: 0 20px 25px rgba(0, 0, 0, 0.25); /* গভীর এবং ছড়ানো শ্যাডো */
+  }
+}
+
+/* এই ক্লাসটি বাটনে অ্যানিমেশন প্রয়োগ করবে */
+.animate-pulse-pop {
+  animation: pulseAndPop 3s ease-in-out infinite;
+}

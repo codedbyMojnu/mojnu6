@@ -1,12 +1,17 @@
-import AddQuestionForm from "./AddQuestionForm";
+import { Outlet } from "react-router";
 import Sidebar from "./Sidebar";
 
 export default function DashboardLayout() {
   return (
-    <div class="min-h-screen bg-gray-100 flex">
+    <div className="h-screen flex overflow-hidden font-[Patrick_Hand]">
+      {/* Sidebar with independent scroll */}
       <Sidebar />
-      <main class="flex-1 p-6 bg-white h-screen overflow-y-auto">
-        <AddQuestionForm />
+
+      {/* Right Content Panel: No scrolling here */}
+      <main className="flex-1 h-full overflow-hidden">
+        <div className="h-full w-full ">
+          <Outlet />
+        </div>
       </main>
     </div>
   );

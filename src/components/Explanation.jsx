@@ -1,19 +1,33 @@
-export default function Explanation() {
-  return (
-    <div class="flex items-center justify-center h-screen overflow-hidden m-0 p-0">
-      <div class="w-[375px] h-[667px] bg-white shadow-md rounded-md p-6 overflow-hidden text-center">
-        <h2 class="text-xl font-bold text-gray-700 mb-2">🧠 Brain Test App</h2>
+import { useLevels } from "../context/LevelContext";
 
-        <h3 class="text-xl font-semibold text-gray-800 mb-3">
-          Correct Answer!
+export default function Explanation({ onNext, levelIndex }) {
+  const { levels } = useLevels();
+
+  return (
+    <div className="flex flex-col justify-between h-[400px] font-[Patrick_Hand] text-gray-800">
+      <div>
+        <h2 className="text-2xl font-bold mb-2 text-center text-indigo-800">
+          Brain Test
+        </h2>
+        <h3 className="text-3xl font-semibold text-green-600 mb-4 text-center">
+          🎉 Correct Answer!
         </h3>
-        <p class="text-gray-700 mb-6">3 + 4 = 7. It’s a simple addition.</p>
-        <a
-          href="answer-form.html"
-          class="inline-block w-full bg-blue-600 text-white py-3 rounded text-lg hover:bg-blue-700 transition"
+
+        <p className="text-lg text-brown-700 mb-2 font-semibold">
+          📜 Explanation:
+        </p>
+        <div className="bg-yellow-100/70 border-2 border-dashed border-[#a17358] px-4 py-3 rounded-lg mb-6 text-gray-800 text-lg leading-relaxed h-[180px] overflow-y-auto shadow-inner font-[Google_Sans]">
+          {levels[levelIndex]?.explanation}
+        </div>
+      </div>
+
+      <div className="px-4">
+        <button
+          onClick={onNext}
+          className="w-full bg-[#85cc3c] hover:bg-[#76b535] transition text-white py-3 text-2xl uppercase rounded-2xl border-b-8 border-r-4 border-[#a17358] shadow-lg transform active:translate-y-1 animate-pulse-pop"
         >
-          Next Level →
-        </a>
+          Next
+        </button>
       </div>
     </div>
   );
