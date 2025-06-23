@@ -8,21 +8,21 @@ export default function WelcomeAdminDashboard() {
         <h1 className="text-5xl font-bold text-indigo-800 mb-4">
           Welcome, Admin!
         </h1>
+        <p className="mt-8 text-xl text-gray-600">
+          🚀 Let’s build something fun and brainy!
+        </p>
         <p className="text-2xl text-gray-700 mb-6">
           This is your control panel to manage levels and questions.
         </p>
 
         <div className="bg-yellow-100/60 border border-dashed border-gray-400 p-6 rounded-2xl shadow-md text-xl space-y-4">
+          <div>Instructions</div>
           <div className="text-left">
             <p>✅ Add new quiz levels with questions.</p>
             <p>📝 Edit or delete existing ones easily.</p>
             <p>📊 Monitor and improve the quiz experience.</p>
           </div>
         </div>
-
-        <p className="mt-8 text-xl text-gray-600">
-          🚀 Let’s build something fun and brainy!
-        </p>
       </div>
     </div>
   );

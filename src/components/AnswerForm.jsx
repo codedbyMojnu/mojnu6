@@ -6,20 +6,28 @@ import Marker from "./Marker";
 export default function AnswerForm({ onAnswer, mark, levelIndex }) {
   const [userAnswer, setUserAnswer] = useState("");
   const [showHints, setShowHints] = useState(false);
+  const [selectedOption, setSelectedOption] = useState("");
   const { levels } = useLevels();
+
+  function handleTextAnswer() {
+    if (userAnswer.trim()) {
+      onAnswer(userAnswer, levels[levelIndex]);
+    }
+  }
+
+  function handleOptionAnswer(option) {
+    setSelectedOption(option);
+    onAnswer(option, levels[levelIndex]);
+  }
 
   return (
     <div className="flex flex-col justify-between h-[400px] font-[Patrick_Hand] text-gray-800 relative">
       <div>
-        <h2 className="text-2xl font-bold mb-2 text-center text-indigo-800">
-          Brain Test
-        </h2>
-
         {/* Level and Hints button row */}
-        <div className="flex items-center justify-center gap-4 bg-white/80 px-6 py-1 rounded-2xl">
+        <div className="flex items-center justify-center gap-4 bg-white/80 px-6 py-1 rounded-2xl mt-[-20px]">
           {/* Level display */}
           <div className="text-center">
-            <p className="font-extrabold text-2xl text-[#444] tracking-wide uppercase select-none drop-shadow-sm">
+            <p className="font-extrabold text-md text-[#444] tracking-wide uppercase select-none drop-shadow-sm">
               Level {levelIndex + 1}
             </p>
           </div>
@@ -50,23 +58,46 @@ export default function AnswerForm({ onAnswer, mark, levelIndex }) {
           </div>
         </div>
 
-        <p className="text-xl text-center leading-snug mb-6 px-4 font-[Google_Sans]">
+        <div className="text-md leading-snug mb-6 px-4 font-[Google_Sans]">
           {levels[levelIndex]?.question}
-        </p>
+        </div>
 
-        <input
-          type="text"
-          value={userAnswer}
-          placeholder="✍️ Write your answer here in English"
-          className="w-full px-4 py-3 border-b-2 border-dashed border-gray-400 bg-yellow-100/60 text-lg font-medium placeholder-gray-500 focus:outline-none rounded-t-md"
-          onChange={(e) => setUserAnswer(e.target.value)}
-        />
+        {!levels[levelIndex]?.options?.length > 0 && (
+          <input
+            type="text"
+            value={userAnswer}
+            autoFocus
+            placeholder="✍️ Write your answer here in English"
+            className="w-full px-4 py-3 border-b-2 border-dashed border-gray-400 bg-yellow-100/60 text-lg font-medium placeholder-gray-500 focus:outline-none"
+            onChange={(e) => setUserAnswer(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                onAnswer(userAnswer, levels[levelIndex]);
+              }
+            }}
+          />
+        )}
       </div>
 
+      {/* Options */}
+      {levels[levelIndex]?.options?.length > 0 && (
+        <div className="grid grid-cols-1 gap-3 px-4">
+          {levels[levelIndex]?.options?.map((option, index) => (
+            <button
+              key={index}
+              onClick={() => handleOptionAnswer(option)}
+              className="w-full text-left px-4 py-3 rounded-xl border-2 transition-all duration-200 font-medium text-lg shadow-lg"
+            >
+              {String.fromCharCode(65 + index)}. {option}
+            </button>
+          ))}
+        </div>
+      )}
+
       <div className="mt-4">
-        {!mark ? (
+        {!mark && !levels[levelIndex]?.options?.length > 0 ? (
           <button
-            onClick={() => onAnswer(userAnswer, levels[levelIndex])}
+            onClick={() => handleTextAnswer()}
             className="w-full bg-[#85cc3c] hover:bg-[#76b535] transition text-white py-3 text-2xl rounded-2xl border-b-8 border-r-4 border-[#a17358] shadow-md transform active:translate-y-1 animate-pulse-pop"
           >
             Submit Answer

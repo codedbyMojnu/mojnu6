@@ -1,4 +1,4 @@
-import { Link, useParams } from "react-router";
+import { useParams } from "react-router";
 
 export function DeletedSuccess() {
   const prams = useParams();
@@ -14,13 +14,6 @@ export function DeletedSuccess() {
         <p className="text-gray-600 text-lg">
           Your level: {prams?.id} has been removed.
         </p>
-
-        <Link
-          to="/dashboard"
-          className="inline-block mt-4 bg-yellow-300 hover:bg-yellow-400 text-[#444] font-bold px-6 py-3 rounded-2xl shadow-md border-b-4 border-yellow-500 transition duration-300"
-        >
-          🏠 Go to Home
-        </Link>
       </div>
     </div>
   );

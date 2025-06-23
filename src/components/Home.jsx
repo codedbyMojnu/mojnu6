@@ -10,9 +10,17 @@ import Explanation from "./Explanation";
 
 export default function Home() {
   const [explanation, setExplanation] = useState(false);
-  const [levelIndex, setLevelIndex] = useState(0);
+  const [levelIndex, setLevelIndex] = useState(() => {
+    return localStorage.getItem("level")
+      ? JSON.parse(localStorage.getItem("level"))
+      : 0;
+  });
   const [soundOn, setSoundON] = useState(false);
   const [mark, setMark] = useState("");
+  // For Passed Levels
+  const [selectedLevel, setSelectedLevel] = useState("");
+  const [slicesLevels, setSlicesLevels] = useState([]);
+
   const bgMusicRef = useRef();
   const { levels, setLevels } = useLevels();
 
@@ -58,6 +66,11 @@ export default function Home() {
     if (level.answer == userAnswer) {
       playMusic("/sounds/right.mp3");
       setMark("✔️");
+
+      //  যদি ইউজার নতুন লেভেল খেলে তবেই লেভেল পরিবর্তন করো
+      if (levelIndex > JSON.parse(localStorage.getItem("level")) - 1) {
+        localStorage.setItem("level", JSON.stringify(levelIndex + 1));
+      }
       setTimeout(() => {
         setExplanation(true);
         setMark("");
@@ -92,6 +105,21 @@ export default function Home() {
           >
             {soundOn ? <SoundOn /> : <SoundOff />}
           </button>
+          {/* Level Selector Button */}
+          <button
+            onClick={() => {
+              playMusic("/sounds/button-sound.mp3");
+              const slicesLevel = levels?.slice(
+                0,
+                JSON.parse(localStorage.getItem("level")) ?? 0
+              );
+              setSlicesLevels(slicesLevel);
+              setSelectedLevel(!selectedLevel);
+            }}
+            className="px-3 py-2 bg-pink-200 hover:bg-pink-300 rounded-xl text-sm font-bold border border-pink-400 shadow-md transition-all duration-300"
+          >
+            🧩 Levels Passed
+          </button>
 
           {/* Admin Link */}
           <Link
@@ -102,6 +130,44 @@ export default function Home() {
             Admin
           </Link>
         </div>
+        {
+          // when selected level true
+          selectedLevel && (
+            <div className="absolute top-[80px] left-1/2 -translate-x-1/2 w-[90%] max-w-sm bg-white border-2 border-pink-400 rounded-xl p-4 shadow-lg z-50">
+              {/* Close Button */}
+              <button
+                onClick={() => setSelectedLevel(false)}
+                className="absolute top-2 right-3 text-pink-500 hover:text-pink-700 text-xl font-bold"
+                aria-label="Close"
+              >
+                ×
+              </button>
+              <h3 className="text-center text-xl font-bold text-pink-600 mb-3">
+                🔢 Go to Level
+              </h3>
+              <div className="grid grid-cols-4 gap-2 max-h-[200px] overflow-y-auto">
+                {slicesLevels.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => {
+                      playMusic("/sounds/button-sound.mp3");
+                      setExplanation(false);
+                      setLevelIndex(idx);
+                      setSelectedLevel(false);
+                    }}
+                    className={`py-2 rounded-lg font-bold ${
+                      idx === levelIndex
+                        ? "bg-green-400 text-white"
+                        : "bg-pink-100 text-pink-800"
+                    } hover:bg-green-500 hover:text-white transition duration-300 text-sm`}
+                  >
+                    {idx + 1}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )
+        }
 
         {levelIndex < levels?.length ? (
           !explanation ? (
@@ -128,6 +194,7 @@ export default function Home() {
               onClick={() => {
                 playMusic("/sounds/button-sound.mp3");
                 setLevelIndex(0);
+                localStorage.setItem("level", JSON.stringify(0));
               }}
               to="/"
               className="mt-4 inline-block bg-[#85cc3c] hover:bg-[#76b535] text-white py-2 px-4 rounded-xl border-b-4 border-r-2 border-[#6d4d3a] shadow-md transition transform active:translate-y-1"

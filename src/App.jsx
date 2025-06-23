@@ -6,6 +6,7 @@ import { DeletedSuccess } from "./components/admin/DeletedSuccess";
 import EditedSuccess from "./components/admin/EditedSuccess";
 import WelcomeAdminDashboard from "./components/admin/WelcomeAdminDashboard";
 import Login from "./components/auth/Login";
+import Signup from "./components/auth/Signup";
 import Home from "./components/Home";
 import AuthProvider from "./context/AuthContext";
 import LevelProvider from "./context/LevelContext";
@@ -29,6 +30,7 @@ export default function App() {
               </Route>
             </Route>
             <Route path="login" element={<Login />} />
+            <Route path="signup" element={<Signup />} />
           </Routes>
         </BrowserRouter>
       </LevelProvider>
