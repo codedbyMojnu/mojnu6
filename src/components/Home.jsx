@@ -2,11 +2,10 @@ import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import api from "../api/index.js";
 import { useLevels } from "../context/LevelContext";
-import SoundOff from "../icons/SoundOff";
-import SoundOn from "../icons/SoundOn";
 import playSound from "../utils/playSound.jsx";
 import AnswerForm from "./AnswerForm";
 import Explanation from "./Explanation";
+import Header from "./Header";
 import WelcomeToGame from "./WelcomeToGame.jsx";
 
 export default function Home() {
@@ -20,8 +19,11 @@ export default function Home() {
   const [soundOn, setSoundON] = useState(false);
   const [mark, setMark] = useState("");
   // For Passed Levels
-  const [selectedLevel, setSelectedLevel] = useState("");
+
   const [slicesLevels, setSlicesLevels] = useState([]);
+
+  // Hints
+  const [showHints, setShowHints] = useState(false);
 
   const bgMusicRef = useRef();
   const { levels, setLevels } = useLevels();
@@ -98,88 +100,22 @@ export default function Home() {
       style={{ backgroundImage: "url('/bg-images/notepad.png')" }}
     >
       <div className="w-full max-w-sm bg-white/90 shadow-lg rounded-2xl p-6 mx-3 border-[3px] border-[#a17358] font-[Patrick_Hand] relative">
-        <div className="flex justify-between items-center mb-6 gap-4">
-          {/* Sound Toggle Button */}
-          <button
-            className="p-3 rounded-full bg-yellow-100 hover:bg-yellow-200 transition duration-300 shadow-md border border-yellow-400"
-            onClick={() => setSoundON((s) => !s)}
-            title="Toggle sound"
-          >
-            {soundOn ? <SoundOn /> : <SoundOff />}
-          </button>
-          {/* Level Selector Button */}
-          <button
-            onClick={() => {
-              playMusic("/sounds/button-sound.mp3");
-              const slicesLevel = levels?.slice(
-                0,
-                JSON.parse(localStorage.getItem("level")) ?? 0
-              );
-              setSlicesLevels(slicesLevel);
-              setSelectedLevel(!selectedLevel);
-            }}
-            className="px-3 py-2 bg-pink-200 hover:bg-pink-300 rounded-xl text-sm font-bold border border-pink-400 shadow-md transition-all duration-300"
-          >
-            🧩 Levels Passed
-          </button>
-
-          {/* Admin Link */}
-          <Link
-            onClick={() => playMusic("/sounds/button-sound.mp3")}
-            to="/dashboard"
-            className="px-5 py-2 text-md sm:text-md font-bold uppercase rounded-2xl bg-yellow-300 text-[#333] hover:bg-yellow-400 hover:scale-105 transition-all duration-300 shadow-md shadow-yellow-100 border-b-4 border-yellow-500"
-          >
-            Admin
-          </Link>
-        </div>
-        {
-          // when selected level true
-          selectedLevel && (
-            <div className="absolute top-[80px] left-1/2 -translate-x-1/2 w-[90%] max-w-sm bg-white border-2 border-pink-400 rounded-xl p-4 shadow-lg z-50">
-              {/* Close Button */}
-              <button
-                onClick={() => setSelectedLevel(false)}
-                className="absolute top-2 right-3 text-pink-500 hover:text-pink-700 text-xl font-bold"
-                aria-label="Close"
-              >
-                ×
-              </button>
-              <h3 className="text-center text-xl font-bold text-pink-600 mb-3">
-                🔢 Go to Level
-              </h3>
-
-              {slicesLevels?.length > 0 ? (
-                slicesLevels.map((_, idx) => (
-                  <div className="grid grid-cols-4 gap-2 max-h-[200px] overflow-y-auto">
-                    <button
-                      key={idx}
-                      onClick={() => {
-                        playMusic("/sounds/button-sound.mp3");
-                        setExplanation(false);
-                        setLevelIndex(idx);
-                        setSelectedLevel(false);
-                      }}
-                      className={`py-2 rounded-lg font-bold ${
-                        idx === levelIndex
-                          ? "bg-green-400 text-white"
-                          : "bg-pink-100 text-pink-800"
-                      } hover:bg-green-500 hover:text-white transition duration-300 text-sm`}
-                    >
-                      {idx + 1}
-                    </button>
-                  </div>
-                ))
-              ) : (
-                <p className="text-center text-md font-bold text-black mb-3">
-                  You are in Level 0
-                </p>
-              )}
-            </div>
-          )
-        }
+        <Header
+          sliceLevels={slicesLevels}
+          setSlicesLevels={setSlicesLevels}
+          levels={levels}
+          levelIndex={levelIndex}
+          setLevelIndex={setLevelIndex}
+          totalHintPoints={15}
+          setExplanation={setExplanation}
+        />
 
         {welcome && (
-          <WelcomeToGame setWelcome={setWelcome} levelIndex={levelIndex} />
+          <WelcomeToGame
+            setSoundON={setSoundON}
+            setWelcome={setWelcome}
+            levelIndex={levelIndex}
+          />
         )}
 
         {!welcome ? (

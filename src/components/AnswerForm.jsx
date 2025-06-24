@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { useLevels } from "../context/LevelContext";
-import playSound from "../utils/playSound";
 import Marker from "./Marker";
 
 export default function AnswerForm({ onAnswer, mark, levelIndex }) {
@@ -22,62 +21,25 @@ export default function AnswerForm({ onAnswer, mark, levelIndex }) {
 
   return (
     <div className="flex flex-col justify-between h-[400px] font-[Patrick_Hand] text-gray-800 relative">
-      <div>
-        {/* Level and Hints button row */}
-        <div className="flex items-center justify-center gap-4 bg-white/80 px-6 py-1 rounded-2xl mt-[-20px]">
-          {/* Level display */}
-          <div className="text-center">
-            <p className="font-extrabold text-md text-[#444] tracking-wide uppercase select-none drop-shadow-sm">
-              Level {levelIndex + 1}
-            </p>
-          </div>
-
-          {/* Hints section */}
-          <div className="relative flex items-center gap-2">
-            {/* Hint Button */}
-            <button
-              onClick={() => {
-                playSound("/sounds/button-sound.mp3");
-                setShowHints(true);
-              }}
-              title="Show Hints"
-              className="w-15 h-15 flex items-center justify-center"
-              aria-label="Show hints"
-            >
-              <img
-                src="/icons/hint.png"
-                alt="Hint Icon"
-                className="w-15 h-15"
-              />
-            </button>
-
-            {/* Hint Count */}
-            <span className="text-xl font-bold text-[#444] mt-[-20px] ml-[-28px] select-none">
-              ×15
-            </span>
-          </div>
-        </div>
-
-        <div className="text-md leading-snug mb-6 px-4 font-[Google_Sans]">
-          {levels[levelIndex]?.question}
-        </div>
-
-        {!levels[levelIndex]?.options?.length > 0 && (
-          <input
-            type="text"
-            value={userAnswer}
-            autoFocus
-            placeholder="✍️ Write your answer here in English"
-            className="w-full px-4 py-3 border-b-2 border-dashed border-gray-400 bg-yellow-100/60 text-lg font-medium placeholder-gray-500 focus:outline-none"
-            onChange={(e) => setUserAnswer(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                onAnswer(userAnswer, levels[levelIndex]);
-              }
-            }}
-          />
-        )}
+      <div className="text-md leading-snug mb-6 px-4 font-[Google_Sans]">
+        {levels[levelIndex]?.question}
       </div>
+
+      {!levels[levelIndex]?.options?.length > 0 && (
+        <input
+          type="text"
+          value={userAnswer}
+          autoFocus
+          placeholder="✍️ Write your answer here in English"
+          className="w-full px-4 py-3 border-b-2 border-dashed border-gray-400 bg-yellow-100/60 text-lg font-medium placeholder-gray-500 focus:outline-none"
+          onChange={(e) => setUserAnswer(e.target.value)}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              onAnswer(userAnswer, levels[levelIndex]);
+            }
+          }}
+        />
+      )}
 
       {/* Options */}
       {levels[levelIndex]?.options?.length > 0 && (

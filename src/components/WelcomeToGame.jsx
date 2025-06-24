@@ -1,6 +1,6 @@
 import playSound from "../utils/playSound";
 
-export default function WelcomeToGame({ setWelcome, levelIndex }) {
+export default function WelcomeToGame({ setSoundON, setWelcome, levelIndex }) {
   function handleClose() {
     setWelcome(false);
   }
@@ -20,6 +20,7 @@ export default function WelcomeToGame({ setWelcome, levelIndex }) {
             onClick={() => {
               playSound("/sounds/button-sound.mp3");
               handleClose();
+              setSoundON(true);
             }}
             className="mt-6 px-6 py-2 rounded-xl text-lg font-bold uppercase tracking-wide bg-gradient-to-r from-lime-200 to-lime-400 text-[#333] shadow-md border-2 border-lime-500 hover:from-lime-300 hover:to-lime-500 hover:scale-105 transition-transform duration-300 active:translate-y-1 animate-pulse-pop"
           >
