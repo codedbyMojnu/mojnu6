@@ -146,15 +146,14 @@ export default function Header({
       {/* Hints Point Icon (display only) */}
       <div className="flex items-center gap-2">
         <div className="relative flex items-center gap-2">
-          {/* Hint Button */}
+          {/* Total Hints Point */}
           <button
             onClick={() => {
               playSound("/sounds/button-sound.mp3");
-              setShowHints(true);
             }}
-            title="Show Hints"
+            title="Total Hint Points"
             className="w-15 h-15 flex items-center justify-center"
-            aria-label="Show hints"
+            aria-label="Total Hint Points"
           >
             <img src="/icons/hint.png" alt="Hint Icon" className="w-15 h-15" />
           </button>
@@ -165,31 +164,7 @@ export default function Header({
           </span>
         </div>
       </div>
-      {/* Modal */}
-      {showHints && (
-        <div
-          className="absolute top-5 left-1/2 transform -translate-x-1/2
-               z-50 bg-yellow-100 rounded-3xl p-5 shadow-xl
-               w-[90%] max-w-[400px] max-h-[240px] overflow-y-auto
-               border border-indigo-600 font-[Comic_Sans_MS] text-indigo-900"
-        >
-          {/* Close Button */}
-          <button
-            onClick={() => setShowHints(false)}
-            className="absolute top-2 right-3 text-indigo-700 hover:text-indigo-900 text-xl font-bold"
-            aria-label="Close"
-          >
-            &times;
-          </button>
 
-          <h3 className="text-xl font-bold text-center mb-3">🧩 Puzzle Hint</h3>
-
-          <p className="text-base text-center leading-relaxed">
-            {levels[levelIndex]?.hint ||
-              "No hint available for this level. Try to think outside the box!"}
-          </p>
-        </div>
-      )}
       {/* Settings Modal Overlay */}
       {showSettings && (
         <SettingsModal

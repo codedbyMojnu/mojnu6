@@ -25,6 +25,36 @@ export default function AnswerForm({ onAnswer, mark, levelIndex }) {
         {levels[levelIndex]?.question}
       </div>
 
+      {/* Action Buttons Row */}
+      <div className="flex flex-row justify-center gap-4 mb-4">
+        {/* Skip Button */}
+        <button
+          type="button"
+          title="Skip"
+          onClick={() => {/* TODO: implement skip logic */}}
+          className="p-2 rounded-full bg-blue-100 hover:bg-blue-200 transition duration-300 shadow-md border border-blue-400 flex items-center justify-center text-blue-700 text-xl focus:outline-none focus:ring-2 focus:ring-blue-300"
+        >
+          {/* Skip SVG */}
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+        </button>
+        {/* Use Hint Button */}
+        <button
+          type="button"
+          title="Use Hint"
+          onClick={() => setShowHints(true)}
+          className="p-2 rounded-full bg-yellow-100 hover:bg-yellow-200 transition duration-300 shadow-md border border-yellow-400 flex items-center justify-center text-yellow-700 text-xl focus:outline-none focus:ring-2 focus:ring-yellow-300"
+        >
+          {/* Hint SVG */}
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M9.09 9a3 3 0 1 1 5.83 1c0 2-3 3-3 3" />
+            <line x1="12" y1="17" x2="12" y2="17" />
+          </svg>
+        </button>
+      </div>
+
       {!levels[levelIndex]?.options?.length > 0 && (
         <input
           type="text"

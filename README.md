@@ -38,7 +38,7 @@ If later you build a feature where the user can **click "edit" beside just one f
 
 ## ✅ আপনার প্রশ্নের উত্তর:
 
-> **“For this should I use PUT or PATCH?”**
+> **"For this should I use PUT or PATCH?"**
 
 **আপনার অ্যাপ যেহেতু Admin Dashboard থেকে ইনপুট ফিল্ড আলাদাভাবে আপডেট করে — তাই `PATCH` ব্যবহার করাই বেশি উপযুক্ত।**
 
@@ -143,3 +143,23 @@ fetch(`/api/levels/${id}`, {
 ---
 
 **চাইলে আমি চাইলে এই দুটো method সহ updated Postman Collection + Frontend function demo code + Zip দিয়ে দিতে পারি। বলুন লাগবে কি?** ✅
+
+## Brain Test App API Server Setup
+
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+2. **Configure environment variables:**
+   - Create a `server/.env` file with:
+     ```env
+     PORT=5000
+     JWT_SECRET=your_jwt_secret_here
+     MONGO_URI=mongodb://localhost:27017/brain-test
+     ```
+3. **Run the server:**
+   ```bash
+   node server/server.js
+   ```
+
+The server will run on `http://localhost:5000` and expose the API endpoints as described in the Postman collection.

@@ -16,6 +16,11 @@ export default function Signup() {
           Sign Up
         </h2>
 
+        {/* Red message for hints */}
+        <p className="text-center text-red-600 font-semibold text-base mb-2">
+          If you want to use hint you must first create an account.
+        </p>
+
         <div>
           <label className="block text-sm mb-1">Give a username:</label>
           <input
