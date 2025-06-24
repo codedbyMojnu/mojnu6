@@ -26,9 +26,10 @@ export default function AddQuestionForm() {
           answer: currentLevel.answer,
           explanation: currentLevel.explanation,
           // Ensure options array is always valid
-          options: Array.isArray(currentLevel?.options)
-            ? currentLevel?.options
-            : ["", "", "", ""],
+          options:
+            currentLevel?.options?.length > 0
+              ? currentLevel?.options
+              : ["", "", "", ""],
         });
       }
     } else {
@@ -149,7 +150,7 @@ export default function AddQuestionForm() {
               Options
             </label>
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {levelData.options.map((opt, idx) => (
+              {levelData?.options?.map((opt, idx) => (
                 <input
                   key={idx}
                   type="text"

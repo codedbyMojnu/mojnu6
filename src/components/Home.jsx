@@ -7,8 +7,10 @@ import SoundOn from "../icons/SoundOn";
 import playSound from "../utils/playSound.jsx";
 import AnswerForm from "./AnswerForm";
 import Explanation from "./Explanation";
+import WelcomeToGame from "./WelcomeToGame.jsx";
 
 export default function Home() {
+  const [welcome, setWelcome] = useState(true);
   const [explanation, setExplanation] = useState(false);
   const [levelIndex, setLevelIndex] = useState(() => {
     return localStorage.getItem("level")
@@ -145,64 +147,77 @@ export default function Home() {
               <h3 className="text-center text-xl font-bold text-pink-600 mb-3">
                 🔢 Go to Level
               </h3>
-              <div className="grid grid-cols-4 gap-2 max-h-[200px] overflow-y-auto">
-                {slicesLevels.map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => {
-                      playMusic("/sounds/button-sound.mp3");
-                      setExplanation(false);
-                      setLevelIndex(idx);
-                      setSelectedLevel(false);
-                    }}
-                    className={`py-2 rounded-lg font-bold ${
-                      idx === levelIndex
-                        ? "bg-green-400 text-white"
-                        : "bg-pink-100 text-pink-800"
-                    } hover:bg-green-500 hover:text-white transition duration-300 text-sm`}
-                  >
-                    {idx + 1}
-                  </button>
-                ))}
-              </div>
+
+              {slicesLevels?.length > 0 ? (
+                slicesLevels.map((_, idx) => (
+                  <div className="grid grid-cols-4 gap-2 max-h-[200px] overflow-y-auto">
+                    <button
+                      key={idx}
+                      onClick={() => {
+                        playMusic("/sounds/button-sound.mp3");
+                        setExplanation(false);
+                        setLevelIndex(idx);
+                        setSelectedLevel(false);
+                      }}
+                      className={`py-2 rounded-lg font-bold ${
+                        idx === levelIndex
+                          ? "bg-green-400 text-white"
+                          : "bg-pink-100 text-pink-800"
+                      } hover:bg-green-500 hover:text-white transition duration-300 text-sm`}
+                    >
+                      {idx + 1}
+                    </button>
+                  </div>
+                ))
+              ) : (
+                <p className="text-center text-md font-bold text-black mb-3">
+                  You are in Level 0
+                </p>
+              )}
             </div>
           )
         }
 
-        {levelIndex < levels?.length ? (
-          !explanation ? (
-            <AnswerForm
-              onAnswer={handleSubmitAnswer}
-              mark={mark}
-              levelIndex={levelIndex}
-            />
-          ) : (
-            <Explanation
-              onNext={handleExplationNextButtonClick}
-              levelIndex={levelIndex}
-            />
-          )
-        ) : (
-          <div className="text-center mt-16">
-            <h2 className="text-2xl font-bold text-green-700 mb-2">
-              🎉 All Questions Completed!
-            </h2>
-            <p className="text-gray-700 text-base">
-              Thanks for playing, bro! 🧠🔥
-            </p>
-            <Link
-              onClick={() => {
-                playMusic("/sounds/button-sound.mp3");
-                setLevelIndex(0);
-                localStorage.setItem("level", JSON.stringify(0));
-              }}
-              to="/"
-              className="mt-4 inline-block bg-[#85cc3c] hover:bg-[#76b535] text-white py-2 px-4 rounded-xl border-b-4 border-r-2 border-[#6d4d3a] shadow-md transition transform active:translate-y-1"
-            >
-              🔁 Restart
-            </Link>
-          </div>
+        {welcome && (
+          <WelcomeToGame setWelcome={setWelcome} levelIndex={levelIndex} />
         )}
+
+        {!welcome ? (
+          levelIndex < levels?.length ? (
+            !explanation ? (
+              <AnswerForm
+                onAnswer={handleSubmitAnswer}
+                mark={mark}
+                levelIndex={levelIndex}
+              />
+            ) : (
+              <Explanation
+                onNext={handleExplationNextButtonClick}
+                levelIndex={levelIndex}
+              />
+            )
+          ) : (
+            <div className="text-center mt-16">
+              <h2 className="text-2xl font-bold text-green-700 mb-2">
+                🎉 All Questions Completed!
+              </h2>
+              <p className="text-gray-700 text-base">
+                Thanks for playing, bro! 🧠🔥
+              </p>
+              <Link
+                onClick={() => {
+                  playMusic("/sounds/button-sound.mp3");
+                  setLevelIndex(0);
+                  localStorage.setItem("level", JSON.stringify(0));
+                }}
+                to="/"
+                className="mt-4 inline-block bg-[#85cc3c] hover:bg-[#76b535] text-white py-2 px-4 rounded-xl border-b-4 border-r-2 border-[#6d4d3a] shadow-md transition transform active:translate-y-1"
+              >
+                🔁 Restart
+              </Link>
+            </div>
+          )
+        ) : null}
       </div>
     </div>
   );
