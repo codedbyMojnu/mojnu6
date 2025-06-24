@@ -16,15 +16,11 @@ export default function Home() {
       ? JSON.parse(localStorage.getItem("level"))
       : 0;
   });
-  const [soundOn, setSoundON] = useState(false);
+  const [buttonSoundOn, setButtonSoundOn] = useState(false);
+  const [bgMusicOn, setBgMusicOn] = useState(false);
   const [mark, setMark] = useState("");
   // For Passed Levels
-
   const [slicesLevels, setSlicesLevels] = useState([]);
-
-  // Hints
-  const [showHints, setShowHints] = useState(false);
-
   const bgMusicRef = useRef();
   const { levels, setLevels } = useLevels();
 
@@ -44,7 +40,7 @@ export default function Home() {
   }, []);
 
   useEffect(() => {
-    if (soundOn) {
+    if (bgMusicOn) {
       const bg = new Audio("/sounds/bg-music.mp3");
       bg.loop = true;
       bg.volume = 0.15;
@@ -58,9 +54,9 @@ export default function Home() {
         bgMusicRef.current = null;
       }
     };
-  }, [soundOn]);
+  }, [bgMusicOn]);
 
-  function playMusic(src) {
+  function playRightOrWrongSound(src) {
     const audio = new Audio(src);
     audio.volume = 0.4;
     audio.play();
@@ -68,7 +64,7 @@ export default function Home() {
 
   function handleSubmitAnswer(userAnswer, level) {
     if (level.answer == userAnswer) {
-      playMusic("/sounds/right.mp3");
+      playRightOrWrongSound("/sounds/right.mp3");
       setMark("✔️");
 
       //  যদি ইউজার নতুন লেভেল খেলে তবেই লেভেল পরিবর্তন করো
@@ -80,7 +76,7 @@ export default function Home() {
         setMark("");
       }, 2000);
     } else {
-      playMusic("/sounds/wrong.mp3");
+      playRightOrWrongSound("/sounds/wrong.mp3");
       setMark("❌");
       setTimeout(() => {
         setMark("");
@@ -101,7 +97,11 @@ export default function Home() {
     >
       <div className="w-full max-w-sm bg-white/90 shadow-lg rounded-2xl p-6 mx-3 border-[3px] border-[#a17358] font-[Patrick_Hand] relative">
         <Header
-          sliceLevels={slicesLevels}
+          buttonSoundOn={buttonSoundOn}
+          setButtonSoundOn={setButtonSoundOn}
+          bgMusicOn={bgMusicOn}
+          setBgMusicOn={setBgMusicOn}
+          slicesLevels={slicesLevels}
           setSlicesLevels={setSlicesLevels}
           levels={levels}
           levelIndex={levelIndex}
@@ -112,7 +112,7 @@ export default function Home() {
 
         {welcome && (
           <WelcomeToGame
-            setSoundON={setSoundON}
+            setBgMusicOn={setBgMusicOn}
             setWelcome={setWelcome}
             levelIndex={levelIndex}
           />
@@ -142,7 +142,7 @@ export default function Home() {
               </p>
               <Link
                 onClick={() => {
-                  playMusic("/sounds/button-sound.mp3");
+                  playRightOrWrongSound("/sounds/button-sound.mp3");
                   setLevelIndex(0);
                   localStorage.setItem("level", JSON.stringify(0));
                 }}

@@ -36,18 +36,21 @@ const LevelCompletedIcon = () => (
 );
 
 export default function Header({
+  buttonSoundOn,
+  setButtonSoundOn,
+  bgMusicOn,
+  setBgMusicOn,
+  slicesLevels,
+  setSlicesLevels,
   levels,
   levelIndex,
-  slicesLevels,
-  totalHintPoints,
-  setSlicesLevels,
-  setExplanation,
   setLevelIndex,
+  totalHintPoints,
+  setExplanation,
 }) {
   // Settings modal state
+
   const [showSettings, setShowSettings] = useState(false);
-  // Placeholder states for toggles
-  const [soundOn, setSoundOn] = useState(true);
   const [musicOn, setMusicOn] = useState(true);
   const [notificationOn, setNotificationOn] = useState(true);
   const [language, setLanguage] = useState("english");
@@ -75,12 +78,12 @@ export default function Header({
         title="Levels Passed"
         onClick={() => {
           playSound("/sounds/button-sound.mp3");
-          const slicesLevel = levels?.slice(
+          const slice = levels?.slice(
             0,
             JSON.parse(localStorage.getItem("level")) ?? 0
           );
-          setSlicesLevels && setSlicesLevels(slicesLevel);
-          setShowPastLevels && setShowPastLevels((prev) => !prev);
+          setSlicesLevels(slice);
+          setShowPastLevels((prev) => !prev);
         }}
       >
         <LevelCompletedIcon />
@@ -95,7 +98,7 @@ export default function Header({
 
       {/* Display Passed Levels */}
       {
-        // when selected level true
+        // when Past levels true
         showPastLevels && (
           <div className="absolute top-[80px] left-1/2 -translate-x-1/2 w-[90%] max-w-sm bg-white border-2 border-pink-400 rounded-xl p-4 shadow-lg z-50">
             {/* Close Button */}
@@ -111,8 +114,8 @@ export default function Header({
             </h3>
 
             {slicesLevels?.length > 0 ? (
-              slicesLevels.map((_, idx) => (
-                <div className="grid grid-cols-4 gap-2 max-h-[200px] overflow-y-auto">
+              <div className="grid grid-cols-4 gap-2 max-h-[200px] overflow-y-auto">
+                {slicesLevels.map((_, idx) => (
                   <button
                     key={idx}
                     onClick={() => {
@@ -129,8 +132,8 @@ export default function Header({
                   >
                     {idx + 1}
                   </button>
-                </div>
-              ))
+                ))}
+              </div>
             ) : (
               <p className="text-center text-md font-bold text-black mb-3">
                 You are in Level 0
@@ -191,8 +194,10 @@ export default function Header({
       {showSettings && (
         <SettingsModal
           onClose={() => setShowSettings(false)}
-          soundOn={soundOn}
-          setSoundOn={setSoundOn}
+          bgMusicOn={bgMusicOn}
+          setBgMusicOn={setBgMusicOn}
+          buttonSoundOn={buttonSoundOn}
+          setButtonSoundOn={setButtonSoundOn}
           musicOn={musicOn}
           setMusicOn={setMusicOn}
           notificationOn={notificationOn}
