@@ -1,6 +1,30 @@
-import { Link } from "react-router";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router";
+import api from "../../api";
 
 export default function Signup() {
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+  });
+
+  const navigate = useNavigate();
+
+  function handleChange(e) {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  }
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    const response = await api.post("/api/auth/register", formData);
+    if (response.statusText === "Created") {
+      navigate("/login");
+    } else console.log("sign up error");
+  }
+
   return (
     <div
       className="flex justify-center items-center min-h-screen w-full bg-cover bg-center bg-no-repeat bg-gradient-to-br from-blue-100 to-purple-200 font-[Patrick_Hand]"
@@ -9,7 +33,7 @@ export default function Signup() {
       }}
     >
       <form
-        //onSubmit={handleSubmit}
+        onSubmit={handleSubmit}
         className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-sm space-y-5 border-[3px] border-[#a17358]"
       >
         <h2 className="text-2xl font-bold text-center text-purple-700">
@@ -25,8 +49,8 @@ export default function Signup() {
           <label className="block text-sm mb-1">Give a username:</label>
           <input
             name="username"
-            //value={formData.username}
-            //onChange={handleChange}
+            value={formData.username}
+            onChange={handleChange}
             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
             placeholder="example@email.com"
             type="text"
@@ -40,8 +64,8 @@ export default function Signup() {
           <label className="block text-sm mb-1">পাসওয়ার্ড</label>
           <input
             name="password"
-            // value={formData.password}
-            //onChange={handleChange}
+            value={formData.password}
+            onChange={handleChange}
             className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
             placeholder="*******"
             type="password"

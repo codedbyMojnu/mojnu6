@@ -1,13 +1,25 @@
 import { useState } from "react";
+import { useNavigate } from "react-router";
+import api from "../api";
+import { useAuth } from "../context/AuthContext";
 import { useLevels } from "../context/LevelContext";
+import { useProfile } from "../context/profileContext";
+import checkUserType from "../utils/checkUserType";
 import Marker from "./Marker";
 
 export default function AnswerForm({ onAnswer, mark, levelIndex }) {
   const [userAnswer, setUserAnswer] = useState("");
   const [showHints, setShowHints] = useState(false);
+  const [showRequestForm, setShowRequestForm] = useState(false);
+  const [showWaitModal, setShowWaitModal] = useState(false);
   const [selectedOption, setSelectedOption] = useState("");
   const { levels } = useLevels();
+  const { user } = useAuth();
+  const { profile, setProfile } = useProfile();
+  const [transactionId, setTransactionId] = useState("");
+  const [selectedPackage, setSelectedPackage] = useState("");
 
+  const navigate = useNavigate();
   function handleTextAnswer() {
     if (userAnswer.trim()) {
       onAnswer(userAnswer, levels[levelIndex]);
@@ -17,6 +29,43 @@ export default function AnswerForm({ onAnswer, mark, levelIndex }) {
   function handleOptionAnswer(option) {
     setSelectedOption(option);
     onAnswer(option, levels[levelIndex]);
+  }
+
+  async function handleDecreaseHintPoints() {
+    const updatedProfileData = {
+      ...profile,
+      hintPoints: profile?.hintPoints - 15,
+      takenHintLevels: [...profile?.takenHintLevels, levelIndex],
+    };
+    const response = await api.put(
+      `/api/profile/${profile?.username}`,
+      updatedProfileData
+    );
+    if (response.status === 200) {
+      setProfile(updatedProfileData);
+    }
+  }
+
+  // handle Request Points Form
+
+  async function handleRequestPointsForm(e) {
+    e.preventDefault();
+    const { username } = checkUserType(user?.token);
+    const transactionData = {
+      username,
+      transactionId,
+      selectedPackage,
+    };
+    const response = await api.post("/api/transactions", transactionData, {
+      headers: { Authorization: `Bearer ${user?.token}` },
+    });
+    if (response.statusText === "Created") {
+      setShowRequestForm(false);
+      setShowWaitModal(true);
+      setTransactionId("");
+      setSelectedPackage("");
+      // After 5 Minutes Auto Reaload
+    }
   }
 
   return (
@@ -31,11 +80,22 @@ export default function AnswerForm({ onAnswer, mark, levelIndex }) {
         <button
           type="button"
           title="Skip"
-          onClick={() => {/* TODO: implement skip logic */}}
+          onClick={() => {
+            /* TODO: implement skip logic */
+          }}
           className="p-2 rounded-full bg-blue-100 hover:bg-blue-200 transition duration-300 shadow-md border border-blue-400 flex items-center justify-center text-blue-700 text-xl focus:outline-none focus:ring-2 focus:ring-blue-300"
         >
           {/* Skip SVG */}
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <polyline points="9 18 15 12 9 6" />
           </svg>
         </button>
@@ -43,11 +103,43 @@ export default function AnswerForm({ onAnswer, mark, levelIndex }) {
         <button
           type="button"
           title="Use Hint"
-          onClick={() => setShowHints(true)}
+          onClick={() => {
+            setShowRequestForm(false);
+            setShowWaitModal(false);
+            if (!user?.token) {
+              navigate("/login");
+            } else {
+              const existHintLevel = profile?.takenHintLevels?.find(
+                (level) => level === levelIndex
+              );
+              if (existHintLevel) {
+                setShowHints(true);
+              } else {
+                if (profile?.hintPoints > 14) {
+                  setShowHints(true);
+                  // decrease here points
+                  handleDecreaseHintPoints();
+                } else {
+                  // show request form for points
+                  setShowHints(false);
+                  setShowRequestForm(true);
+                }
+              }
+            }
+          }}
           className="p-2 rounded-full bg-yellow-100 hover:bg-yellow-200 transition duration-300 shadow-md border border-yellow-400 flex items-center justify-center text-yellow-700 text-xl focus:outline-none focus:ring-2 focus:ring-yellow-300"
         >
           {/* Hint SVG */}
-          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+          <svg
+            width="28"
+            height="28"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             <circle cx="12" cy="12" r="10" />
             <path d="M9.09 9a3 3 0 1 1 5.83 1c0 2-3 3-3 3" />
             <line x1="12" y1="17" x2="12" y2="17" />
@@ -99,7 +191,7 @@ export default function AnswerForm({ onAnswer, mark, levelIndex }) {
         )}
       </div>
 
-      {/* Modal */}
+      {/* Hints Modal */}
       {showHints && (
         <div
           className="absolute top-5 left-1/2 transform -translate-x-1/2
@@ -121,6 +213,129 @@ export default function AnswerForm({ onAnswer, mark, levelIndex }) {
           <p className="text-base text-center leading-relaxed">
             {levels[levelIndex]?.hint ||
               "No hint available for this level. Try to think outside the box!"}
+          </p>
+        </div>
+      )}
+
+      {/* Transcation Requestion Modal */}
+      {showRequestForm && (
+        <div
+          className="absolute top-5 left-1/2 transform -translate-x-1/2
+      z-50 bg-yellow-100 rounded-3xl p-5 shadow-xl
+      w-[90%] max-w-[400px] max-h-[460px] overflow-y-auto
+      border border-indigo-600 font-[Comic_Sans_MS] text-indigo-900 mt-[-80px]"
+        >
+          {/* Close Button */}
+          <button
+            onClick={() => setShowRequestForm(false)}
+            className="absolute top-2 right-3 text-indigo-700 hover:text-indigo-900 text-xl font-bold"
+            aria-label="Close"
+          >
+            &times;
+          </button>
+
+          <h3 className="text-xl font-bold text-center mb-4">
+            🎁 Deposit for Hint Points
+          </h3>
+
+          <form className="space-y-4" onSubmit={handleRequestPointsForm}>
+            <div>
+              <label className="block mb-2 font-semibold text-sm text-indigo-800">
+                Select Hint Package:
+              </label>
+              <hr className="border-b-2 border-dashed border-gray-400 mb-1" />
+              <div className="flex gap-3 justify-center">
+                <button
+                  type="button"
+                  onClick={() => setSelectedPackage("20tk")}
+                  className={`px-4 py-2 rounded-full border font-bold text-sm 
+              ${
+                selectedPackage === "20tk"
+                  ? "bg-indigo-600 text-white border-indigo-600"
+                  : "bg-white text-indigo-700 border-indigo-300"
+              }`}
+                >
+                  20৳ = 100 Hints
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setSelectedPackage("50tk")}
+                  className={`px-4 py-2 rounded-full border font-bold text-sm 
+              ${
+                selectedPackage === "50tk"
+                  ? "bg-indigo-600 text-white border-indigo-600"
+                  : "bg-white text-indigo-700 border-indigo-300"
+              }`}
+                >
+                  50৳ = 500 Hints
+                </button>
+              </div>
+            </div>
+            {/* Bkash Number */}
+            <div className="text-sm bg-indigo-200 rounded-xl p-3 text-center font-semibold">
+              Send Money to: <br />
+              📱 <span className="text-indigo-800">01788262433</span>
+              <div className="flex gap-3 justify-center">
+                <button
+                  type="button"
+                  className="px-4 py-2 rounded-full border font-bold text-sm bg-white text-pink-600 border-pink-400"
+                >
+                  🅱️ Bkash
+                </button>
+              </div>
+            </div>
+            {/* Transaction ID Input */}
+            <div>
+              <label className="block mb-1 font-semibold text-sm">
+                Transaction ID:
+              </label>
+              <input
+                type="text"
+                value={transactionId}
+                onChange={(e) => setTransactionId(e.target.value)}
+                className="w-full p-2 rounded-md border border-indigo-300"
+                placeholder="Type your Transaction ID"
+                required
+              />
+            </div>
+            {/* Submit Button */}
+            <button
+              type="submit"
+              className="w-full bg-indigo-600 text-white font-bold py-2 px-4 rounded-md hover:bg-indigo-700"
+              disabled={!selectedPackage || !transactionId}
+            >
+              🚀 Submit
+            </button>
+          </form>
+        </div>
+      )}
+      {showWaitModal && (
+        <div
+          className="absolute top-5 left-1/2 transform -translate-x-1/2
+      z-50 bg-yellow-100 rounded-3xl p-5 shadow-xl
+      w-[90%] max-w-[400px] max-h-[460px] overflow-y-auto
+      border border-indigo-600 font-[Comic_Sans_MS] text-indigo-900"
+        >
+          {/* Close Button */}
+          <button
+            onClick={() => setShowWaitModal(false)}
+            className="absolute top-2 right-3 text-indigo-700 hover:text-indigo-900 text-xl font-bold"
+            aria-label="Close"
+          >
+            &times;
+          </button>
+
+          <h3 className="text-2xl font-bold mb-3">
+            ✅ Thanks for Your Submission!
+          </h3>
+          <p className="text-md mb-2">
+            Please wait <span className="font-semibold">5 minutes</span> while
+            we verify your transaction.
+          </p>
+          <p className="text-sm">
+            For any inquiry, feel free to call:{" "}
+            <span className="font-bold text-green-800">01788262433</span>
           </p>
         </div>
       )}

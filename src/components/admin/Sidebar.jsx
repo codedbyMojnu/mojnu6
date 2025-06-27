@@ -29,7 +29,33 @@ export default function Sidebar() {
           </Link>
         </button>
       </div>
-
+      <NavLink
+        to="/dashboard/transactions"
+        style={({ isActive }) => (isActive ? activeLinkStyle : undefined)}
+        className="block w-full text-left font-bold px-4 py-2 text-xl text-blue-600 rounded-lg hover:bg-blue-100/80 transition-colors duration-200"
+      >
+        🧾 Transactions
+      </NavLink>
+      <ul className="pl-6 mt-1 space-y-1">
+        <li>
+          <NavLink
+            to="/dashboard/approved-transactions"
+            style={({ isActive }) => (isActive ? activeLinkStyle : undefined)}
+            className="block w-full text-left px-4 py-2 text-xl rounded-lg hover:bg-yellow-200/60 transition-colors duration-200"
+          >
+            Approve Transactions
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to="/dashboard/faked-transactions"
+            style={({ isActive }) => (isActive ? activeLinkStyle : undefined)}
+            className="block w-full text-left px-4 py-2 text-xl rounded-lg hover:bg-yellow-200/60 transition-colors duration-200"
+          >
+            Fake Transactions
+          </NavLink>
+        </li>
+      </ul>
       <ul className="space-y-2">
         <li>
           <NavLink

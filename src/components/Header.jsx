@@ -1,4 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useProfile } from "../context/ProfileContext";
+import checkUserType from "../utils/checkUserType";
 import playSound from "../utils/playSound";
 import SettingsModal from "./SettingsModal";
 
@@ -49,17 +51,60 @@ export default function Header({
   setExplanation,
 }) {
   // Settings modal state
-
   const [showSettings, setShowSettings] = useState(false);
   const [musicOn, setMusicOn] = useState(true);
   const [notificationOn, setNotificationOn] = useState(true);
   const [language, setLanguage] = useState("english");
-
-  const [showHints, setShowHints] = useState(false);
   const [showPastLevels, setShowPastLevels] = useState("");
+  const [isRefreshing, setIsRefreshing] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
+  const [notificationMessage, setNotificationMessage] = useState("");
+
+  // profile data
+  const { profile, fetchProfile } = useProfile();
+
+  // Track previous hint points to detect changes
+  const [prevHintPoints, setPrevHintPoints] = useState(0);
+
+  useEffect(() => {
+    if (profile?.hintPoints !== prevHintPoints && prevHintPoints > 0) {
+      const difference = profile?.hintPoints - prevHintPoints;
+      if (difference > 0) {
+        setNotificationMessage(`🎉 +${difference} Hint Points Added!`);
+        setShowNotification(true);
+        setTimeout(() => setShowNotification(false), 3000);
+      }
+    }
+    setPrevHintPoints(profile?.hintPoints || 0);
+  }, [profile?.hintPoints, prevHintPoints]);
+
+  // Function to refresh profile data
+  const handleRefreshProfile = async () => {
+    playSound("/sounds/button-sound.mp3");
+    setIsRefreshing(true);
+    
+    try {
+      if (fetchProfile) {
+        const { username } = checkUserType(localStorage.getItem('token'));
+        await fetchProfile(username);
+        console.log('Profile refreshed successfully');
+      }
+    } catch (error) {
+      console.error('Failed to refresh profile:', error);
+    } finally {
+      setIsRefreshing(false);
+    }
+  };
 
   return (
     <header className="flex justify-between items-center mb-6 gap-4 select-none">
+      {/* Notification */}
+      {showNotification && (
+        <div className="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 animate-bounce">
+          {notificationMessage}
+        </div>
+      )}
+
       {/* Gear Icon */}
       <button
         className="p-2 rounded-full bg-yellow-100 hover:bg-yellow-200 transition duration-300 shadow-md border border-yellow-400"
@@ -148,20 +193,30 @@ export default function Header({
         <div className="relative flex items-center gap-2">
           {/* Total Hints Point */}
           <button
-            onClick={() => {
-              playSound("/sounds/button-sound.mp3");
-            }}
-            title="Total Hint Points"
-            className="w-15 h-15 flex items-center justify-center"
-            aria-label="Total Hint Points"
+            onClick={handleRefreshProfile}
+            title="Refresh Hint Points"
+            className={`w-15 h-15 flex items-center justify-center hover:scale-110 transition-transform ${
+              isRefreshing ? 'animate-spin' : ''
+            }`}
+            aria-label="Refresh Hint Points"
+            disabled={isRefreshing}
           >
-            <img src="/icons/hint.png" alt="Hint Icon" className="w-15 h-15" />
+            <img 
+              src="/icons/hint.png" 
+              alt="Hint Icon" 
+              className={`w-15 h-15 ${isRefreshing ? 'opacity-50' : ''}`} 
+            />
           </button>
 
           {/* Hint Count */}
           <span className="text-xl font-bold text-[#444] mt-[-20px] ml-[-28px] select-none">
-            ×{totalHintPoints}
+            ×{profile?.hintPoints}
           </span>
+          
+          {/* Refresh indicator */}
+          {isRefreshing && (
+            <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
+          )}
         </div>
       </div>
 

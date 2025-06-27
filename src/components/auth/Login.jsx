@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useAuth } from "../../context/AuthContext";
+import checkUserType from "../../utils/checkUserType";
 import playSound from "../../utils/playSound";
 import api from "./../../api/index";
 
@@ -22,7 +23,13 @@ export default function Login() {
             setUser({ token: response.data.token });
             setUserName("");
             setPassword("");
-            navigate("/dashboard");
+            const { role } = checkUserType(response?.data?.token);
+            if (role === "admin") {
+              navigate("/dashboard");
+            }
+            if (role === "user") {
+              navigate("/");
+            }
           } else {
             console.log("No match password and username");
           }
