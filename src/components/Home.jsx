@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { Link } from "react-router";
 import api from "../api/index.js";
+import { useAuth } from "../context/AuthContext.jsx";
 import { useLevels } from "../context/LevelContext";
+import { useProfile } from "../context/ProfileContext.jsx";
 import playSound from "../utils/playSound.jsx";
 import AnswerForm from "./AnswerForm";
 import Explanation from "./Explanation";
@@ -11,18 +13,18 @@ import WelcomeToGame from "./WelcomeToGame.jsx";
 export default function Home() {
   const [welcome, setWelcome] = useState(true);
   const [explanation, setExplanation] = useState(false);
-  const [levelIndex, setLevelIndex] = useState(() => {
-    return localStorage.getItem("level")
-      ? JSON.parse(localStorage.getItem("level"))
-      : 0;
-  });
+  const [levelIndex, setLevelIndex] = useState(0);
   const [buttonSoundOn, setButtonSoundOn] = useState(false);
   const [bgMusicOn, setBgMusicOn] = useState(false);
   const [mark, setMark] = useState("");
+  const [maxLevel, setMaxLevel] = useState(0);
   // For Passed Levels
   const [slicesLevels, setSlicesLevels] = useState([]);
   const bgMusicRef = useRef();
   const { levels, setLevels } = useLevels();
+  const { profile } = useProfile();
+  // AuthToken
+  const { user } = useAuth();
 
   useEffect(() => {
     async function fetchLevels() {
@@ -56,6 +58,28 @@ export default function Home() {
     };
   }, [bgMusicOn]);
 
+  // user maxLevel handle when user login auto set maxLevel to levelIndex
+  useEffect(() => {
+    setLevelIndex(profile?.maxLevel);
+    setMaxLevel(profile?.maxLevel);
+  }, [profile?.maxLevel]);
+
+  // function update maxLevel
+  async function updateMaxLevel(level) {
+    const response = await api.patch(
+      `/api/profile/${profile?.username}`,
+      { maxLevel: level },
+      {
+        headers: `Bearer ${user?.token}`,
+      }
+    );
+    console.log(response);
+    if (response?.status === 200) {
+      setLevelIndex(response?.data?.profile?.maxLevel);
+      setMaxLevel(response?.data?.profile?.maxLevel);
+    }
+  }
+
   function playRightOrWrongSound(src) {
     const audio = new Audio(src);
     audio.volume = 0.4;
@@ -68,8 +92,8 @@ export default function Home() {
       setMark("✔️");
 
       //  যদি ইউজার নতুন লেভেল খেলে তবেই লেভেল পরিবর্তন করো
-      if (levelIndex > JSON.parse(localStorage.getItem("level")) - 1) {
-        localStorage.setItem("level", JSON.stringify(levelIndex + 1));
+      if (levelIndex > maxLevel - 1) {
+        updateMaxLevel(levelIndex);
       }
       setTimeout(() => {
         setExplanation(true);

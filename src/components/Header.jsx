@@ -82,15 +82,15 @@ export default function Header({
   const handleRefreshProfile = async () => {
     playSound("/sounds/button-sound.mp3");
     setIsRefreshing(true);
-    
+
     try {
       if (fetchProfile) {
-        const { username } = checkUserType(localStorage.getItem('token'));
+        const { username } = checkUserType(localStorage.getItem("token"));
         await fetchProfile(username);
-        console.log('Profile refreshed successfully');
+        console.log("Profile refreshed successfully");
       }
     } catch (error) {
-      console.error('Failed to refresh profile:', error);
+      console.error("Failed to refresh profile:", error);
     } finally {
       setIsRefreshing(false);
     }
@@ -123,10 +123,7 @@ export default function Header({
         title="Levels Passed"
         onClick={() => {
           playSound("/sounds/button-sound.mp3");
-          const slice = levels?.slice(
-            0,
-            JSON.parse(localStorage.getItem("level")) ?? 0
-          );
+          const slice = levels?.slice(0, profile?.maxLevel ?? 0);
           setSlicesLevels(slice);
           setShowPastLevels((prev) => !prev);
         }}
@@ -196,15 +193,15 @@ export default function Header({
             onClick={handleRefreshProfile}
             title="Refresh Hint Points"
             className={`w-15 h-15 flex items-center justify-center hover:scale-110 transition-transform ${
-              isRefreshing ? 'animate-spin' : ''
+              isRefreshing ? "animate-spin" : ""
             }`}
             aria-label="Refresh Hint Points"
             disabled={isRefreshing}
           >
-            <img 
-              src="/icons/hint.png" 
-              alt="Hint Icon" 
-              className={`w-15 h-15 ${isRefreshing ? 'opacity-50' : ''}`} 
+            <img
+              src="/icons/hint.png"
+              alt="Hint Icon"
+              className={`w-15 h-15 ${isRefreshing ? "opacity-50" : ""}`}
             />
           </button>
 
@@ -212,7 +209,7 @@ export default function Header({
           <span className="text-xl font-bold text-[#444] mt-[-20px] ml-[-28px] select-none">
             ×{profile?.hintPoints}
           </span>
-          
+
           {/* Refresh indicator */}
           {isRefreshing && (
             <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
