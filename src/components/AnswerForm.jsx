@@ -3,7 +3,7 @@ import { useNavigate } from "react-router";
 import api from "../api";
 import { useAuth } from "../context/AuthContext";
 import { useLevels } from "../context/LevelContext";
-import { useProfile } from "../context/profileContext";
+import { useProfile } from "../context/ProfileContext";
 import checkUserType from "../utils/checkUserType";
 import Marker from "./Marker";
 
@@ -13,6 +13,8 @@ export default function AnswerForm({ onAnswer, mark, levelIndex }) {
   const [showRequestForm, setShowRequestForm] = useState(false);
   const [showWaitModal, setShowWaitModal] = useState(false);
   const [selectedOption, setSelectedOption] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccessNotification, setShowSuccessNotification] = useState(false);
   const { levels } = useLevels();
   const { user } = useAuth();
   const { profile, setProfile } = useProfile();
@@ -47,29 +49,60 @@ export default function AnswerForm({ onAnswer, mark, levelIndex }) {
   }
 
   // handle Request Points Form
-
   async function handleRequestPointsForm(e) {
     e.preventDefault();
-    const { username } = checkUserType(user?.token);
-    const transactionData = {
-      username,
-      transactionId,
-      selectedPackage,
-    };
-    const response = await api.post("/api/transactions", transactionData, {
-      headers: { Authorization: `Bearer ${user?.token}` },
-    });
-    if (response.statusText === "Created") {
-      setShowRequestForm(false);
-      setShowWaitModal(true);
-      setTransactionId("");
-      setSelectedPackage("");
-      // After 5 Minutes Auto Reaload
+    setIsSubmitting(true);
+
+    try {
+      const { username } = checkUserType(user?.token);
+      const transactionData = {
+        username,
+        transactionId,
+        selectedPackage,
+      };
+      const response = await api.post("/api/transactions", transactionData, {
+        headers: { Authorization: `Bearer ${user?.token}` },
+      });
+      if (response.statusText === "Created") {
+        setShowRequestForm(false);
+        setShowWaitModal(true);
+        setTransactionId("");
+        setSelectedPackage("");
+
+        // Show success notification
+        setShowSuccessNotification(true);
+        setTimeout(() => setShowSuccessNotification(false), 5000);
+
+        console.log(
+          "Transaction submitted successfully! Admin will review shortly."
+        );
+      }
+    } catch (error) {
+      console.error("Failed to submit transaction:", error);
+      alert("Failed to submit transaction. Please try again.");
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
   return (
     <div className="flex flex-col justify-between h-[400px] font-[Patrick_Hand] text-gray-800 relative">
+      {/* Success Notification */}
+      {showSuccessNotification && (
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg animate-bounce">
+          <div className="flex items-center gap-2">
+            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+              <path
+                fillRule="evenodd"
+                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.707a1 1 0 00-1.414-1.414L9 10.172 7.707 8.879a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                clipRule="evenodd"
+              />
+            </svg>
+            Transaction submitted! Admin will review shortly.
+          </div>
+        </div>
+      )}
+
       <div className="text-md leading-snug mb-6 px-4 font-[Google_Sans]">
         {levels[levelIndex]?.question}
       </div>
@@ -302,10 +335,21 @@ export default function AnswerForm({ onAnswer, mark, levelIndex }) {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-indigo-600 text-white font-bold py-2 px-4 rounded-md hover:bg-indigo-700"
-              disabled={!selectedPackage || !transactionId}
+              disabled={!selectedPackage || !transactionId || isSubmitting}
+              className={`w-full font-bold py-2 px-4 rounded-md transition-colors ${
+                isSubmitting
+                  ? "bg-gray-400 cursor-not-allowed"
+                  : "bg-indigo-600 hover:bg-indigo-700"
+              } text-white`}
             >
-              🚀 Submit
+              {isSubmitting ? (
+                <div className="flex items-center justify-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Submitting...
+                </div>
+              ) : (
+                "🚀 Submit"
+              )}
             </button>
           </form>
         </div>
