@@ -60,8 +60,11 @@ export default function Home() {
 
   // user maxLevel handle when user login auto set maxLevel to levelIndex
   useEffect(() => {
-    setLevelIndex(profile?.maxLevel);
-    setMaxLevel(profile?.maxLevel);
+    // ✅ Only set levelIndex from profile on first load
+    if (levelIndex === 0 && profile?.maxLevel > 0) {
+      setLevelIndex(profile?.maxLevel);
+      setMaxLevel(profile?.maxLevel);
+    }
   }, [profile?.maxLevel]);
 
   // function update maxLevel
@@ -70,7 +73,9 @@ export default function Home() {
       `/api/profile/${profile?.username}`,
       { maxLevel: level },
       {
-        headers: `Bearer ${user?.token}`,
+        headers: {
+          Authorization: `Bearer ${user?.token}`,
+        },
       }
     );
     console.log(response);
@@ -92,7 +97,7 @@ export default function Home() {
       setMark("✔️");
 
       //  যদি ইউজার নতুন লেভেল খেলে তবেই লেভেল পরিবর্তন করো
-      if (levelIndex > maxLevel - 1) {
+      if (levelIndex > maxLevel) {
         updateMaxLevel(levelIndex);
       }
       setTimeout(() => {

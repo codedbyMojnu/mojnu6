@@ -123,7 +123,7 @@ export default function Header({
         title="Levels Passed"
         onClick={() => {
           playSound("/sounds/button-sound.mp3");
-          const slice = levels?.slice(0, profile?.maxLevel ?? 0);
+          const slice = levels?.slice(0, (profile?.maxLevel ?? 0) + 1);
           setSlicesLevels(slice);
           setShowPastLevels((prev) => !prev);
         }}
