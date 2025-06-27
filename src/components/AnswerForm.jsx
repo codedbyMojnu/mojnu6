@@ -142,10 +142,9 @@ export default function AnswerForm({ onAnswer, mark, levelIndex }) {
             if (!user?.token) {
               navigate("/login");
             } else {
-              const existHintLevel = profile?.takenHintLevels?.find(
-                (level) => level === levelIndex
-              );
-              if (existHintLevel) {
+              const hasTakenHint =
+                profile?.takenHintLevels?.includes(levelIndex);
+              if (hasTakenHint) {
                 setShowHints(true);
               } else {
                 if (profile?.hintPoints > 14) {
