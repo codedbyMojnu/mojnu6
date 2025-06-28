@@ -20,16 +20,8 @@ export default function Explanation({ onNext, levelIndex }) {
         </p>
       </div>
 
-      {/* Answer Display */}
-      <div className="bg-green-50/50 rounded-lg p-3 border-l-4 border-green-400 mb-3 px-4 flex-1 max-h-[60px] overflow-y-auto">
-        <p className="text-responsive-sm font-[Google_Sans] leading-snug text-gray-800">
-          <span className="font-semibold text-green-700">Answer:</span>{" "}
-          {levels[levelIndex]?.answer}
-        </p>
-      </div>
-
       {/* Explanation Display */}
-      <div className="bg-blue-50/50 rounded-lg p-3 border-l-4 border-blue-400 mb-3 px-4 flex-1 overflow-y-auto">
+      <div className="bg-blue-50/50 rounded-lg p-3 mb-3 px-4 flex-1 overflow-y-auto">
         <p className="text-responsive-sm font-[Google_Sans] leading-snug text-gray-800">
           <span className="font-semibold text-blue-700">Explanation:</span>{" "}
           {levels[levelIndex]?.explanation ||

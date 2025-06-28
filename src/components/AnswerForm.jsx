@@ -12,6 +12,7 @@ export default function AnswerForm({ onAnswer, mark, levelIndex }) {
   const [showHints, setShowHints] = useState(false);
   const [showRequestForm, setShowRequestForm] = useState(false);
   const [showWaitModal, setShowWaitModal] = useState(false);
+  const [showSkipModal, setShowSkipModal] = useState(false);
   const [selectedOption, setSelectedOption] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccessNotification, setShowSuccessNotification] = useState(false);
@@ -151,6 +152,11 @@ export default function AnswerForm({ onAnswer, mark, levelIndex }) {
     }
   }, [user?.token, navigate, profile, levelIndex, handleDecreaseHintPoints]);
 
+  // Handle skip button click
+  const handleSkipClick = useCallback(() => {
+    setShowSkipModal(true);
+  }, []);
+
   // Handle keyboard events
   const handleKeyDown = useCallback(
     (e) => {
@@ -207,60 +213,8 @@ export default function AnswerForm({ onAnswer, mark, levelIndex }) {
         </div>
       )}
 
-      {/* Enhanced Action Buttons Row */}
-      <div className="flex flex-row justify-center gap-3 sm:gap-4 mb-3 px-4">
-        {/* Skip Button */}
-        <button
-          type="button"
-          title="Skip Level"
-          onClick={() => {
-            /* TODO: implement skip logic */
-          }}
-          className="p-1 sm:p-3 rounded-full bg-blue-100 hover:bg-blue-200 transition duration-300 shadow-md border border-blue-400 flex items-center justify-center text-blue-700 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 min-w-[48px] min-h-[48px]"
-          aria-label="Skip to next level"
-        >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <polyline points="9 18 15 12 9 6" />
-          </svg>
-        </button>
-
-        {/* Use Hint Button */}
-        <button
-          type="button"
-          title="Use Hint"
-          onClick={handleHintClick}
-          className="p-1 sm:p-3 rounded-full bg-yellow-100 hover:bg-yellow-200 transition duration-300 shadow-md border border-yellow-400 flex items-center justify-center text-yellow-700 text-sm focus:outline-none focus:ring-2 focus:ring-yellow-300 min-w-[48px] min-h-[48px]"
-          aria-label="Get a hint for this level"
-        >
-          <svg
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            aria-hidden="true"
-          >
-            <circle cx="12" cy="12" r="10" />
-            <path d="M9.09 9a3 3 0 1 1 5.83 1c0 2-3 3-3 3" />
-            <line x1="12" y1="17" x2="12" y2="17" />
-          </svg>
-        </button>
-      </div>
       {/* Question Display */}
-      <div className="text-responsive-sm sm:text-base leading-snug mb-3 px-4 font-[Google_Sans] bg-yellow-50/50 rounded-lg p-3 border-l-4 border-yellow-400 flex-1 max-h-[80px] overflow-y-auto">
+      <div className="text-responsive-sm sm:text-base leading-snug mb-3 px-4 font-[Google_Sans] bg-yellow-50/50 rounded-lg p-3 flex-1 max-h-[80px] overflow-y-auto">
         {levels[levelIndex]?.question}
       </div>
 
@@ -305,6 +259,89 @@ export default function AnswerForm({ onAnswer, mark, levelIndex }) {
           ))}
         </div>
       )}
+
+      {/* Enhanced Action Buttons Row */}
+      <div className="flex flex-row justify-center gap-4 sm:gap-6 mb-4 px-4">
+        {/* Skip Button */}
+        <button
+          type="button"
+          title="Skip Level"
+          onClick={handleSkipClick}
+          className="group relative flex flex-col items-center justify-center p-3 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-100 border-2 border-blue-200 hover:border-blue-300 hover:from-blue-100 hover:to-indigo-200 transition-all duration-300 transform hover:scale-105 hover:shadow-lg active:scale-95"
+          aria-label="Skip to next level"
+        >
+          {/* Background glow effect */}
+          <div className="absolute inset-0 bg-gradient-to-br from-blue-400/20 to-indigo-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+          {/* Icon */}
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="text-blue-700 group-hover:text-blue-800 transition-colors duration-300 relative z-10 w-4 h-4"
+            aria-hidden="true"
+          >
+            <polyline points="9 18 15 12 9 6" />
+          </svg>
+
+          {/* Label */}
+          <span className="text-responsive-xs font-semibold text-blue-700 group-hover:text-blue-800 mt-1 transition-colors duration-300 relative z-10">
+            Skip
+          </span>
+
+          {/* Tooltip */}
+          <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-responsive-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-20">
+            Skip to next level
+            <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-800 rotate-45"></div>
+          </div>
+        </button>
+
+        {/* Use Hint Button */}
+        <button
+          type="button"
+          title="Use Hint"
+          onClick={handleHintClick}
+          className="group relative flex flex-col items-center justify-center p-3 rounded-xl bg-gradient-to-br from-amber-50 to-yellow-100 border-2 border-amber-200 hover:border-amber-300 hover:from-amber-100 hover:to-yellow-200 transition-all duration-300 transform hover:scale-105 hover:shadow-lg active:scale-95"
+          aria-label="Get a hint for this level"
+        >
+          {/* Background glow effect */}
+          <div className="absolute inset-0 bg-gradient-to-br from-amber-400/20 to-yellow-500/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+          {/* Icon */}
+          <svg
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            className="text-amber-700 group-hover:text-amber-800 transition-colors duration-300 relative z-10 w-4 h-4"
+            aria-hidden="true"
+          >
+            <circle cx="12" cy="12" r="10" />
+            <path d="M9.09 9a3 3 0 1 1 5.83 1c0 2-3 3-3 3" />
+            <line x1="12" y1="17" x2="12" y2="17" />
+          </svg>
+
+          {/* Label */}
+          <span className="text-responsive-xs font-semibold text-amber-700 group-hover:text-amber-800 mt-1 transition-colors duration-300 relative z-10">
+            Hint
+          </span>
+
+          {/* Tooltip */}
+          <div className="absolute -bottom-4 left-1/2 transform -translate-x-1/2 bg-gray-800 text-white text-responsive-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none whitespace-nowrap z-20">
+            Use hint ({profile?.hintPoints || 0} available)
+            <div className="absolute -top-1 left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-800 rotate-45"></div>
+          </div>
+        </button>
+      </div>
 
       {/* Submit Button */}
       <div className="px-4 mt-auto">
@@ -482,6 +519,43 @@ export default function AnswerForm({ onAnswer, mark, levelIndex }) {
                 For any inquiry, feel free to call:{" "}
                 <span className="font-bold text-green-800">01788262433</span>
               </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Skip Level Modal */}
+      {showSkipModal && (
+        <div className="modal-overlay">
+          <div className="modal-content p-4 max-w-sm mx-4 animate-bounce-in">
+            {/* Close Button */}
+            <button
+              onClick={() => setShowSkipModal(false)}
+              className="absolute top-2 right-2 text-indigo-700 hover:text-indigo-900 text-xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-indigo-100 transition-colors"
+              aria-label="Close skip modal"
+            >
+              ×
+            </button>
+
+            <div className="text-center">
+              <div className="text-4xl mb-3">🚫</div>
+              <h3 className="text-responsive-lg font-bold mb-3 text-red-700">
+                Skip Not Allowed
+              </h3>
+              <div className="bg-red-50 border-2 border-red-200 rounded-xl p-4 mb-4">
+                <p className="text-responsive-sm text-center leading-relaxed text-red-800 font-medium">
+                  We are not allowed you, to skip a level
+                </p>
+              </div>
+              <p className="text-responsive-xs text-gray-600 mb-4">
+                Please complete the current level to progress. Use hints if you need help!
+              </p>
+              <button
+                onClick={() => setShowSkipModal(false)}
+                className="btn btn-secondary w-full text-responsive-sm"
+              >
+                Got It
+              </button>
             </div>
           </div>
         </div>

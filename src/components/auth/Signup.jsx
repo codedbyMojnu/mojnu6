@@ -80,13 +80,18 @@ export default function Signup() {
       <div className="w-full max-w-sm mx-4">
         <div className="card sm:p-6 relative animate-fade-in h-[calc(100vh-2rem)] max-h-[600px] flex flex-col">
           {/* Header */}
-          <div className="text-center">
+          <div className="text-center mt-2">
             <h2 className="text-responsive-xl sm:text-2xl font-bold text-purple-700">
-              Join the Adventure!
+              🔐 Signup Now
             </h2>
-            <p className="text-responsive-sm text-gray-600 mt-2">
-              Create your account to start solving puzzles
-            </p>
+            {/* Additional Info */}
+            {!error && (
+              <div className="mt-4 mb-2 p-4 rounded-lg border border-blue-200">
+                <p className="text-responsive-xs text-blue-700 text-center">
+                  💡 Create an account to save your progress and use hints!
+                </p>
+              </div>
+            )}
           </div>
 
           {/* Success Display */}
@@ -113,7 +118,7 @@ export default function Signup() {
 
           {/* Error Display */}
           {error && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4 animate-fade-in">
+            <div className="mt-4  bg-red-50 border border-red-200 rounded-lg p-3 mb-4 animate-fade-in">
               <div className="flex items-center gap-2">
                 <svg
                   className="w-5 h-5 text-red-500 flex-shrink-0"
@@ -133,7 +138,7 @@ export default function Signup() {
 
           <form
             onSubmit={handleSubmit}
-            className="flex-1 flex flex-col space-y-4"
+            className="flex-1 flex flex-col  p-4 space-y-4"
           >
             {/* Username Field */}
             <div>
@@ -202,14 +207,6 @@ export default function Signup() {
               </Link>
             </p>
           </div>
-          {/* Additional Info */}
-          {!error && (
-            <div className="mt-2 mb-2 p-4 bg-blue-50 rounded-lg border border-blue-200">
-              <p className="text-responsive-xs text-blue-700 text-center">
-                💡 Create an account to save your progress and use hints!
-              </p>
-            </div>
-          )}
         </div>
       </div>
     </div>
