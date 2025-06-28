@@ -9,6 +9,7 @@ export default function AddQuestionForm() {
     question: "",
     answer: "",
     explanation: "",
+    hint: "",
     options: ["", "", "", ""], // default 4 options
   });
   const { user } = useAuth();
@@ -25,6 +26,7 @@ export default function AddQuestionForm() {
           question: currentLevel.question,
           answer: currentLevel.answer,
           explanation: currentLevel.explanation,
+          hint: currentLevel.hint,
           // Ensure options array is always valid
           options:
             currentLevel?.options?.length > 0
@@ -38,6 +40,7 @@ export default function AddQuestionForm() {
         question: "",
         answer: "",
         explanation: "",
+        hint: "",
         options: ["", "", "", ""],
       });
     }
@@ -59,6 +62,7 @@ export default function AddQuestionForm() {
       question: "",
       answer: "",
       explanation: "",
+      hint: "",
       options: ["", "", "", ""],
     });
     navigate(path);
@@ -119,19 +123,26 @@ export default function AddQuestionForm() {
 
   return (
     <div
-      className="w-full min-h-screen p-4 flex items-center justify-center font-[Patrick_Hand]"
+      className="min-h-screen p-2 sm:p-4 flex items-center justify-center font-[Patrick_Hand]"
       style={{
         backgroundImage: "url('/bg-images/wood.png')",
         backgroundSize: "cover",
         backgroundPosition: "center",
       }}
     >
-      {/* Form Container with a paper-like background */}
-      <div className="w-full max-w-3xl mx-auto p-5 pt-0">
-        <div className="space-y-4">
+      {/* Form Container with better responsive design */}
+      <div className="w-full max-w-2xl mx-auto bg-white/95 backdrop-blur-sm rounded-xl shadow-2xl border border-gray-200">
+        <div className="p-4 sm:p-6 space-y-3 max-h-[90vh] overflow-y-auto">
+          {/* Header */}
+          <div className="text-center mb-3 pb-2 border-b-2 border-dashed border-gray-300">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-800">
+              {params?.id ? "✏️ Edit Question" : "➕ Add New Question"}
+            </h1>
+          </div>
+
           {/* Question */}
           <div>
-            <label className="block text-lg font-bold mb-1 text-gray-800">
+            <label className="block text-sm sm:text-base font-bold mb-1 text-gray-800">
               Question
             </label>
             <input
@@ -146,10 +157,10 @@ export default function AddQuestionForm() {
 
           {/* Options */}
           <div>
-            <label className="block text-lg font-bold mb-2 text-gray-800">
+            <label className="block text-sm sm:text-base font-bold mb-2 text-gray-800">
               Options
             </label>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               {levelData?.options?.map((opt, idx) => (
                 <input
                   key={idx}
@@ -162,8 +173,10 @@ export default function AddQuestionForm() {
               ))}
             </div>
           </div>
+
+          {/* Answer */}
           <div>
-            <label className="block text-lg font-bold mb-1 text-gray-800">
+            <label className="block text-sm sm:text-base font-bold mb-1 text-gray-800">
               Answer
             </label>
             <input
@@ -175,13 +188,29 @@ export default function AddQuestionForm() {
               className={inputClassName}
             />
           </div>
+
+          {/* Hint */}
           <div>
-            <label className="block text-lg font-bold mb-1 text-gray-800">
+            <label className="block text-sm sm:text-base font-bold mb-1 text-gray-800">
+              Hint
+            </label>
+            <textarea
+              rows={2}
+              name="hint"
+              placeholder="Provide a helpful hint"
+              className={inputClassName}
+              value={levelData.hint}
+              onChange={handleInputChange}
+            />
+          </div>
+
+          {/* Explanation */}
+          <div>
+            <label className="block text-sm sm:text-base font-bold mb-1 text-gray-800">
               Explanation
             </label>
             <textarea
-              rows={3}
-              type="text"
+              rows={2}
               name="explanation"
               placeholder="Explain the answer"
               className={inputClassName}
@@ -191,10 +220,10 @@ export default function AddQuestionForm() {
           </div>
 
           {/* Buttons */}
-          <div className="pt-3 flex flex-wrap gap-4 justify-center">
+          <div className="pt-3 flex flex-wrap gap-3 justify-center">
             {!params?.id ? (
               <button
-                className="flex-grow bg-[#85cc3c] hover:bg-[#76b535] text-white font-semibold text-lg px-6 py-2 rounded-xl border-b-4 border-r-2 border-[#6d4d3a] shadow-lg transform active:translate-y-px transition"
+                className="flex-1 bg-[#85cc3c] hover:bg-[#76b535] text-white font-semibold text-sm sm:text-base px-4 sm:px-6 py-2 rounded-xl border-b-4 border-r-2 border-[#6d4d3a] shadow-lg transform active:translate-y-px transition"
                 onClick={addLevel}
               >
                 ➕ Add Question
@@ -202,13 +231,13 @@ export default function AddQuestionForm() {
             ) : (
               <>
                 <button
-                  className="flex-grow bg-[#3c85cc] hover:bg-[#3576b5] text-white font-semibold text-lg px-6 py-2 rounded-xl border-b-4 border-r-2 border-[#3a5d6d] shadow-lg transform active:translate-y-px transition"
+                  className="flex-1 bg-[#3c85cc] hover:bg-[#3576b5] text-white font-semibold text-sm sm:text-base px-4 sm:px-6 py-2 rounded-xl border-b-4 border-r-2 border-[#3a5d6d] shadow-lg transform active:translate-y-px transition"
                   onClick={updateLevel}
                 >
                   💾 Update
                 </button>
                 <button
-                  className="flex-grow bg-[#cc3c3c] hover:bg-[#b53535] text-white font-semibold text-lg px-6 py-2 rounded-xl border-b-4 border-r-2 border-[#6d3a3a] shadow-lg transform active:translate-y-px transition"
+                  className="flex-1 bg-[#cc3c3c] hover:bg-[#b53535] text-white font-semibold text-sm sm:text-base px-4 sm:px-6 py-2 rounded-xl border-b-4 border-r-2 border-[#6d3a3a] shadow-lg transform active:translate-y-px transition"
                   onClick={handleDelete}
                 >
                   🗑️ Delete
