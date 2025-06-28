@@ -332,13 +332,13 @@ export default function Header({
         <div className="modal-overlay">
           <div className="modal-content p-4 max-w-sm mx-4 animate-bounce-in max-h-[80vh] overflow-y-auto">
             {/* Close Button */}
-            <button
+      <button
               onClick={toggleLevelsModal}
               className="absolute top-2 right-2 text-indigo-700 hover:text-indigo-900 text-xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-indigo-100 transition-colors"
               aria-label="Close levels modal"
             >
               ×
-            </button>
+      </button>
 
             <h3 className="text-responsive-lg font-bold text-center mb-3 text-indigo-900">
               🎯 Select Level
@@ -346,7 +346,7 @@ export default function Header({
 
             <div className="grid grid-cols-3 gap-2">
               {levels?.map((level, index) => (
-                <button
+      <button
                   key={index}
                   onClick={() => handleLevelSwitch(index)}
                   disabled={index > profile?.maxLevel}
@@ -360,9 +360,9 @@ export default function Header({
                   aria-label={`Select level ${index + 1}`}
                 >
                   {index + 1}
-                </button>
+      </button>
               ))}
-            </div>
+      </div>
 
             <div className="mt-3 text-center text-responsive-xs text-gray-600">
               <p>🔒 Locked levels will unlock as you progress</p>
@@ -396,12 +396,12 @@ export default function Header({
             ) : error ? (
               <div className="text-center py-4">
                 <p className="text-responsive-xs text-red-600 mb-2">{error}</p>
-                <button
+                  <button
                   onClick={fetchProfile}
                   className="btn btn-secondary text-responsive-xs"
                 >
                   Try Again
-                </button>
+                  </button>
               </div>
             ) : (
               <div className="space-y-3">

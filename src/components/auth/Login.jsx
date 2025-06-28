@@ -15,62 +15,72 @@ export default function Login() {
   const navigate = useNavigate();
 
   // Enhanced form submission with better error handling
-  const handleSubmit = useCallback(async (e) => {
-    e.preventDefault();
-    
-    // Clear previous errors
-    setError("");
-    
-    // Validation
-    if (!userName.trim() || !password.trim()) {
-      setError("Please fill in all fields");
-      return;
-    }
+  const handleSubmit = useCallback(
+    async (e) => {
+      e.preventDefault();
 
-    setIsLoading(true);
+      // Clear previous errors
+      setError("");
 
-    try {
-      const loginData = { username: userName.trim(), password };
-      const response = await api.post("/api/auth/login", loginData);
-      
-      if (response.status === 200) {
-        setUser({ token: response.data.token });
-        setUserName("");
-        setPassword("");
-        
-        const { role } = checkUserType(response?.data?.token);
-        if (role === "admin") {
-          navigate("/dashboard");
-        } else if (role === "user") {
-          navigate("/");
-        }
+      // Validation
+      if (!userName.trim() || !password.trim()) {
+        setError("Please fill in all fields");
+        return;
       }
-    } catch (err) {
-      console.error("Login error:", err);
-      setError(err.response?.data?.message || "Invalid username or password. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
-  }, [userName, password, setUser, navigate]);
+
+      setIsLoading(true);
+
+      try {
+        const loginData = { username: userName.trim(), password };
+        const response = await api.post("/api/auth/login", loginData);
+
+        if (response.status === 200) {
+          setUser({ token: response.data.token });
+          setUserName("");
+          setPassword("");
+
+          const { role } = checkUserType(response?.data?.token);
+          if (role === "admin") {
+            navigate("/dashboard");
+          } else if (role === "user") {
+            navigate("/");
+          }
+        }
+      } catch (err) {
+        console.error("Login error:", err);
+        setError(
+          err.response?.data?.message ||
+            "Invalid username or password. Please try again."
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [userName, password, setUser, navigate]
+  );
 
   // Handle input changes
-  const handleInputChange = useCallback((field, value) => {
-    if (error) setError(""); // Clear error when user starts typing
-    if (field === "username") {
-      setUserName(value);
-    } else if (field === "password") {
-      setPassword(value);
-    }
-  }, [error]);
+  const handleInputChange = useCallback(
+    (field, value) => {
+      if (error) setError(""); // Clear error when user starts typing
+      if (field === "username") {
+        setUserName(value);
+      } else if (field === "password") {
+        setPassword(value);
+      }
+    },
+    [error]
+  );
 
   return (
-    <div className="flex justify-center items-center min-h-screen w-full bg-cover bg-center bg-no-repeat bg-gradient-to-br from-blue-100 to-purple-200 font-[Patrick_Hand]"
-         style={{ backgroundImage: "url('/bg-images/notepad.png')" }}>
-      <div className="container">
-        <div className="card p-6 sm:p-8 animate-fade-in">
+    <div
+      className="h-screen w-full bg-cover bg-center bg-no-repeat flex items-center justify-center overflow-hidden"
+      style={{ backgroundImage: "url('/bg-images/notepad.png')" }}
+    >
+      <div className="w-full max-w-sm mx-4">
+        <div className="card sm:p-6 relative animate-fade-in h-[calc(100vh-2rem)] max-h-[600px] flex flex-col">
           {/* Header */}
-          <div className="text-center mb-6">
-            <div className="text-4xl mb-4">🔐</div>
+          <div className="text-center">
             <h2 className="text-responsive-xl sm:text-2xl font-bold text-purple-700">
               Welcome Back!
             </h2>
@@ -83,15 +93,26 @@ export default function Login() {
           {error && (
             <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4 animate-fade-in">
               <div className="flex items-center gap-2">
-                <svg className="w-5 h-5 text-red-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                <svg
+                  className="w-5 h-5 text-red-500 flex-shrink-0"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path
+                    fillRule="evenodd"
+                    d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                    clipRule="evenodd"
+                  />
                 </svg>
                 <span className="text-responsive-sm text-red-700">{error}</span>
               </div>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form
+            onSubmit={handleSubmit}
+            className="flex-1 flex flex-col space-y-4"
+          >
             {/* Username Field */}
             <div>
               <label className="block text-responsive-sm font-semibold mb-2 text-gray-700">
@@ -132,7 +153,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={isLoading}
-              className="btn btn-primary w-full text-responsive-base font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+              className="btn btn-primary w-full text-responsive-base font-semibold disabled:opacity-50 disabled:cursor-not-allowed mt-auto"
               onClick={() => playSound("/sounds/button-sound.mp3")}
             >
               {isLoading ? (
@@ -147,11 +168,11 @@ export default function Login() {
           </form>
 
           {/* Sign Up Link */}
-          <div className="text-center mt-6">
+          <div className="text-center mt-4">
             <p className="text-responsive-sm text-gray-600">
               Don't have an account?{" "}
-              <Link 
-                to="/signup" 
+              <Link
+                to="/signup"
                 className="text-purple-600 font-semibold hover:text-purple-700 underline transition-colors"
                 onClick={() => playSound("/sounds/button-sound.mp3")}
               >
@@ -159,13 +180,14 @@ export default function Login() {
               </Link>
             </p>
           </div>
-
           {/* Additional Info */}
-          <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <p className="text-responsive-xs text-blue-700 text-center">
-              💡 Create an account to save your progress and use hints!
-            </p>
-          </div>
+          {!error && (
+            <div className="mt-2 mb-2 p-4 bg-blue-50 rounded-lg border border-blue-200">
+              <p className="text-responsive-xs text-blue-700 text-center">
+                💡 Create an account to save your progress and use hints!
+              </p>
+            </div>
+          )}
         </div>
       </div>
     </div>
