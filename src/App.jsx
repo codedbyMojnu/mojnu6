@@ -9,8 +9,6 @@ import ApprovedTransactionList from "./components/admin/ApprovedTransactionList"
 import FakedTransactionList from "./components/admin/FakedTransactionList";
 import TransactionList from "./components/admin/TransactionList";
 import WelcomeAdminDashboard from "./components/admin/WelcomeAdminDashboard";
-import Login from "./components/auth/Login";
-import Signup from "./components/auth/Signup";
 import Home from "./components/Home";
 import AuthProvider from "./context/AuthContext";
 import LevelProvider from "./context/LevelContext";
@@ -41,8 +39,6 @@ export default function App() {
                    <Route path="faked-transactions" element={<FakedTransactionList />} />
                 </Route>
               </Route>
-              <Route path="login" element={<Login />} />
-              <Route path="signup" element={<Signup />} />
             </Routes>
           </BrowserRouter>
         </ProfileProvider>

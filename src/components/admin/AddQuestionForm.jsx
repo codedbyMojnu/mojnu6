@@ -144,20 +144,20 @@ export default function AddQuestionForm() {
           {/* Question */}
           <MarkdownEditor
             label="Question"
-            value={levelData.question}
+              value={levelData.question}
             onChange={(e) =>
               setLevelData((prev) => ({ ...prev, question: e.target.value }))
             }
             placeholder="Write the question here with Markdown support..."
             rows={2}
-          />
+            />
 
           {/* Options */}
           <div>
             <div className="flex items-center justify-between mb-2">
               <label className="block text-sm sm:text-base font-bold text-gray-800">
                 Options (Optional)
-              </label>
+            </label>
               <button
                 type="button"
                 onClick={() => {
@@ -187,8 +187,8 @@ export default function AddQuestionForm() {
                         }}
                         placeholder={`Option ${idx + 1} with Markdown support...`}
                         rows={1}
-                      />
-                    </div>
+            />
+          </div>
                     <button
                       type="button"
                       onClick={() => {

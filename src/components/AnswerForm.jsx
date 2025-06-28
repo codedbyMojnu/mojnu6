@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useState } from "react";
-import { useNavigate } from "react-router";
 import api from "../api";
 import { useAuth } from "../context/AuthContext";
 import { useLevels } from "../context/LevelContext";
@@ -8,7 +7,7 @@ import checkUserType from "../utils/checkUserType";
 import MarkdownRenderer from "./MarkdownRenderer";
 import Marker from "./Marker";
 
-export default function AnswerForm({ onAnswer, mark, levelIndex }) {
+export default function AnswerForm({ onAnswer, mark, levelIndex, showLogin }) {
   const [userAnswer, setUserAnswer] = useState("");
   const [showHints, setShowHints] = useState(false);
   const [showRequestForm, setShowRequestForm] = useState(false);
@@ -23,8 +22,6 @@ export default function AnswerForm({ onAnswer, mark, levelIndex }) {
   const { profile, setProfile } = useProfile();
   const [transactionId, setTransactionId] = useState("");
   const [selectedPackage, setSelectedPackage] = useState("");
-
-  const navigate = useNavigate();
 
   // Calculate progress percentage
   const progressPercentage =
@@ -135,7 +132,7 @@ export default function AnswerForm({ onAnswer, mark, levelIndex }) {
     setShowWaitModal(false);
 
     if (!user?.token) {
-      navigate("/login");
+      showLogin();
       return;
     }
 
@@ -151,7 +148,7 @@ export default function AnswerForm({ onAnswer, mark, levelIndex }) {
         setShowRequestForm(true);
       }
     }
-  }, [user?.token, navigate, profile, levelIndex, handleDecreaseHintPoints]);
+  }, [user?.token, showLogin, profile, levelIndex, handleDecreaseHintPoints]);
 
   // Handle skip button click
   const handleSkipClick = useCallback(() => {

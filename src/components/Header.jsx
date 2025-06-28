@@ -5,6 +5,8 @@ import { useAuth } from "../context/AuthContext";
 import { useProfile } from "../context/ProfileContext";
 import checkUserType from "../utils/checkUserType";
 import SettingsModal from "./SettingsModal";
+import LoginModal from "./auth/LoginModal";
+import SignupModal from "./auth/SignupModal";
 
 // Enhanced SVG Icons with better accessibility
 const GearIcon = () => (
@@ -77,6 +79,8 @@ export default function Header({
   const [showLevelsModal, setShowLevelsModal] = useState(false);
   const [showProfileModal, setShowProfileModal] = useState(false);
   const [showWelcomeModal, setShowWelcomeModal] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showSignupModal, setShowSignupModal] = useState(false);
   const [profileData, setProfileData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
@@ -159,8 +163,38 @@ export default function Header({
     setShowSettings(false);
     setShowLevelsModal(false);
     setShowProfileModal(false);
-    navigate("/login");
-  }, [setProfile, setLevelIndex, setExplanation, navigate]);
+    setShowLoginModal(false);
+    setShowSignupModal(false);
+  }, [setProfile, setLevelIndex, setExplanation]);
+
+  // Handle login modal
+  const handleLoginClick = useCallback(() => {
+    setShowLoginModal(true);
+    setShowSignupModal(false);
+  }, []);
+
+  // Handle signup modal
+  const handleSignupClick = useCallback(() => {
+    setShowSignupModal(true);
+    setShowLoginModal(false);
+  }, []);
+
+  // Switch between login and signup modals
+  const switchToSignup = useCallback(() => {
+    setShowLoginModal(false);
+    setShowSignupModal(true);
+  }, []);
+
+  const switchToLogin = useCallback(() => {
+    setShowSignupModal(false);
+    setShowLoginModal(true);
+  }, []);
+
+  // Close auth modals
+  const closeAuthModals = useCallback(() => {
+    setShowLoginModal(false);
+    setShowSignupModal(false);
+  }, []);
 
   // Enhanced settings toggle
   const toggleSettings = useCallback(() => {
@@ -258,7 +292,7 @@ export default function Header({
             </button>
           ) : (
             <button
-              onClick={() => navigate("/login")}
+              onClick={handleLoginClick}
               className="flex items-center gap-1 px-2 py-1 rounded-lg bg-orange-100 hover:bg-orange-200 transition-colors text-orange-700 text-responsive-xs font-semibold"
               aria-label="Login"
             >
@@ -271,10 +305,10 @@ export default function Header({
         {/* Right Section - Controls */}
         <div className="flex items-center gap-1">
           <div className="relative">
-            <button
+          <button
               className="p-1.5 rounded-lg transition-colors bg-gray-100 text-gray-500 hover:bg-gray-200 mr-3"
               aria-label="Hint points available"
-            >
+          >
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fillRule="evenodd"
@@ -282,12 +316,12 @@ export default function Header({
                   clipRule="evenodd"
                 />
               </svg>
-            </button>
+          </button>
             {profile?.hintPoints !== undefined && profile.hintPoints > 0 && (
               <div className="absolute -top-2 -right-0.25 bg-orange-100 text-orange-700 text-xs font-bold rounded-md w-5 h-5 flex items-center justify-center border border-orange-300 shadow-sm">
-                {profile.hintPoints}
-              </div>
-            )}
+              {profile.hintPoints}
+            </div>
+          )}
           </div>
 
           {/* Music Toggle */}
@@ -607,7 +641,7 @@ export default function Header({
                 <button
                   onClick={() => {
                     setShowWelcomeModal(false);
-                    navigate("/login");
+                    handleLoginClick();
                   }}
                   className="w-full bg-indigo-600 text-white py-2 px-4 rounded-lg hover:bg-indigo-700 transition-colors font-semibold text-responsive-sm"
                 >
@@ -628,6 +662,24 @@ export default function Header({
             </div>
           </div>
         </div>
+      )}
+
+      {/* Login Modal */}
+      {showLoginModal && (
+        <LoginModal
+          isOpen={showLoginModal}
+          onClose={closeAuthModals}
+          onSwitchToSignup={switchToSignup}
+        />
+      )}
+
+      {/* Signup Modal */}
+      {showSignupModal && (
+        <SignupModal
+          isOpen={showSignupModal}
+          onClose={closeAuthModals}
+          onSwitchToLogin={switchToLogin}
+        />
       )}
     </>
   );

@@ -8,6 +8,7 @@ import AnswerForm from "./AnswerForm";
 import Explanation from "./Explanation";
 import Header from "./Header";
 import WelcomeToGame from "./WelcomeToGame.jsx";
+import LoginModal from "./auth/LoginModal";
 
 export default function Home() {
   const [welcome, setWelcome] = useState(true);
@@ -21,6 +22,7 @@ export default function Home() {
   const [error, setError] = useState(null);
   const [showCompletionModal, setShowCompletionModal] = useState(false);
   const [hasInitializedLevel, setHasInitializedLevel] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   // For Passed Levels
   const [slicesLevels, setSlicesLevels] = useState([]);
@@ -186,6 +188,11 @@ export default function Home() {
     localStorage.setItem("level", JSON.stringify(0));
   }, [playRightOrWrongSound]);
 
+  // Handle login modal
+  const handleShowLogin = useCallback(() => {
+    setShowLoginModal(true);
+  }, []);
+
   // Loading state
   if (isLoading) {
     return (
@@ -265,6 +272,7 @@ export default function Home() {
                       onAnswer={handleSubmitAnswer}
                       mark={mark}
                       levelIndex={levelIndex}
+                      showLogin={handleShowLogin}
                     />
                   ) : (
                     <Explanation
@@ -325,6 +333,18 @@ export default function Home() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Login Modal */}
+      {showLoginModal && (
+        <LoginModal
+          isOpen={showLoginModal}
+          onClose={() => setShowLoginModal(false)}
+          onSwitchToSignup={() => {
+            setShowLoginModal(false);
+            // Note: Signup modal would need to be added here if needed
+          }}
+        />
       )}
     </div>
   );
