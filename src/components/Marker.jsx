@@ -1,7 +1,14 @@
 export default function Marker({ mark }) {
   return (
-    <div className="text-green-600 text-5xl mb-4 text-center mt-[-100px]">
-      {mark}
+    <div className="text-center py-8 animate-bounce-in">
+      <div className={`text-6xl sm:text-7xl font-bold ${
+        mark === "✔️" ? "text-green-600" : "text-red-600"
+      } animate-pulse-pop`}>
+        {mark}
+      </div>
+      <p className="text-responsive-sm text-gray-600 mt-2">
+        {mark === "✔️" ? "Correct! Well done!" : "Try again!"}
+      </p>
     </div>
   );
 }

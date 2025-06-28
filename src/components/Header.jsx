@@ -1,39 +1,62 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useNavigate } from "react-router";
+import api from "../api";
+import { useAuth } from "../context/AuthContext";
 import { useProfile } from "../context/ProfileContext";
 import checkUserType from "../utils/checkUserType";
-import playSound from "../utils/playSound";
 import SettingsModal from "./SettingsModal";
 
-// Placeholder SVGs for missing icons
+// Enhanced SVG Icons with better accessibility
 const GearIcon = () => (
   <svg
-    width="28"
-    height="28"
+    width="24"
+    height="24"
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
+    aria-hidden="true"
   >
     <circle cx="12" cy="12" r="3" />
-    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 8 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 8a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 8 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09c0 .43.17.84.47 1.15.3.3.72.47 1.15.47h.09a1.65 1.65 0 0 0 1.51 1z" />
+    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 8 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 8a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82-.33 1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09c0 .43.17.84.47 1.15.3.3.72.47 1.15.47h.09a1.65 1.65 0 0 0 1.51 1z" />
   </svg>
 );
 
 const LevelCompletedIcon = () => (
   <svg
-    width="28"
-    height="28"
+    width="24"
+    height="24"
     viewBox="0 0 24 24"
     fill="none"
     stroke="currentColor"
     strokeWidth="2"
     strokeLinecap="round"
     strokeLinejoin="round"
+    aria-hidden="true"
   >
     <rect x="3" y="3" width="18" height="18" rx="2" />
     <path d="M9 12l2 2l4-4" />
+  </svg>
+);
+
+const RefreshIcon = () => (
+  <svg
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+    aria-hidden="true"
+  >
+    <path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8" />
+    <path d="M21 3v5h-5" />
+    <path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16" />
+    <path d="M3 21v-5h5" />
   </svg>
 );
 
@@ -50,190 +73,403 @@ export default function Header({
   totalHintPoints,
   setExplanation,
 }) {
-  // Settings modal state
   const [showSettings, setShowSettings] = useState(false);
-  const [musicOn, setMusicOn] = useState(true);
-  const [notificationOn, setNotificationOn] = useState(true);
-  const [language, setLanguage] = useState("english");
-  const [showPastLevels, setShowPastLevels] = useState("");
-  const [isRefreshing, setIsRefreshing] = useState(false);
-  const [showNotification, setShowNotification] = useState(false);
+  const [showLevelsModal, setShowLevelsModal] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [profileData, setProfileData] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [showSuccessNotification, setShowSuccessNotification] = useState(false);
+  const [showErrorNotification, setShowErrorNotification] = useState(false);
   const [notificationMessage, setNotificationMessage] = useState("");
+  const { user } = useAuth();
+  const { profile, setProfile } = useProfile();
+  const navigate = useNavigate();
 
-  // profile data
-  const { profile, fetchProfile } = useProfile();
+  // Enhanced profile fetching with error handling
+  const fetchProfile = useCallback(async () => {
+    if (!user?.token) return;
+    
+    setIsLoading(true);
+    setError(null);
+    
+    try {
+      const { username } = checkUserType(user.token);
+      const response = await api.get(`/api/profile/${username}`, {
+        headers: { Authorization: `Bearer ${user.token}` },
+      });
+      
+      if (response.status === 200) {
+        setProfileData(response.data);
+        setProfile(response.data);
+      }
+    } catch (err) {
+      console.error("Error fetching profile:", err);
+      setError("Failed to load profile data");
+      setShowErrorNotification(true);
+      setNotificationMessage("Failed to load profile data");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user?.token, setProfile]);
 
-  // Track previous hint points to detect changes
-  const [prevHintPoints, setPrevHintPoints] = useState(0);
+  // Enhanced level switching with validation
+  const handleLevelSwitch = useCallback(async (newLevelIndex) => {
+    if (newLevelIndex < 0 || newLevelIndex >= levels?.length) {
+      setShowErrorNotification(true);
+      setNotificationMessage("Invalid level selected");
+      return;
+    }
+
+    if (newLevelIndex > profile?.maxLevel) {
+      setShowErrorNotification(true);
+      setNotificationMessage("You haven't unlocked this level yet");
+      return;
+    }
+
+    setLevelIndex(newLevelIndex);
+    setExplanation(false);
+    setShowLevelsModal(false);
+    
+    setShowSuccessNotification(true);
+    setNotificationMessage(`Switched to Level ${newLevelIndex + 1}`);
+  }, [levels?.length, profile?.maxLevel, setLevelIndex, setExplanation]);
+
+  // Enhanced logout with cleanup
+  const handleLogout = useCallback(() => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("level");
+    setProfile(null);
+    setProfileData(null);
+    setLevelIndex(0);
+    setExplanation(false);
+    setShowSettings(false);
+    setShowLevelsModal(false);
+    setShowProfileModal(false);
+    navigate("/login");
+  }, [setProfile, setLevelIndex, setExplanation, navigate]);
+
+  // Enhanced settings toggle
+  const toggleSettings = useCallback(() => {
+    setShowSettings(!showSettings);
+    setShowLevelsModal(false);
+    setShowProfileModal(false);
+  }, [showSettings]);
+
+  // Enhanced levels modal toggle
+  const toggleLevelsModal = useCallback(() => {
+    setShowLevelsModal(!showLevelsModal);
+    setShowSettings(false);
+    setShowProfileModal(false);
+  }, [showLevelsModal]);
+
+  // Enhanced profile modal toggle
+  const toggleProfileModal = useCallback(() => {
+    setShowProfileModal(!showProfileModal);
+    setShowSettings(false);
+    setShowLevelsModal(false);
+    if (!showProfileModal) {
+      fetchProfile();
+    }
+  }, [showProfileModal, fetchProfile]);
+
+  // Enhanced sound toggle with feedback
+  const toggleButtonSound = useCallback(() => {
+    setButtonSoundOn(!buttonSoundOn);
+    if (!buttonSoundOn) {
+      try {
+        const audio = new Audio("/sounds/button-sound.mp3");
+        audio.volume = 0.4;
+        audio.play().catch(error => {
+          console.warn("Sound playback failed:", error);
+        });
+      } catch (error) {
+        console.error("Error playing sound:", error);
+      }
+    }
+  }, [buttonSoundOn, setButtonSoundOn]);
+
+  // Enhanced background music toggle
+  const toggleBgMusic = useCallback(() => {
+    setBgMusicOn(!bgMusicOn);
+  }, [bgMusicOn, setBgMusicOn]);
+
+  // Auto-hide notifications
+  useEffect(() => {
+    if (showSuccessNotification) {
+      const timer = setTimeout(() => setShowSuccessNotification(false), 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showSuccessNotification]);
 
   useEffect(() => {
-    if (profile?.hintPoints !== prevHintPoints && prevHintPoints > 0) {
-      const difference = profile?.hintPoints - prevHintPoints;
-      if (difference > 0) {
-        setNotificationMessage(`🎉 +${difference} Hint Points Added!`);
-        setShowNotification(true);
-        setTimeout(() => setShowNotification(false), 3000);
-      }
+    if (showErrorNotification) {
+      const timer = setTimeout(() => setShowErrorNotification(false), 4000);
+      return () => clearTimeout(timer);
     }
-    setPrevHintPoints(profile?.hintPoints || 0);
-  }, [profile?.hintPoints, prevHintPoints]);
-
-  // Function to refresh profile data
-  const handleRefreshProfile = async () => {
-    playSound("/sounds/button-sound.mp3");
-    setIsRefreshing(true);
-
-    try {
-      if (fetchProfile) {
-        const { username } = checkUserType(localStorage.getItem("token"));
-        await fetchProfile(username);
-        console.log("Profile refreshed successfully");
-      }
-    } catch (error) {
-      console.error("Failed to refresh profile:", error);
-    } finally {
-      setIsRefreshing(false);
-    }
-  };
+  }, [showErrorNotification]);
 
   return (
-    <header className="flex justify-between items-center mb-6 gap-4 select-none">
-      {/* Notification */}
-      {showNotification && (
-        <div className="fixed top-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 animate-bounce">
-          {notificationMessage}
+    <>
+      {/* Enhanced Header */}
+      <header className="flex items-center justify-between p-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-md border border-gray-200 mb-3">
+        {/* Left Section - Level Info */}
+        <div className="flex items-center gap-2">
+          <button
+            onClick={toggleLevelsModal}
+            className="flex items-center gap-1 px-2 py-1 rounded-lg bg-blue-100 hover:bg-blue-200 transition-colors text-blue-700 text-responsive-xs font-semibold"
+            aria-label="Select level"
+          >
+            <span>🎯</span>
+            <span>Level {levelIndex + 1}</span>
+            <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clipRule="evenodd" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Center Section - User Info */}
+        <div className="flex items-center gap-2">
+          {user?.token ? (
+            <button
+              onClick={toggleProfileModal}
+              className="flex items-center gap-1 px-2 py-1 rounded-lg bg-green-100 hover:bg-green-200 transition-colors text-green-700 text-responsive-xs font-semibold"
+              aria-label="View profile"
+            >
+              <span>👤</span>
+              <span>{profile?.username || "User"}</span>
+            </button>
+          ) : (
+            <button
+              onClick={() => navigate("/login")}
+              className="flex items-center gap-1 px-2 py-1 rounded-lg bg-orange-100 hover:bg-orange-200 transition-colors text-orange-700 text-responsive-xs font-semibold"
+              aria-label="Login"
+            >
+              <span>🔐</span>
+              <span>Login</span>
+            </button>
+          )}
+        </div>
+
+        {/* Right Section - Controls */}
+        <div className="flex items-center gap-1">
+          {/* Sound Toggle */}
+          <button
+            onClick={toggleButtonSound}
+            className={`p-1.5 rounded-lg transition-colors ${
+              buttonSoundOn
+                ? "bg-green-100 text-green-700 hover:bg-green-200"
+                : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+            }`}
+            aria-label={buttonSoundOn ? "Turn off sound" : "Turn on sound"}
+          >
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              {buttonSoundOn ? (
+                <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.794L4.383 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.383l4.617-3.794a1 1 0 011.383.07zM12.293 7.293a1 1 0 011.414 0L15 8.586l1.293-1.293a1 1 0 111.414 1.414L16.414 10l1.293 1.293a1 1 0 01-1.414 1.414L15 11.414l-1.293 1.293a1 1 0 01-1.414-1.414L13.586 10l-1.293-1.293a1 1 0 010-1.414z" clipRule="evenodd" />
+              ) : (
+                <path fillRule="evenodd" d="M9.383 3.076A1 1 0 0110 4v12a1 1 0 01-1.617.794L4.383 13H2a1 1 0 01-1-1V8a1 1 0 011-1h2.383l4.617-3.794a1 1 0 011.383.07z" clipRule="evenodd" />
+              )}
+            </svg>
+          </button>
+
+          {/* Music Toggle */}
+          <button
+            onClick={toggleBgMusic}
+            className={`p-1.5 rounded-lg transition-colors ${
+              bgMusicOn
+                ? "bg-blue-100 text-blue-700 hover:bg-blue-200"
+                : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+            }`}
+            aria-label={bgMusicOn ? "Turn off music" : "Turn on music"}
+          >
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              {bgMusicOn ? (
+                <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.369 4.369 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z" />
+              ) : (
+                <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.369 4.369 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z" />
+              )}
+            </svg>
+          </button>
+
+          {/* Settings Button */}
+          <button
+            onClick={toggleSettings}
+            className="p-1.5 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
+            aria-label="Open settings"
+          >
+            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clipRule="evenodd" />
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      {/* Enhanced Notifications */}
+      {showSuccessNotification && (
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg animate-slide-in-down max-w-sm mx-4">
+          <div className="flex items-center gap-2 text-responsive-xs">
+            <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.707a1 1 0 00-1.414-1.414L9 10.172 7.707 8.879a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+            </svg>
+            <span>{notificationMessage}</span>
+          </div>
         </div>
       )}
 
-      {/* Gear Icon */}
-      <button
-        className="p-2 rounded-full bg-yellow-100 hover:bg-yellow-200 transition duration-300 shadow-md border border-yellow-400"
-        title="Settings"
-        onClick={() => {
-          playSound("/sounds/button-sound.mp3");
-          setShowSettings(true);
-        }}
-      >
-        <GearIcon />
-      </button>
+      {showErrorNotification && (
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 z-50 bg-red-500 text-white px-4 py-2 rounded-lg shadow-lg animate-slide-in-down max-w-sm mx-4">
+          <div className="flex items-center gap-2 text-responsive-xs">
+            <svg className="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+            </svg>
+            <span>{notificationMessage}</span>
+          </div>
+        </div>
+      )}
 
-      {/* Level Completed Icon */}
-      <button
-        className="p-2 rounded-full bg-green-100 hover:bg-green-200 transition duration-300 shadow-md border border-green-400"
-        title="Levels Passed"
-        onClick={() => {
-          playSound("/sounds/button-sound.mp3");
-          const slice = levels?.slice(0, (profile?.maxLevel ?? 0) + 1);
-          setSlicesLevels(slice);
-          setShowPastLevels((prev) => !prev);
-        }}
-      >
-        <LevelCompletedIcon />
-      </button>
-
-      {/* Level Name (center) */}
-      <div className="flex-1 text-center">
-        <span className="font-extrabold text-lg text-[#444] tracking-wide uppercase drop-shadow-sm">
-          Level {levelIndex + 1}
-        </span>
-      </div>
-
-      {/* Display Passed Levels */}
-      {
-        // when Past levels true
-        showPastLevels && (
-          <div className="absolute top-[80px] left-1/2 -translate-x-1/2 w-[90%] max-w-sm bg-white border-2 border-pink-400 rounded-xl p-4 shadow-lg z-50">
+      {/* Enhanced Levels Modal */}
+      {showLevelsModal && (
+        <div className="modal-overlay">
+          <div className="modal-content p-4 max-w-sm mx-4 animate-bounce-in max-h-[80vh] overflow-y-auto">
             {/* Close Button */}
             <button
-              onClick={() => setShowPastLevels(false)}
-              className="absolute top-2 right-3 text-pink-500 hover:text-pink-700 text-xl font-bold"
-              aria-label="Close"
+              onClick={toggleLevelsModal}
+              className="absolute top-2 right-2 text-indigo-700 hover:text-indigo-900 text-xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-indigo-100 transition-colors"
+              aria-label="Close levels modal"
             >
               ×
             </button>
-            <h3 className="text-center text-xl font-bold text-pink-600 mb-3">
-              🔢 Go to Level
+
+            <h3 className="text-responsive-lg font-bold text-center mb-3 text-indigo-900">
+              🎯 Select Level
             </h3>
 
-            {slicesLevels?.length > 0 ? (
-              <div className="grid grid-cols-4 gap-2 max-h-[200px] overflow-y-auto">
-                {slicesLevels.map((_, idx) => (
-                  <button
-                    key={idx}
-                    onClick={() => {
-                      playSound("/sounds/button-sound.mp3");
-                      setExplanation(false);
-                      setLevelIndex(idx);
-                      setShowPastLevels(false);
-                    }}
-                    className={`py-2 rounded-lg font-bold ${
-                      idx === levelIndex
-                        ? "bg-green-400 text-white"
-                        : "bg-pink-100 text-pink-800"
-                    } hover:bg-green-500 hover:text-white transition duration-300 text-sm`}
-                  >
-                    {idx + 1}
-                  </button>
-                ))}
+            <div className="grid grid-cols-3 gap-2">
+              {levels?.map((level, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleLevelSwitch(index)}
+                  disabled={index > profile?.maxLevel}
+                  className={`p-2 rounded-lg border-2 transition-all text-responsive-xs font-bold ${
+                    index === levelIndex
+                      ? "bg-indigo-600 text-white border-indigo-600"
+                      : index <= profile?.maxLevel
+                      ? "bg-white text-indigo-700 border-indigo-300 hover:bg-indigo-50"
+                      : "bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed"
+                  }`}
+                  aria-label={`Select level ${index + 1}`}
+                >
+                  {index + 1}
+                </button>
+              ))}
+            </div>
+
+            <div className="mt-3 text-center text-responsive-xs text-gray-600">
+              <p>🔒 Locked levels will unlock as you progress</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Enhanced Profile Modal */}
+      {showProfileModal && (
+        <div className="modal-overlay">
+          <div className="modal-content p-4 max-w-sm mx-4 animate-bounce-in">
+            {/* Close Button */}
+            <button
+              onClick={toggleProfileModal}
+              className="absolute top-2 right-2 text-indigo-700 hover:text-indigo-900 text-xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-indigo-100 transition-colors"
+              aria-label="Close profile modal"
+            >
+              ×
+            </button>
+
+            <h3 className="text-responsive-lg font-bold text-center mb-3 text-indigo-900">
+              👤 Profile
+            </h3>
+
+            {isLoading ? (
+              <div className="text-center py-4">
+                <div className="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                <p className="text-responsive-xs text-gray-600">Loading profile...</p>
+              </div>
+            ) : error ? (
+              <div className="text-center py-4">
+                <p className="text-responsive-xs text-red-600 mb-2">{error}</p>
+                <button
+                  onClick={fetchProfile}
+                  className="btn btn-secondary text-responsive-xs"
+                >
+                  Try Again
+                </button>
               </div>
             ) : (
-              <p className="text-center text-md font-bold text-black mb-3">
-                You are in Level 0
-              </p>
+              <div className="space-y-3">
+                {/* Enhanced Level Progress Bar */}
+                <div className="mb-3 px-4">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-responsive-xs font-semibold text-gray-600">
+                      Level {levelIndex + 1} of {levels?.length || 0}
+                    </span>
+                    <span className="text-responsive-xs font-semibold text-green-600">
+                      {levels?.length > 0 ? Math.round(((levelIndex + 1) / levels.length) * 100) : 0}% Complete
+                    </span>
+                  </div>
+                  
+                  {/* Progress Bar Container */}
+                  <div className="progress-bar">
+                    {/* Progress Fill */}
+                    <div 
+                      className="progress-fill animate-progress-fill"
+                      style={{ width: `${levels?.length > 0 ? ((levelIndex + 1) / levels.length) * 100 : 0}%` }}
+                    ></div>
+                  </div>
+                  
+                  {/* Progress Stats */}
+                  <div className="flex justify-between items-center mt-1 text-responsive-xs text-gray-500">
+                    <span>🎯 Current: Level {levelIndex + 1}</span>
+                    <span>🏆 Highest: Level {(profileData?.maxLevel || 0) + 1}</span>
+                  </div>
+                </div>
+
+                <div className="bg-indigo-50 rounded-lg p-3">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-responsive-xs font-semibold text-indigo-800">Username:</span>
+                    <span className="text-responsive-xs text-indigo-700">{profileData?.username}</span>
+                  </div>
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-responsive-xs font-semibold text-indigo-800">Max Level:</span>
+                    <span className="text-responsive-xs text-indigo-700">{profileData?.maxLevel + 1}</span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-responsive-xs font-semibold text-indigo-800">Hint Points:</span>
+                    <span className="text-responsive-xs text-indigo-700">{profileData?.hintPoints || 0}</span>
+                  </div>
+                </div>
+
+                <button
+                  onClick={handleLogout}
+                  className="btn btn-secondary w-full text-responsive-xs"
+                >
+                  🚪 Logout
+                </button>
+              </div>
             )}
           </div>
-        )
-      }
-
-      {/* Hints Point Icon (display only) */}
-      <div className="flex items-center gap-2">
-        <div className="relative flex items-center gap-2">
-          {/* Total Hints Point */}
-          <button
-            onClick={handleRefreshProfile}
-            title="Refresh Hint Points"
-            className={`w-15 h-15 flex items-center justify-center hover:scale-110 transition-transform ${
-              isRefreshing ? "animate-spin" : ""
-            }`}
-            aria-label="Refresh Hint Points"
-            disabled={isRefreshing}
-          >
-            <img
-              src="/icons/hint.png"
-              alt="Hint Icon"
-              className={`w-15 h-15 ${isRefreshing ? "opacity-50" : ""}`}
-            />
-          </button>
-
-          {/* Hint Count */}
-          <span className="text-xl font-bold text-[#444] mt-[-20px] ml-[-28px] select-none">
-            ×{profile?.hintPoints}
-          </span>
-
-          {/* Refresh indicator */}
-          {isRefreshing && (
-            <div className="absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full animate-pulse"></div>
-          )}
         </div>
-      </div>
+      )}
 
-      {/* Settings Modal Overlay */}
+      {/* Settings Modal */}
       {showSettings && (
         <SettingsModal
-          onClose={() => setShowSettings(false)}
-          bgMusicOn={bgMusicOn}
-          setBgMusicOn={setBgMusicOn}
+          onClose={toggleSettings}
           buttonSoundOn={buttonSoundOn}
           setButtonSoundOn={setButtonSoundOn}
-          musicOn={musicOn}
-          setMusicOn={setMusicOn}
-          notificationOn={notificationOn}
-          setNotificationOn={setNotificationOn}
-          totalHintPoints={totalHintPoints}
-          language={language}
-          setLanguage={setLanguage}
+          bgMusicOn={bgMusicOn}
+          setBgMusicOn={setBgMusicOn}
+          onLogout={handleLogout}
         />
       )}
-    </header>
+    </>
   );
 }

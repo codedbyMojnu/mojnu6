@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useAuth } from "../../context/AuthContext";
 import checkUserType from "../../utils/checkUserType";
@@ -8,99 +8,166 @@ import api from "./../../api/index";
 export default function Login() {
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
   const { setUser } = useAuth();
 
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  // Enhanced form submission with better error handling
+  const handleSubmit = useCallback(async (e) => {
     e.preventDefault();
-    const loginData = { username: userName, password };
-    if (userName.trim() && password.trim()) {
-      async function handleLogin() {
-        try {
-          const response = await api.post("/api/auth/login", loginData);
-          if (response.status === 200) {
-            setUser({ token: response.data.token });
-            setUserName("");
-            setPassword("");
-            const { role } = checkUserType(response?.data?.token);
-            if (role === "admin") {
-              navigate("/dashboard");
-            }
-            if (role === "user") {
-              navigate("/");
-            }
-          } else {
-            console.log("No match password and username");
-          }
-        } catch (err) {
-          console.log(err.message);
+    
+    // Clear previous errors
+    setError("");
+    
+    // Validation
+    if (!userName.trim() || !password.trim()) {
+      setError("Please fill in all fields");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      const loginData = { username: userName.trim(), password };
+      const response = await api.post("/api/auth/login", loginData);
+      
+      if (response.status === 200) {
+        setUser({ token: response.data.token });
+        setUserName("");
+        setPassword("");
+        
+        const { role } = checkUserType(response?.data?.token);
+        if (role === "admin") {
+          navigate("/dashboard");
+        } else if (role === "user") {
+          navigate("/");
         }
       }
-      handleLogin();
+    } catch (err) {
+      console.error("Login error:", err);
+      setError(err.response?.data?.message || "Invalid username or password. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
-  };
+  }, [userName, password, setUser, navigate]);
+
+  // Handle input changes
+  const handleInputChange = useCallback((field, value) => {
+    if (error) setError(""); // Clear error when user starts typing
+    if (field === "username") {
+      setUserName(value);
+    } else if (field === "password") {
+      setPassword(value);
+    }
+  }, [error]);
 
   return (
-    <div
-      className="flex justify-center items-center min-h-screen w-full bg-cover bg-center bg-no-repeat bg-gradient-to-br from-blue-100 to-purple-200 font-[Patrick_Hand]"
-      style={{
-        backgroundImage: "url('/bg-images/notepad.png')",
-      }}
-    >
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white p-8 rounded-2xl shadow-xl w-full max-w-sm space-y-5 border-[3px] border-[#a17358]"
-      >
-        <h2 className="text-2xl font-bold text-center text-purple-700">
-          Login
-        </h2>
+    <div className="flex justify-center items-center min-h-screen w-full bg-cover bg-center bg-no-repeat bg-gradient-to-br from-blue-100 to-purple-200 font-[Patrick_Hand]"
+         style={{ backgroundImage: "url('/bg-images/notepad.png')" }}>
+      <div className="container">
+        <div className="card p-6 sm:p-8 animate-fade-in">
+          {/* Header */}
+          <div className="text-center mb-6">
+            <div className="text-4xl mb-4">🔐</div>
+            <h2 className="text-responsive-xl sm:text-2xl font-bold text-purple-700">
+              Welcome Back!
+            </h2>
+            <p className="text-responsive-sm text-gray-600 mt-2">
+              Sign in to continue your puzzle adventure
+            </p>
+          </div>
 
-        <div>
-          <label className="block text-sm mb-1">Give a username:</label>
-          <input
-            name="username"
-            value={userName}
-            onChange={(e) => setUserName(e.target.value)}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
-            placeholder="rahim121"
-            type="text"
-          />
-          {/* {errors.email && (
-            <p className="text-red-500 text-sm mt-1">{errors.email}</p>
-          )} */}
+          {/* Error Display */}
+          {error && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-4 animate-fade-in">
+              <div className="flex items-center gap-2">
+                <svg className="w-5 h-5 text-red-500 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                </svg>
+                <span className="text-responsive-sm text-red-700">{error}</span>
+              </div>
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Username Field */}
+            <div>
+              <label className="block text-responsive-sm font-semibold mb-2 text-gray-700">
+                Username
+              </label>
+              <input
+                name="username"
+                value={userName}
+                onChange={(e) => handleInputChange("username", e.target.value)}
+                className="input"
+                placeholder="Enter your username"
+                type="text"
+                disabled={isLoading}
+                aria-label="Username"
+                required
+              />
+            </div>
+
+            {/* Password Field */}
+            <div>
+              <label className="block text-responsive-sm font-semibold mb-2 text-gray-700">
+                Password
+              </label>
+              <input
+                name="password"
+                value={password}
+                onChange={(e) => handleInputChange("password", e.target.value)}
+                className="input"
+                placeholder="Enter your password"
+                type="password"
+                disabled={isLoading}
+                aria-label="Password"
+                required
+              />
+            </div>
+
+            {/* Submit Button */}
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="btn btn-primary w-full text-responsive-base font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={() => playSound("/sounds/button-sound.mp3")}
+            >
+              {isLoading ? (
+                <div className="flex items-center justify-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Signing In...
+                </div>
+              ) : (
+                "Sign In"
+              )}
+            </button>
+          </form>
+
+          {/* Sign Up Link */}
+          <div className="text-center mt-6">
+            <p className="text-responsive-sm text-gray-600">
+              Don't have an account?{" "}
+              <Link 
+                to="/signup" 
+                className="text-purple-600 font-semibold hover:text-purple-700 underline transition-colors"
+                onClick={() => playSound("/sounds/button-sound.mp3")}
+              >
+                Create Account
+              </Link>
+            </p>
+          </div>
+
+          {/* Additional Info */}
+          <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+            <p className="text-responsive-xs text-blue-700 text-center">
+              💡 Create an account to save your progress and use hints!
+            </p>
+          </div>
         </div>
-
-        <div>
-          <label className="block text-sm mb-1">Password</label>
-          <input
-            name="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-400"
-            placeholder="*******"
-            type="password"
-          />
-          {/* {errors.password && (
-            <p className="text-red-500 text-sm mt-1">{errors.password}</p>
-          )} */}
-        </div>
-
-        <button
-          onClick={() => playSound("/sounds/button-sound.mp3")}
-          type="submit"
-          className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 rounded-lg transition"
-        >
-          Login
-        </button>
-
-        <p className="text-sm text-center text-gray-500">
-          Have You Already An Acount?{" "}
-          <Link to="/signup" className="text-purple-600 font-medium">
-            Signup
-          </Link>
-        </p>
-      </form>
+      </div>
     </div>
   );
 }
