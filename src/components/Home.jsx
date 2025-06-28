@@ -20,7 +20,8 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   const [showCompletionModal, setShowCompletionModal] = useState(false);
-  
+  const [hasInitializedLevel, setHasInitializedLevel] = useState(false);
+
   // For Passed Levels
   const [slicesLevels, setSlicesLevels] = useState([]);
   const bgMusicRef = useRef();
@@ -32,7 +33,7 @@ export default function Home() {
   const fetchLevels = useCallback(async () => {
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const response = await api.get("/api/levels");
       if (response.status === 200) {
@@ -42,7 +43,9 @@ export default function Home() {
       }
     } catch (err) {
       console.error("Error fetching levels:", err);
-      setError("Failed to load game levels. Please check your connection and try again.");
+      setError(
+        "Failed to load game levels. Please check your connection and try again."
+      );
     } finally {
       setIsLoading(false);
     }
@@ -59,15 +62,15 @@ export default function Home() {
         const bg = new Audio("/sounds/bg-music.mp3");
         bg.loop = true;
         bg.volume = 0.15;
-        
+
         const playPromise = bg.play();
         if (playPromise !== undefined) {
-          playPromise.catch(error => {
+          playPromise.catch((error) => {
             console.warn("Background music autoplay failed:", error);
             setBgMusicOn(false);
           });
         }
-        
+
         bgMusicRef.current = bg;
       } catch (error) {
         console.error("Error setting up background music:", error);
@@ -83,44 +86,48 @@ export default function Home() {
     };
   }, [bgMusicOn]);
 
-  // Set user's max level on first load
+  // Set user's max level on first load only
   useEffect(() => {
-    if (levelIndex === 0 && profile?.maxLevel > 0) {
+    if (!hasInitializedLevel && profile?.maxLevel > 0) {
       setLevelIndex(profile.maxLevel);
       setMaxLevel(profile.maxLevel);
+      setHasInitializedLevel(true);
     }
-  }, [profile?.maxLevel, levelIndex]);
+  }, [profile?.maxLevel, hasInitializedLevel]);
 
   // Update max level with error handling
-  const updateMaxLevel = useCallback(async (level) => {
-    if (!user?.token || !profile?.username) return;
-    
-    try {
-      const response = await api.patch(
-        `/api/profile/${profile.username}`,
-        { maxLevel: level },
-        {
-          headers: {
-            Authorization: `Bearer ${user.token}`,
-          },
+  const updateMaxLevel = useCallback(
+    async (level) => {
+      if (!user?.token || !profile?.username) return;
+
+      try {
+        const response = await api.patch(
+          `/api/profile/${profile.username}`,
+          { maxLevel: level },
+          {
+            headers: {
+              Authorization: `Bearer ${user.token}`,
+            },
+          }
+        );
+
+        if (response?.status === 200) {
+          setLevelIndex(response?.data?.profile?.maxLevel);
+          setMaxLevel(response?.data?.profile?.maxLevel);
         }
-      );
-      
-      if (response?.status === 200) {
-        setLevelIndex(response?.data?.profile?.maxLevel);
-        setMaxLevel(response?.data?.profile?.maxLevel);
+      } catch (error) {
+        console.error("Failed to update max level:", error);
       }
-    } catch (error) {
-      console.error("Failed to update max level:", error);
-    }
-  }, [user?.token, profile?.username]);
+    },
+    [user?.token, profile?.username]
+  );
 
   // Enhanced sound playing with error handling
   const playRightOrWrongSound = useCallback((src) => {
     try {
       const audio = new Audio(src);
       audio.volume = 0.4;
-      audio.play().catch(error => {
+      audio.play().catch((error) => {
         console.warn("Sound playback failed:", error);
       });
     } catch (error) {
@@ -129,34 +136,37 @@ export default function Home() {
   }, []);
 
   // Enhanced answer submission with better feedback
-  const handleSubmitAnswer = useCallback((userAnswer, level) => {
-    if (level.answer == userAnswer) {
-      playRightOrWrongSound("/sounds/right.mp3");
-      setMark("✔️");
+  const handleSubmitAnswer = useCallback(
+    (userAnswer, level) => {
+      if (level.answer == userAnswer) {
+        playRightOrWrongSound("/sounds/right.mp3");
+        setMark("✔️");
 
-      // Update max level if user completed a new level
-      if (levelIndex > maxLevel) {
-        updateMaxLevel(levelIndex);
+        // Update max level if user completed a new level
+        if (levelIndex > maxLevel) {
+          updateMaxLevel(levelIndex);
+        }
+
+        setTimeout(() => {
+          setExplanation(true);
+          setMark("");
+        }, 2000);
+      } else {
+        playRightOrWrongSound("/sounds/wrong.mp3");
+        setMark("❌");
+        setTimeout(() => {
+          setMark("");
+        }, 2000);
       }
-      
-      setTimeout(() => {
-        setExplanation(true);
-        setMark("");
-      }, 2000);
-    } else {
-      playRightOrWrongSound("/sounds/wrong.mp3");
-      setMark("❌");
-      setTimeout(() => {
-        setMark("");
-      }, 2000);
-    }
-  }, [levelIndex, maxLevel, playRightOrWrongSound, updateMaxLevel]);
+    },
+    [levelIndex, maxLevel, playRightOrWrongSound, updateMaxLevel]
+  );
 
   // Enhanced next level handling
   const handleExplationNextButtonClick = useCallback(() => {
     playSound("/sounds/button-sound.mp3");
     setExplanation(false);
-    
+
     const nextLevel = levelIndex + 1;
     if (nextLevel >= levels?.length) {
       setShowCompletionModal(true);
@@ -179,12 +189,18 @@ export default function Home() {
   // Loading state
   if (isLoading) {
     return (
-      <div className="h-screen w-full bg-cover bg-center bg-no-repeat flex items-center justify-center"
-           style={{ backgroundImage: "url('/bg-images/notepad.png')" }}>
+      <div
+        className="h-screen w-full bg-cover bg-center bg-no-repeat flex items-center justify-center"
+        style={{ backgroundImage: "url('/bg-images/notepad.png')" }}
+      >
         <div className="card p-8 text-center animate-fade-in max-w-sm mx-4">
           <div className="w-16 h-16 border-4 border-primary-green border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <h2 className="text-responsive-xl font-bold text-gray-700 mb-2">Loading Game...</h2>
-          <p className="text-responsive-sm text-gray-500">Preparing your puzzle adventure</p>
+          <h2 className="text-responsive-xl font-bold text-gray-700 mb-2">
+            Loading Game...
+          </h2>
+          <p className="text-responsive-sm text-gray-500">
+            Preparing your puzzle adventure
+          </p>
         </div>
       </div>
     );
@@ -193,16 +209,17 @@ export default function Home() {
   // Error state
   if (error) {
     return (
-      <div className="h-screen w-full bg-cover bg-center bg-no-repeat flex items-center justify-center"
-           style={{ backgroundImage: "url('/bg-images/notepad.png')" }}>
+      <div
+        className="h-screen w-full bg-cover bg-center bg-no-repeat flex items-center justify-center"
+        style={{ backgroundImage: "url('/bg-images/notepad.png')" }}
+      >
         <div className="card p-8 text-center animate-fade-in max-w-sm mx-4">
           <div className="text-6xl mb-4">⚠️</div>
-          <h2 className="text-responsive-xl font-bold text-red-600 mb-4">Oops! Something went wrong</h2>
+          <h2 className="text-responsive-xl font-bold text-red-600 mb-4">
+            Oops! Something went wrong
+          </h2>
           <p className="text-responsive-sm text-gray-600 mb-6">{error}</p>
-          <button 
-            onClick={fetchLevels}
-            className="btn btn-primary w-full"
-          >
+          <button onClick={fetchLevels} className="btn btn-primary w-full">
             🔄 Try Again
           </button>
         </div>
@@ -211,8 +228,10 @@ export default function Home() {
   }
 
   return (
-    <div className="h-screen w-full bg-cover bg-center bg-no-repeat flex items-center justify-center overflow-hidden"
-         style={{ backgroundImage: "url('/bg-images/notepad.png')" }}>
+    <div
+      className="h-screen w-full bg-cover bg-center bg-no-repeat flex items-center justify-center overflow-hidden"
+      style={{ backgroundImage: "url('/bg-images/notepad.png')" }}
+    >
       <div className="w-full max-w-sm mx-4">
         <div className="card p-4 sm:p-6 relative animate-fade-in h-[calc(100vh-2rem)] max-h-[600px] flex flex-col">
           <Header
@@ -260,7 +279,8 @@ export default function Home() {
                       All Questions Completed!
                     </h2>
                     <p className="text-responsive-base text-gray-700 mb-6">
-                      Congratulations! You've solved all {levels?.length} puzzles! 🧠🔥
+                      Congratulations! You've solved all {levels?.length}{" "}
+                      puzzles! 🧠🔥
                     </p>
                     <button
                       onClick={handleRestart}
