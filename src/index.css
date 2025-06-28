@@ -440,3 +440,497 @@ body {
     --gray-900: #f9fafb;
   }
 }
+
+/* ===== MARKDOWN EDITOR STYLES ===== */
+.markdown-editor .prose {
+  font-family: 'Patrick Hand', cursive;
+  color: var(--gray-800);
+}
+
+.markdown-editor .prose h1,
+.markdown-editor .prose h2,
+.markdown-editor .prose h3,
+.markdown-editor .prose h4,
+.markdown-editor .prose h5,
+.markdown-editor .prose h6 {
+  font-family: 'Patrick Hand', cursive;
+  font-weight: bold;
+  color: var(--gray-800);
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.markdown-editor .prose h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+.markdown-editor .prose h2 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+.markdown-editor .prose h3 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+.markdown-editor .prose p {
+  margin-bottom: 1em;
+  line-height: 1.6;
+}
+
+.markdown-editor .prose ul,
+.markdown-editor .prose ol {
+  margin-bottom: 1em;
+  padding-left: 1.5em;
+}
+
+.markdown-editor .prose li {
+  margin-bottom: 0.25em;
+}
+
+.markdown-editor .prose blockquote {
+  border-left: 4px solid var(--primary-green);
+  padding-left: 1em;
+  margin: 1em 0;
+  font-style: italic;
+  color: var(--gray-600);
+}
+
+.markdown-editor .prose code {
+  background-color: var(--gray-100);
+  padding: 0.125em 0.25em;
+  border-radius: 0.25em;
+  font-family: 'Courier New', monospace;
+  font-size: 0.875em;
+}
+
+.markdown-editor .prose pre {
+  background-color: var(--gray-900);
+  color: var(--gray-100);
+  padding: 1em;
+  border-radius: 0.5em;
+  overflow-x: auto;
+  margin: 1em 0;
+}
+
+.markdown-editor .prose pre code {
+  background-color: transparent;
+  padding: 0;
+  color: inherit;
+}
+
+.markdown-editor .prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+}
+
+.markdown-editor .prose th,
+.markdown-editor .prose td {
+  border: 1px solid var(--gray-300);
+  padding: 0.5em;
+  text-align: left;
+}
+
+.markdown-editor .prose th {
+  background-color: var(--gray-100);
+  font-weight: bold;
+}
+
+.markdown-editor .prose a {
+  color: var(--accent-blue);
+  text-decoration: underline;
+}
+
+.markdown-editor .prose a:hover {
+  color: var(--accent-purple);
+}
+
+.markdown-editor .prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5em;
+  margin: 1em 0;
+}
+
+.markdown-editor .prose strong {
+  font-weight: bold;
+  color: var(--gray-900);
+}
+
+.markdown-editor .prose em {
+  font-style: italic;
+  color: var(--gray-700);
+}
+
+/* Math rendering styles */
+.markdown-editor .prose .math {
+  font-family: 'KaTeX_Math', serif;
+}
+
+.markdown-editor .prose .math-display {
+  text-align: center;
+  margin: 1em 0;
+}
+
+/* ===== MARKDOWN RENDERER STYLES ===== */
+.markdown-renderer .prose {
+  font-family: 'Patrick Hand', cursive;
+  color: var(--gray-800);
+}
+
+.markdown-renderer .prose h1,
+.markdown-renderer .prose h2,
+.markdown-renderer .prose h3,
+.markdown-renderer .prose h4,
+.markdown-renderer .prose h5,
+.markdown-renderer .prose h6 {
+  font-family: 'Patrick Hand', cursive;
+  font-weight: bold;
+  color: var(--gray-800);
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.markdown-renderer .prose h1 {
+  font-size: 1.875rem;
+  line-height: 2.25rem;
+}
+
+.markdown-renderer .prose h2 {
+  font-size: 1.5rem;
+  line-height: 2rem;
+}
+
+.markdown-renderer .prose h3 {
+  font-size: 1.25rem;
+  line-height: 1.75rem;
+}
+
+.markdown-renderer .prose p {
+  margin-bottom: 1em;
+  line-height: 1.6;
+}
+
+.markdown-renderer .prose ul,
+.markdown-renderer .prose ol {
+  margin-bottom: 1em;
+  padding-left: 1.5em;
+}
+
+.markdown-renderer .prose li {
+  margin-bottom: 0.25em;
+}
+
+.markdown-renderer .prose blockquote {
+  border-left: 4px solid var(--primary-green);
+  padding-left: 1em;
+  margin: 1em 0;
+  font-style: italic;
+  color: var(--gray-600);
+}
+
+.markdown-renderer .prose code {
+  background-color: var(--gray-100);
+  padding: 0.125em 0.25em;
+  border-radius: 0.25em;
+  font-family: 'Courier New', monospace;
+  font-size: 0.875em;
+}
+
+.markdown-renderer .prose pre {
+  background-color: var(--gray-900);
+  color: var(--gray-100);
+  padding: 1em;
+  border-radius: 0.5em;
+  overflow-x: auto;
+  margin: 1em 0;
+}
+
+.markdown-renderer .prose pre code {
+  background-color: transparent;
+  padding: 0;
+  color: inherit;
+}
+
+.markdown-renderer .prose table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+}
+
+.markdown-renderer .prose th,
+.markdown-renderer .prose td {
+  border: 1px solid var(--gray-300);
+  padding: 0.5em;
+  text-align: left;
+}
+
+.markdown-renderer .prose th {
+  background-color: var(--gray-100);
+  font-weight: bold;
+}
+
+.markdown-renderer .prose a {
+  color: var(--accent-blue);
+  text-decoration: underline;
+}
+
+.markdown-renderer .prose a:hover {
+  color: var(--accent-purple);
+}
+
+.markdown-renderer .prose img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 0.5em;
+  margin: 1em 0;
+}
+
+.markdown-renderer .prose strong {
+  font-weight: bold;
+  color: var(--gray-900);
+}
+
+.markdown-renderer .prose em {
+  font-style: italic;
+  color: var(--gray-700);
+}
+
+.markdown-renderer .prose .math {
+  font-family: 'KaTeX_Math', serif;
+}
+
+.markdown-renderer .prose .math-display {
+  text-align: center;
+  margin: 1em 0;
+}
+
+/* ===== ANSWER FORM & EXPLANATION MARKDOWN STYLES ===== */
+/* Question display in AnswerForm */
+.answer-form-question .prose {
+  font-family: 'Patrick Hand', cursive;
+  color: var(--gray-800);
+}
+
+.answer-form-question .prose h1,
+.answer-form-question .prose h2,
+.answer-form-question .prose h3,
+.answer-form-question .prose h4,
+.answer-form-question .prose h5,
+.answer-form-question .prose h6 {
+  font-family: 'Patrick Hand', cursive;
+  font-weight: bold;
+  color: var(--gray-800);
+  margin-top: 0.5em;
+  margin-bottom: 0.25em;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.answer-form-question .prose p {
+  margin-bottom: 0.5em;
+  line-height: 1.5;
+  font-size: 0.9rem;
+}
+
+.answer-form-question .prose code {
+  background-color: var(--yellow-100);
+  padding: 0.125em 0.25em;
+  border-radius: 0.25em;
+  font-family: 'Courier New', monospace;
+  font-size: 0.8em;
+  color: var(--gray-800);
+}
+
+.answer-form-question .prose pre {
+  background-color: var(--gray-900);
+  color: var(--gray-100);
+  padding: 0.5em;
+  border-radius: 0.25em;
+  overflow-x: auto;
+  margin: 0.5em 0;
+  font-size: 0.75em;
+}
+
+/* Options in AnswerForm */
+.answer-form-options .prose {
+  font-family: 'Patrick Hand', cursive;
+  color: var(--gray-800);
+}
+
+.answer-form-options .prose h1,
+.answer-form-options .prose h2,
+.answer-form-options .prose h3,
+.answer-form-options .prose h4,
+.answer-form-options .prose h5,
+.answer-form-options .prose h6 {
+  font-family: 'Patrick Hand', cursive;
+  font-weight: bold;
+  color: var(--gray-800);
+  margin-top: 0.25em;
+  margin-bottom: 0.125em;
+  font-size: 0.9rem;
+  line-height: 1.3;
+}
+
+.answer-form-options .prose p {
+  margin-bottom: 0.25em;
+  line-height: 1.4;
+  font-size: 0.85rem;
+}
+
+.answer-form-options .prose code {
+  background-color: var(--blue-50);
+  padding: 0.1em 0.2em;
+  border-radius: 0.2em;
+  font-family: 'Courier New', monospace;
+  font-size: 0.75em;
+  color: var(--blue-800);
+}
+
+.answer-form-options .prose pre {
+  background-color: var(--gray-900);
+  color: var(--gray-100);
+  padding: 0.4em;
+  border-radius: 0.2em;
+  overflow-x: auto;
+  margin: 0.25em 0;
+  font-size: 0.7em;
+}
+
+/* Hints in AnswerForm */
+.answer-form-hints .prose {
+  font-family: 'Patrick Hand', cursive;
+  color: var(--indigo-800);
+}
+
+.answer-form-hints .prose h1,
+.answer-form-hints .prose h2,
+.answer-form-hints .prose h3,
+.answer-form-hints .prose h4,
+.answer-form-hints .prose h5,
+.answer-form-hints .prose h6 {
+  font-family: 'Patrick Hand', cursive;
+  font-weight: bold;
+  color: var(--indigo-800);
+  margin-top: 0.25em;
+  margin-bottom: 0.125em;
+  font-size: 0.9rem;
+  line-height: 1.3;
+}
+
+.answer-form-hints .prose p {
+  margin-bottom: 0.25em;
+  line-height: 1.4;
+  font-size: 0.85rem;
+}
+
+.answer-form-hints .prose code {
+  background-color: var(--yellow-100);
+  padding: 0.1em 0.2em;
+  border-radius: 0.2em;
+  font-family: 'Courier New', monospace;
+  font-size: 0.75em;
+  color: var(--yellow-800);
+}
+
+.answer-form-hints .prose pre {
+  background-color: var(--gray-900);
+  color: var(--gray-100);
+  padding: 0.4em;
+  border-radius: 0.2em;
+  overflow-x: auto;
+  margin: 0.25em 0;
+  font-size: 0.7em;
+}
+
+/* Explanation component */
+.explanation-content .prose {
+  font-family: 'Patrick Hand', cursive;
+  color: var(--gray-800);
+}
+
+.explanation-content .prose h1,
+.explanation-content .prose h2,
+.explanation-content .prose h3,
+.explanation-content .prose h4,
+.explanation-content .prose h5,
+.explanation-content .prose h6 {
+  font-family: 'Patrick Hand', cursive;
+  font-weight: bold;
+  color: var(--blue-800);
+  margin-top: 0.5em;
+  margin-bottom: 0.25em;
+  font-size: 1rem;
+  line-height: 1.4;
+}
+
+.explanation-content .prose p {
+  margin-bottom: 0.5em;
+  line-height: 1.5;
+  font-size: 0.9rem;
+}
+
+.explanation-content .prose code {
+  background-color: var(--blue-100);
+  padding: 0.125em 0.25em;
+  border-radius: 0.25em;
+  font-family: 'Courier New', monospace;
+  font-size: 0.8em;
+  color: var(--blue-800);
+}
+
+.explanation-content .prose pre {
+  background-color: var(--gray-900);
+  color: var(--gray-100);
+  padding: 0.5em;
+  border-radius: 0.25em;
+  overflow-x: auto;
+  margin: 0.5em 0;
+  font-size: 0.75em;
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 640px) {
+  .answer-form-question .prose h1,
+  .answer-form-question .prose h2,
+  .answer-form-question .prose h3,
+  .answer-form-question .prose h4,
+  .answer-form-question .prose h5,
+  .answer-form-question .prose h6 {
+    font-size: 0.9rem;
+  }
+  
+  .answer-form-question .prose p {
+    font-size: 0.85rem;
+  }
+  
+  .answer-form-options .prose h1,
+  .answer-form-options .prose h2,
+  .answer-form-options .prose h3,
+  .answer-form-options .prose h4,
+  .answer-form-options .prose h5,
+  .answer-form-options .prose h6 {
+    font-size: 0.8rem;
+  }
+  
+  .answer-form-options .prose p {
+    font-size: 0.8rem;
+  }
+  
+  .explanation-content .prose h1,
+  .explanation-content .prose h2,
+  .explanation-content .prose h3,
+  .explanation-content .prose h4,
+  .explanation-content .prose h5,
+  .explanation-content .prose h6 {
+    font-size: 0.9rem;
+  }
+  
+  .explanation-content .prose p {
+    font-size: 0.85rem;
+  }
+}

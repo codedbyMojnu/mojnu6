@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router";
 import api from "../../api";
 import { useAuth } from "../../context/AuthContext";
 import { useLevels } from "../../context/LevelContext";
+import MarkdownEditor from "./MarkdownEditor";
 
 export default function AddQuestionForm() {
   const [levelData, setLevelData] = useState({
@@ -10,7 +11,7 @@ export default function AddQuestionForm() {
     answer: "",
     explanation: "",
     hint: "",
-    options: ["", "", "", ""], // default 4 options
+    options: [], // Start with empty array - options are optional
   });
   const { user } = useAuth();
   const { levels, setLevels } = useLevels();
@@ -27,11 +28,8 @@ export default function AddQuestionForm() {
           answer: currentLevel.answer,
           explanation: currentLevel.explanation,
           hint: currentLevel.hint,
-          // Ensure options array is always valid
-          options:
-            currentLevel?.options?.length > 0
-              ? currentLevel?.options
-              : ["", "", "", ""],
+          // Use existing options or empty array if none exist
+          options: currentLevel?.options || [],
         });
       }
     } else {
@@ -41,15 +39,10 @@ export default function AddQuestionForm() {
         answer: "",
         explanation: "",
         hint: "",
-        options: ["", "", "", ""],
+        options: [], // Reset to empty array
       });
     }
   }, [params?.id, levels]);
-
-  function handleInputChange(e) {
-    const { name, value } = e.target;
-    setLevelData((prev) => ({ ...prev, [name]: value }));
-  }
 
   function handleOptionChange(e, index) {
     const newOptions = [...levelData.options];
@@ -63,7 +56,7 @@ export default function AddQuestionForm() {
       answer: "",
       explanation: "",
       hint: "",
-      options: ["", "", "", ""],
+      options: [],
     });
     navigate(path);
   }
@@ -86,7 +79,13 @@ export default function AddQuestionForm() {
 
   async function addLevel() {
     try {
-      const response = await api.post("/api/levels", levelData, {
+      // Filter out empty options before sending
+      const dataToSend = {
+        ...levelData,
+        options: levelData.options.filter(option => option.trim() !== "")
+      };
+      
+      const response = await api.post("/api/levels", dataToSend, {
         headers: { Authorization: `Bearer ${user?.token}` },
       });
       if (response.status === 201) {
@@ -101,7 +100,13 @@ export default function AddQuestionForm() {
 
   async function updateLevel() {
     try {
-      const response = await api.put(`/api/levels/${params?.id}`, levelData, {
+      // Filter out empty options before sending
+      const dataToSend = {
+        ...levelData,
+        options: levelData.options.filter(option => option.trim() !== "")
+      };
+      
+      const response = await api.put(`/api/levels/${params?.id}`, dataToSend, {
         headers: { Authorization: `Bearer ${user?.token}` },
       });
       if (response.status === 200) {
@@ -116,10 +121,6 @@ export default function AddQuestionForm() {
       console.error("Failed to update level:", error);
     }
   }
-
-  // Common input styles for a consistent look
-  const inputClassName =
-    "w-full px-3 py-2 bg-transparent border-b-2 border-dashed border-gray-500 text-base placeholder-gray-600 rounded-t-md focus:outline-none focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 transition";
 
   return (
     <div
@@ -141,83 +142,114 @@ export default function AddQuestionForm() {
           </div>
 
           {/* Question */}
-          <div>
-            <label className="block text-sm sm:text-base font-bold mb-1 text-gray-800">
-              Question
-            </label>
-            <input
-              type="text"
-              name="question"
-              value={levelData.question}
-              onChange={handleInputChange}
-              placeholder="Write the question here"
-              className={inputClassName}
-            />
-          </div>
+          <MarkdownEditor
+            label="Question"
+            value={levelData.question}
+            onChange={(e) =>
+              setLevelData((prev) => ({ ...prev, question: e.target.value }))
+            }
+            placeholder="Write the question here with Markdown support..."
+            rows={2}
+          />
 
           {/* Options */}
           <div>
-            <label className="block text-sm sm:text-base font-bold mb-2 text-gray-800">
-              Options
-            </label>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              {levelData?.options?.map((opt, idx) => (
-                <input
-                  key={idx}
-                  type="text"
-                  value={opt}
-                  placeholder={`Option ${idx + 1}`}
-                  onChange={(e) => handleOptionChange(e, idx)}
-                  className={inputClassName}
-                />
-              ))}
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-sm sm:text-base font-bold text-gray-800">
+                Options (Optional)
+              </label>
+              <button
+                type="button"
+                onClick={() => {
+                  if (levelData.options.length === 0) {
+                    setLevelData(prev => ({ ...prev, options: [""] }));
+                  } else {
+                    setLevelData(prev => ({ ...prev, options: [] }));
+                  }
+                }}
+                className="text-xs px-2 py-1 rounded bg-blue-100 text-blue-700 hover:bg-blue-200 transition-colors"
+              >
+                {levelData.options.length === 0 ? "➕ Add Options" : "➖ Remove Options"}
+              </button>
             </div>
+            
+            {levelData.options.length > 0 && (
+              <div className="space-y-2">
+                {levelData.options.map((opt, idx) => (
+                  <div key={idx} className="flex items-center gap-2">
+                    <div className="flex-1">
+                      <MarkdownEditor
+                        value={opt}
+                        onChange={(e) => {
+                          const newOptions = [...levelData.options];
+                          newOptions[idx] = e.target.value;
+                          setLevelData(prev => ({ ...prev, options: newOptions }));
+                        }}
+                        placeholder={`Option ${idx + 1} with Markdown support...`}
+                        rows={1}
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const newOptions = levelData.options.filter((_, index) => index !== idx);
+                        setLevelData(prev => ({ ...prev, options: newOptions }));
+                      }}
+                      className="text-red-500 hover:text-red-700 p-1"
+                      title="Remove option"
+                    >
+                      🗑️
+                    </button>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setLevelData(prev => ({ 
+                      ...prev, 
+                      options: [...prev.options, ""] 
+                    }));
+                  }}
+                  className="text-xs px-3 py-1 rounded bg-green-100 text-green-700 hover:bg-green-200 transition-colors"
+                >
+                  ➕ Add Another Option
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Answer */}
-          <div>
-            <label className="block text-sm sm:text-base font-bold mb-1 text-gray-800">
-              Answer
-            </label>
-            <input
-              type="text"
-              name="answer"
-              value={levelData.answer}
-              onChange={handleInputChange}
-              placeholder="Correct answer"
-              className={inputClassName}
-            />
-          </div>
+          <MarkdownEditor
+            label="Answer"
+            value={levelData.answer}
+            onChange={(e) =>
+              setLevelData((prev) => ({ ...prev, answer: e.target.value }))
+            }
+            placeholder="Correct answer with Markdown support..."
+            rows={2}
+          />
 
           {/* Hint */}
-          <div>
-            <label className="block text-sm sm:text-base font-bold mb-1 text-gray-800">
-              Hint
-            </label>
-            <textarea
-              rows={2}
-              name="hint"
-              placeholder="Provide a helpful hint"
-              className={inputClassName}
-              value={levelData.hint}
-              onChange={handleInputChange}
-            />
-          </div>
+          <MarkdownEditor
+            label="Hint"
+            value={levelData.hint}
+            onChange={(e) =>
+              setLevelData((prev) => ({ ...prev, hint: e.target.value }))
+            }
+            placeholder="Provide a helpful hint with Markdown support..."
+            rows={2}
+          />
 
           {/* Explanation */}
-          <div>
-            <label className="block text-sm sm:text-base font-bold mb-1 text-gray-800">
-              Explanation
-            </label>
-            <textarea
-              rows={2}
-              name="explanation"
-              placeholder="Explain the answer"
-              className={inputClassName}
-              value={levelData.explanation}
-              onChange={handleInputChange}
-            />
-          </div>
+          <MarkdownEditor
+            label="Explanation"
+            value={levelData.explanation}
+            onChange={(e) =>
+              setLevelData((prev) => ({ ...prev, explanation: e.target.value }))
+            }
+            placeholder="Explain the answer with Markdown support..."
+            rows={3}
+          />
 
           {/* Buttons */}
           <div className="pt-3 flex flex-wrap gap-3 justify-center">

@@ -568,9 +568,7 @@ export default function Header({
               </h3>
 
               <p className="text-responsive-sm text-gray-600 mb-4 leading-relaxed">
-                Welcome to our interactive learning platform! Dive into engaging
-                challenges and enhance your skills with our comprehensive
-                features.
+                Welcome to our interactive learning platform! Dive into engaging challenges and enhance your skills with our comprehensive features.
               </p>
 
               <div className="bg-indigo-50 rounded-lg p-4 mb-6">
@@ -580,9 +578,7 @@ export default function Header({
                 <div className="space-y-2 text-responsive-xs text-indigo-700">
                   <div className="flex items-center gap-2">
                     <span>🎯</span>
-                    <span>
-                      Progressive level system with adaptive difficulty
-                    </span>
+                    <span>Progressive level system with adaptive difficulty</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span>💡</span>
@@ -598,17 +594,13 @@ export default function Header({
                   </div>
                   <div className="flex items-center gap-2">
                     <span>🎵</span>
-                    <span>
-                      Immersive audio experience with background music
-                    </span>
+                    <span>Immersive audio experience with background music</span>
                   </div>
                 </div>
               </div>
 
               <p className="text-responsive-sm text-gray-600 mb-6 leading-relaxed">
-                <strong>Login to get better UI experience</strong> and unlock
-                personalized features, save your progress, and compete with
-                others!
+                <strong>Login to get better UI experience</strong> and unlock personalized features, save your progress, and compete with others!
               </p>
 
               <div className="space-y-3">

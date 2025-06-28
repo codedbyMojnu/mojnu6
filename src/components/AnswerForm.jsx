@@ -5,6 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import { useLevels } from "../context/LevelContext";
 import { useProfile } from "../context/ProfileContext";
 import checkUserType from "../utils/checkUserType";
+import MarkdownRenderer from "./MarkdownRenderer";
 import Marker from "./Marker";
 
 export default function AnswerForm({ onAnswer, mark, levelIndex }) {
@@ -214,8 +215,20 @@ export default function AnswerForm({ onAnswer, mark, levelIndex }) {
       )}
 
       {/* Question Display */}
-      <div className="text-responsive-sm sm:text-base leading-snug mb-3 px-4 font-[Google_Sans] bg-yellow-50/50 rounded-lg p-3 flex-1 max-h-[80px] overflow-y-auto">
-        {levels[levelIndex]?.question}
+      <div className="mb-3 px-4">
+        <div
+          className={`bg-yellow-50/50 rounded-lg p-3 flex-1 overflow-y-auto border border-yellow-200 answer-form-question ${
+            !levels[levelIndex]?.options?.length > 0
+              ? "h-[220px]"
+              : " max-h-[120px]"
+          }`}
+        >
+          <MarkdownRenderer
+            content={levels[levelIndex]?.question}
+            className="text-responsive-sm sm:text-base"
+            proseClassName="prose prose-sm max-w-none"
+          />
+        </div>
       </div>
 
       {/* Enhanced Text Input */}
@@ -241,22 +254,47 @@ export default function AnswerForm({ onAnswer, mark, levelIndex }) {
 
       {/* Enhanced Options */}
       {levels[levelIndex]?.options?.length > 0 && (
-        <div className="grid grid-cols-1 gap-2 px-4 mb-3 flex-1 overflow-y-auto">
-          {levels[levelIndex]?.options?.map((option, index) => (
-            <button
-              key={index}
-              onClick={() => handleOptionAnswer(option)}
-              className="w-full text-left px-3 py-2 rounded-lg border-2 transition-all duration-200 font-medium text-responsive-sm shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-blue-300 min-h-[44px] flex items-center"
-              aria-label={`Select option ${String.fromCharCode(
-                65 + index
-              )}: ${option}`}
-            >
-              <span className="font-bold text-blue-600 mr-2">
-                {String.fromCharCode(65 + index)}.
-              </span>
-              {option}
-            </button>
-          ))}
+        <div className="px-4 mb-3">
+          <div className="bg-white rounded-xl border-2 border-gray-200 p-4 shadow-sm">
+            <div className="grid grid-cols-1 gap-3 h-[280px] overflow-y-auto">
+              {levels[levelIndex]?.options?.map((option, index) => (
+                <button
+                  key={index}
+                  onClick={() => handleOptionAnswer(option)}
+                  className="w-full h-[60px] text-left px-4 py-3 rounded-lg border-2 border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 hover:border-blue-300 transition-all duration-200 font-medium text-responsive-sm shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-400 flex items-center group"
+                  aria-label={`Select option ${String.fromCharCode(
+                    65 + index
+                  )}: ${option}`}
+                >
+                  <span className="font-bold text-blue-600 mr-4 flex-shrink-0 w-6 text-center group-hover:text-blue-700 transition-colors">
+                    {String.fromCharCode(65 + index)}.
+                  </span>
+                  <div className="flex-1 text-left answer-form-options overflow-hidden">
+                    <MarkdownRenderer
+                      content={option}
+                      className="text-responsive-sm line-clamp-2"
+                      proseClassName="prose prose-sm max-w-none"
+                    />
+                  </div>
+                  <div className="ml-2 flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                    <svg
+                      className="w-4 h-4 text-blue-600"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M9 5l7 7-7 7"
+                      />
+                    </svg>
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
         </div>
       )}
 
@@ -375,11 +413,15 @@ export default function AnswerForm({ onAnswer, mark, levelIndex }) {
               🧩 Puzzle Hint
             </h3>
 
-            <div className="bg-yellow-50 border-2 border-indigo-200 rounded-xl p-3">
-              <p className="text-responsive-sm text-center leading-relaxed text-indigo-800">
-                {levels[levelIndex]?.hint ||
-                  "No hint available for this level. Try to think outside the box!"}
-              </p>
+            <div className="bg-yellow-50 border-2 border-indigo-200 rounded-xl p-3 answer-form-hints">
+              <MarkdownRenderer
+                content={
+                  levels[levelIndex]?.hint ||
+                  "No hint available for this level. Try to think outside the box!"
+                }
+                className="text-responsive-sm"
+                proseClassName="prose prose-sm max-w-none"
+              />
             </div>
           </div>
         </div>
@@ -548,7 +590,8 @@ export default function AnswerForm({ onAnswer, mark, levelIndex }) {
                 </p>
               </div>
               <p className="text-responsive-xs text-gray-600 mb-4">
-                Please complete the current level to progress. Use hints if you need help!
+                Please complete the current level to progress. Use hints if you
+                need help!
               </p>
               <button
                 onClick={() => setShowSkipModal(false)}
