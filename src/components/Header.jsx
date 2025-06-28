@@ -89,10 +89,10 @@ export default function Header({
 
   // Check if user is visiting for the first time
   useEffect(() => {
-    const hasVisited = localStorage.getItem('hasVisited');
+    const hasVisited = localStorage.getItem("hasVisited");
     if (!hasVisited && !user?.token) {
       setShowWelcomeModal(true);
-      localStorage.setItem('hasVisited', 'true');
+      localStorage.setItem("hasVisited", "true");
     }
   }, [user?.token]);
 
@@ -550,7 +550,11 @@ export default function Header({
             <div className="text-center">
               {/* Welcome Icon */}
               <div className="w-16 h-16 bg-indigo-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <svg className="w-8 h-8 text-indigo-600" fill="currentColor" viewBox="0 0 20 20">
+                <svg
+                  className="w-8 h-8 text-indigo-600"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
                   <path
                     fillRule="evenodd"
                     d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
@@ -564,7 +568,9 @@ export default function Header({
               </h3>
 
               <p className="text-responsive-sm text-gray-600 mb-4 leading-relaxed">
-                Welcome to our interactive learning platform! Dive into engaging challenges and enhance your skills with our comprehensive features.
+                Welcome to our interactive learning platform! Dive into engaging
+                challenges and enhance your skills with our comprehensive
+                features.
               </p>
 
               <div className="bg-indigo-50 rounded-lg p-4 mb-6">
@@ -574,7 +580,9 @@ export default function Header({
                 <div className="space-y-2 text-responsive-xs text-indigo-700">
                   <div className="flex items-center gap-2">
                     <span>🎯</span>
-                    <span>Progressive level system with adaptive difficulty</span>
+                    <span>
+                      Progressive level system with adaptive difficulty
+                    </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span>💡</span>
@@ -590,13 +598,17 @@ export default function Header({
                   </div>
                   <div className="flex items-center gap-2">
                     <span>🎵</span>
-                    <span>Immersive audio experience with background music</span>
+                    <span>
+                      Immersive audio experience with background music
+                    </span>
                   </div>
                 </div>
               </div>
 
               <p className="text-responsive-sm text-gray-600 mb-6 leading-relaxed">
-                <strong>Login to get better UI experience</strong> and unlock personalized features, save your progress, and compete with others!
+                <strong>Login to get better UI experience</strong> and unlock
+                personalized features, save your progress, and compete with
+                others!
               </p>
 
               <div className="space-y-3">
@@ -609,7 +621,7 @@ export default function Header({
                 >
                   🔐 Login Now
                 </button>
-                
+
                 <button
                   onClick={() => setShowWelcomeModal(false)}
                   className="w-full bg-gray-100 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors font-semibold text-responsive-sm"

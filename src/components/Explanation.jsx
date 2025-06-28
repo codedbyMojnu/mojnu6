@@ -21,9 +21,10 @@ export default function Explanation({ onNext, levelIndex }) {
       </div>
 
       {/* Explanation Display */}
-      <div className="bg-blue-50/50 rounded-lg p-3 mb-3 px-4 flex-1 overflow-y-auto">
+      <div className="rounded-lg p-3 mb-3 px-4 flex-1 overflow-y-auto">
         <p className="text-responsive-sm font-[Google_Sans] leading-snug text-gray-800">
           <span className="font-semibold text-blue-700">Explanation:</span>{" "}
+          <br />
           {levels[levelIndex]?.explanation ||
             "Great job solving this puzzle! Keep up the excellent work!"}
         </p>
