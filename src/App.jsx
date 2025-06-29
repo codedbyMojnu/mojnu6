@@ -10,7 +10,9 @@ import ApprovedTransactionList from "./components/admin/ApprovedTransactionList"
 import FakedTransactionList from "./components/admin/FakedTransactionList";
 import TransactionList from "./components/admin/TransactionList";
 import WelcomeAdminDashboard from "./components/admin/WelcomeAdminDashboard";
+import CommunityMarketplace from "./components/CommunityMarketplace";
 import Home from "./components/Home";
+import PuzzleCreator from "./components/PuzzleCreator";
 import AuthProvider from "./context/AuthContext";
 import LevelProvider from "./context/LevelContext";
 import ProfileProvider from "./context/ProfileContext";
@@ -34,6 +36,8 @@ export default function App() {
           <BrowserRouter>
             <Routes>
               <Route index element={<Home />} />
+              <Route path="community" element={<CommunityMarketplace />} />
+              <Route path="create-puzzle" element={<PuzzleCreator />} />
               <Route element={<PrivateRoutes />}>
                 <Route path="dashboard" element={<DashboardLayout />}>
                   <Route index element={<WelcomeAdminDashboard />} />

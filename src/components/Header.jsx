@@ -379,6 +379,19 @@ export default function Header({
             )}
           </div>
 
+          {/* Community Marketplace Button */}
+          <div className="relative inline-block">
+            <button
+              onClick={() => navigate('/community')}
+              className="p-1.5 rounded-lg transition-colors bg-indigo-100 text-indigo-700 hover:bg-indigo-200 mr-3"
+              aria-label="Community marketplace"
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
+              </svg>
+            </button>
+          </div>
+
           {/* Settings Button */}
           <button
             onClick={toggleSettings}

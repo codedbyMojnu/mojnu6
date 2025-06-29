@@ -6,6 +6,7 @@ import { useProfile } from "../context/ProfileContext.jsx";
 import playSound from "../utils/playSound.jsx";
 import AnimatedBackground from "./AnimatedBackground";
 import AnswerForm from "./AnswerForm";
+import ChatRoom from "./ChatRoom";
 import Explanation from "./Explanation";
 import Header from "./Header";
 import WelcomeToGame from "./WelcomeToGame.jsx";
@@ -24,6 +25,7 @@ export default function Home() {
   const [showCompletionModal, setShowCompletionModal] = useState(false);
   const [hasInitializedLevel, setHasInitializedLevel] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showChatRoom, setShowChatRoom] = useState(false);
 
   // For Passed Levels
   const [slicesLevels, setSlicesLevels] = useState([]);
@@ -350,6 +352,35 @@ export default function Home() {
           }}
         />
       )}
+
+      {/* Chat Room */}
+      {showChatRoom && (
+        <ChatRoom
+          isOpen={showChatRoom}
+          onClose={() => setShowChatRoom(false)}
+        />
+      )}
+
+      {/* Chat Button - Fixed at bottom */}
+      <div className="fixed bottom-4 right-4 z-20">
+        <button
+          onClick={() => {
+            if (!user?.token) {
+              setShowLoginModal(true);
+              return;
+            }
+            setShowChatRoom(true);
+            playSound("/sounds/button-sound.mp3");
+          }}
+          className="bg-indigo-600 text-white p-3 rounded-full shadow-lg hover:bg-indigo-700 transition-all duration-300 hover:scale-110 flex items-center gap-2"
+          title="Join the Chat Room"
+        >
+          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+            <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd" />
+          </svg>
+          <span className="hidden sm:inline text-sm font-semibold">Join Chat</span>
+        </button>
+      </div>
     </div>
   );
 }

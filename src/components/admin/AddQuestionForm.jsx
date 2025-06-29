@@ -12,11 +12,14 @@ export default function AddQuestionForm() {
     explanation: "",
     hint: "",
     options: [], // Start with empty array - options are optional
+    category: 'General',
   });
   const { user } = useAuth();
   const { levels, setLevels } = useLevels();
   const navigate = useNavigate();
   const params = useParams();
+
+  const categories = ['HTTP', 'REST', 'API', 'Web Development', 'Programming', 'General', 'Advanced'];
 
   useEffect(() => {
     if (params?.id) {
@@ -30,6 +33,7 @@ export default function AddQuestionForm() {
           hint: currentLevel.hint,
           // Use existing options or empty array if none exist
           options: currentLevel?.options || [],
+          category: currentLevel.category,
         });
       }
     } else {
@@ -40,6 +44,7 @@ export default function AddQuestionForm() {
         explanation: "",
         hint: "",
         options: [], // Reset to empty array
+        category: 'General',
       });
     }
   }, [params?.id, levels]);
@@ -57,6 +62,7 @@ export default function AddQuestionForm() {
       explanation: "",
       hint: "",
       options: [],
+      category: 'General',
     });
     navigate(path);
   }
@@ -250,6 +256,26 @@ export default function AddQuestionForm() {
             placeholder="Explain the answer with Markdown support..."
             rows={3}
           />
+
+          {/* Category */}
+          <div className="mb-4">
+            <label className="block text-sm font-semibold mb-2 text-gray-700">
+              Category *
+            </label>
+            <select
+              name="category"
+              value={levelData.category}
+              onChange={(e) =>
+                setLevelData((prev) => ({ ...prev, category: e.target.value }))
+              }
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            >
+              {categories.map(category => (
+                <option key={category} value={category}>{category}</option>
+              ))}
+            </select>
+          </div>
 
           {/* Buttons */}
           <div className="pt-3 flex flex-wrap gap-3 justify-center">

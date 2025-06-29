@@ -6,5 +6,9 @@ export default function checkUserType(token) {
   const payloadJson = atob(payload); // decode base 64 code to json string
   const data = JSON.parse(payloadJson); // Json convert to object
   console.log(data);
-  return { role: data?.role, username: data?.username };
+  return { 
+    role: data?.role, 
+    username: data?.username,
+    userId: data?.userId || data?.id || data?._id 
+  };
 }
