@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext.jsx";
 import { useLevels } from "../context/LevelContext";
 import { useProfile } from "../context/ProfileContext.jsx";
 import playSound from "../utils/playSound.jsx";
+import AnimatedBackground from "./AnimatedBackground";
 import AnswerForm from "./AnswerForm";
 import Explanation from "./Explanation";
 import Header from "./Header";
@@ -200,7 +201,7 @@ export default function Home() {
         className="h-screen w-full bg-cover bg-center bg-no-repeat flex items-center justify-center"
         style={{ backgroundImage: "url('/bg-images/notepad.png')" }}
       >
-        <div className="card p-8 text-center animate-fade-in max-w-sm mx-4">
+        <div className="card p-6 sm:p-8 text-center animate-fade-in max-w-sm mx-4">
           <div className="w-16 h-16 border-4 border-primary-green border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <h2 className="text-responsive-xl font-bold text-gray-700 mb-2">
             Loading Game...
@@ -220,7 +221,7 @@ export default function Home() {
         className="h-screen w-full bg-cover bg-center bg-no-repeat flex items-center justify-center"
         style={{ backgroundImage: "url('/bg-images/notepad.png')" }}
       >
-        <div className="card p-8 text-center animate-fade-in max-w-sm mx-4">
+        <div className="card p-6 sm:p-8 text-center animate-fade-in max-w-sm mx-4">
           <div className="text-6xl mb-4">⚠️</div>
           <h2 className="text-responsive-xl font-bold text-red-600 mb-4">
             Oops! Something went wrong
@@ -236,11 +237,14 @@ export default function Home() {
 
   return (
     <div
-      className="h-screen w-full bg-cover bg-center bg-no-repeat flex items-center justify-center overflow-hidden"
+      className="h-screen w-full bg-cover bg-center bg-no-repeat flex items-center justify-center overflow-hidden relative"
       style={{ backgroundImage: "url('/bg-images/notepad.png')" }}
     >
-      <div className="w-full max-w-sm mx-4">
-        <div className="card p-4 sm:p-6 relative animate-fade-in h-[calc(100vh-2rem)] max-h-[600px] flex flex-col">
+      {/* Animated playful background */}
+      <AnimatedBackground />
+      {/* Mobile: Full width with small margins, Desktop: Wider container */}
+      <div className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl mx-2 sm:mx-4 relative z-10">
+        <div className="card p-3 sm:p-4 md:p-6 relative animate-fade-in h-screen flex flex-col" style={{ borderRadius: 0, border: 'none' }}>
           <Header
             buttonSoundOn={buttonSoundOn}
             setButtonSoundOn={setButtonSoundOn}
@@ -281,18 +285,18 @@ export default function Home() {
                     />
                   )
                 ) : (
-                  <div className="flex-1 flex flex-col items-center justify-center text-center animate-fade-in">
-                    <div className="text-6xl mb-4">🎉</div>
-                    <h2 className="text-responsive-2xl font-bold text-green-700 mb-4">
+                  <div className="flex-1 flex flex-col items-center justify-center text-center animate-fade-in px-4">
+                    <div className="text-4xl sm:text-6xl mb-4">🎉</div>
+                    <h2 className="text-responsive-xl sm:text-responsive-2xl font-bold text-green-700 mb-4">
                       All Questions Completed!
                     </h2>
-                    <p className="text-responsive-base text-gray-700 mb-6">
+                    <p className="text-responsive-sm sm:text-responsive-base text-gray-700 mb-6">
                       Congratulations! You've solved all {levels?.length}{" "}
                       puzzles! 🧠🔥
                     </p>
                     <button
                       onClick={handleRestart}
-                      className="btn btn-primary text-responsive-lg"
+                      className="btn btn-primary text-responsive-base sm:text-responsive-lg"
                     >
                       🔁 Play Again
                     </button>
@@ -307,25 +311,25 @@ export default function Home() {
       {/* Completion Modal */}
       {showCompletionModal && (
         <div className="modal-overlay animate-fade-in">
-          <div className="modal-content p-6 sm:p-8 max-w-sm mx-4">
+          <div className="modal-content p-4 sm:p-6 md:p-8 max-w-sm mx-2 sm:mx-4">
             <div className="text-center">
-              <div className="text-6xl mb-4">🏆</div>
-              <h2 className="text-responsive-xl font-bold text-green-700 mb-4">
+              <div className="text-4xl sm:text-6xl mb-4">🏆</div>
+              <h2 className="text-responsive-lg sm:text-responsive-xl font-bold text-green-700 mb-4">
                 Level {levelIndex + 1} Completed!
               </h2>
-              <p className="text-responsive-sm text-gray-600 mb-6">
+              <p className="text-responsive-xs sm:text-responsive-sm text-gray-600 mb-6">
                 Great job! Ready for the next challenge?
               </p>
-              <div className="flex gap-3">
+              <div className="flex gap-2 sm:gap-3">
                 <button
                   onClick={() => setShowCompletionModal(false)}
-                  className="btn btn-secondary flex-1"
+                  className="btn btn-secondary flex-1 text-responsive-xs sm:text-responsive-sm"
                 >
                   Continue
                 </button>
                 <button
                   onClick={handleRestart}
-                  className="btn btn-ghost flex-1"
+                  className="btn btn-ghost flex-1 text-responsive-xs sm:text-responsive-sm"
                 >
                   Restart
                 </button>

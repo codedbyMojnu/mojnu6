@@ -12,6 +12,11 @@ export default function ProfileProvider({ children }) {
     hintPoints: 0,
     maxLevel: 0,
     takenHintLevels: [],
+    // Daily streak fields
+    currentStreak: 0,
+    longestStreak: 0,
+    lastPlayedDate: null,
+    totalPoints: 0
   });
   const { user } = useAuth();
   const [error, setError] = useState("");

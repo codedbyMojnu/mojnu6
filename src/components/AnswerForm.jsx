@@ -216,7 +216,7 @@ export default function AnswerForm({ onAnswer, mark, levelIndex, showLogin }) {
         <div
           className={`rounded-lg p-3 flex-1 overflow-y-auto answer-form-question ${
             !levels[levelIndex]?.options?.length > 0
-              ? "h-[180px]"
+              ? "h-[230px]"
               : " max-h-[120px]"
           }`}
         >

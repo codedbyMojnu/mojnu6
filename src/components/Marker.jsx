@@ -3,8 +3,10 @@ export default function Marker({ mark }) {
     <div className="text-center mt-[-200px] py-8 animate-bounce-in">
       <div
         className={`text-6xl sm:text-7xl font-bold ${
-          mark === "✔️" ? "text-green-600" : "text-red-600"
-        } animate-pulse-pop`}
+          mark === "✔️"
+            ? "text-green-600 animate-pulse-pop"
+            : "text-red-600 animate-shake"
+        }`}
       >
         {mark}
       </div>

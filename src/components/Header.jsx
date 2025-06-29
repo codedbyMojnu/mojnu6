@@ -4,9 +4,10 @@ import api from "../api";
 import { useAuth } from "../context/AuthContext";
 import { useProfile } from "../context/ProfileContext";
 import checkUserType from "../utils/checkUserType";
-import SettingsModal from "./SettingsModal";
 import LoginModal from "./auth/LoginModal";
 import SignupModal from "./auth/SignupModal";
+import DailyStreak from "./DailyStreak";
+import SettingsModal from "./SettingsModal";
 
 // Enhanced SVG Icons with better accessibility
 const GearIcon = () => (
@@ -62,6 +63,48 @@ const RefreshIcon = () => (
   </svg>
 );
 
+function MusicNotesFloating({ show }) {
+  if (!show) return null;
+  return (
+    <div className="pointer-events-none absolute -top-6 left-1/2 transform -translate-x-1/2 z-20">
+      <span className="inline-block animate-music-note text-blue-400 text-lg">🎵</span>
+      <span className="inline-block animate-music-note2 text-pink-400 text-base ml-1">🎶</span>
+      <span className="inline-block animate-music-note3 text-yellow-400 text-sm ml-1">🎼</span>
+      <style>{`
+        @keyframes musicNote {
+          0% { opacity: 0; transform: translateY(0) scale(1) rotate(-10deg); }
+          40% { opacity: 1; transform: translateY(-18px) scale(1.2) rotate(8deg); }
+          100% { opacity: 0; transform: translateY(-36px) scale(0.8) rotate(-8deg); }
+        }
+        .animate-music-note { animation: musicNote 1.2s ease-in-out 0s 1; }
+        .animate-music-note2 { animation: musicNote 1.3s ease-in-out 0.2s 1; }
+        .animate-music-note3 { animation: musicNote 1.4s ease-in-out 0.4s 1; }
+      `}</style>
+    </div>
+  );
+}
+
+function SoundWavesFloating({ show }) {
+  if (!show) return null;
+  return (
+    <div className="pointer-events-none absolute -top-6 left-1/2 transform -translate-x-1/2 z-20">
+      <span className="inline-block animate-sound-wave text-green-400 text-lg">🔊</span>
+      <span className="inline-block animate-sound-wave2 text-pink-400 text-base ml-1">📢</span>
+      <span className="inline-block animate-sound-wave3 text-yellow-400 text-sm ml-1">🔔</span>
+      <style>{`
+        @keyframes soundWave {
+          0% { opacity: 0; transform: translateY(0) scale(1) rotate(-10deg); }
+          40% { opacity: 1; transform: translateY(-18px) scale(1.2) rotate(8deg); }
+          100% { opacity: 0; transform: translateY(-36px) scale(0.8) rotate(-8deg); }
+        }
+        .animate-sound-wave { animation: soundWave 1.2s ease-in-out 0s 1; }
+        .animate-sound-wave2 { animation: soundWave 1.3s ease-in-out 0.2s 1; }
+        .animate-sound-wave3 { animation: soundWave 1.4s ease-in-out 0.4s 1; }
+      `}</style>
+    </div>
+  );
+}
+
 export default function Header({
   buttonSoundOn,
   setButtonSoundOn,
@@ -90,6 +133,9 @@ export default function Header({
   const { user } = useAuth();
   const { profile, setProfile } = useProfile();
   const navigate = useNavigate();
+  const [musicNoteBurst, setMusicNoteBurst] = useState(false);
+  const [soundWaveBurst, setSoundWaveBurst] = useState(false);
+  const [showDailyStreak, setShowDailyStreak] = useState(false);
 
   // Check if user is visiting for the first time
   useEffect(() => {
@@ -239,6 +285,8 @@ export default function Header({
   // Enhanced background music toggle
   const toggleBgMusic = useCallback(() => {
     setBgMusicOn(!bgMusicOn);
+    setMusicNoteBurst(true);
+    setTimeout(() => setMusicNoteBurst(false), 1400);
   }, [bgMusicOn, setBgMusicOn]);
 
   // Auto-hide notifications
@@ -259,7 +307,7 @@ export default function Header({
   return (
     <>
       {/* Enhanced Header */}
-      <header className="flex items-center justify-between p-3 bg-white/90 backdrop-blur-sm rounded-lg shadow-md border border-gray-200 mb-3">
+      <header className="flex items-center justify-between p-2 bg-white/90 backdrop-blur-sm  mb-3">
         {/* Left Section - Level Info */}
         <div className="flex items-center gap-2">
           <button
@@ -304,11 +352,30 @@ export default function Header({
 
         {/* Right Section - Controls */}
         <div className="flex items-center gap-1">
+          {/* Daily Streak Button */}
+          <div className="relative inline-block">
+            <button
+              onClick={() => setShowDailyStreak(true)}
+              className="p-1.5 rounded-lg transition-colors bg-orange-100 text-orange-700 hover:bg-orange-200 mr-3"
+              aria-label="View daily streak"
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+              </svg>
+            </button>
+            {profile?.currentStreak > 0 && (
+              <div className="absolute -top-2 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center border border-white shadow-sm">
+                {profile.currentStreak}
+              </div>
+            )}
+          </div>
+
+          {/* Hint Points Button */}
           <div className="relative">
-          <button
+            <button
               className="p-1.5 rounded-lg transition-colors bg-gray-100 text-gray-500 hover:bg-gray-200 mr-3"
               aria-label="Hint points available"
-          >
+            >
               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                 <path
                   fillRule="evenodd"
@@ -316,32 +383,34 @@ export default function Header({
                   clipRule="evenodd"
                 />
               </svg>
-          </button>
+            </button>
             {profile?.hintPoints !== undefined && profile.hintPoints > 0 && (
               <div className="absolute -top-2 -right-0.25 bg-orange-100 text-orange-700 text-xs font-bold rounded-md w-5 h-5 flex items-center justify-center border border-orange-300 shadow-sm">
-              {profile.hintPoints}
-            </div>
-          )}
+                {profile.hintPoints}
+              </div>
+            )}
           </div>
 
+          
+
           {/* Music Toggle */}
-          <button
-            onClick={toggleBgMusic}
-            className={`p-1.5 rounded-lg transition-colors ${
-              bgMusicOn
-                ? "bg-blue-100 text-blue-700 hover:bg-blue-200"
-                : "bg-gray-100 text-gray-500 hover:bg-gray-200"
-            }`}
-            aria-label={bgMusicOn ? "Turn off music" : "Turn on music"}
-          >
-            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-              {bgMusicOn ? (
-                <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.369 4.369 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z" />
-              ) : (
-                <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.369 4.369 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z" />
-              )}
-            </svg>
-          </button>
+          <div className="relative inline-block">
+            <button
+              onClick={toggleBgMusic}
+              className={`p-1.5 rounded-lg transition-transform duration-200 ${bgMusicOn ? "bg-blue-100 text-blue-700 hover:bg-blue-200" : "bg-gray-100 text-gray-500 hover:bg-gray-200"} ${musicNoteBurst ? "animate-bounce-music" : ""}`}
+              aria-label={bgMusicOn ? "Turn off music" : "Turn on music"}
+              style={{ outline: "none" }}
+            >
+              <svg className={`w-5 h-5 transition-transform duration-200 ${bgMusicOn ? "rotate-12 scale-110" : "rotate-0 scale-100"}`} fill="currentColor" viewBox="0 0 20 20">
+                {bgMusicOn ? (
+                  <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.369 4.369 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z" />
+                ) : (
+                  <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.369 4.369 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z" />
+                )}
+              </svg>
+            </button>
+            <MusicNotesFloating show={musicNoteBurst && bgMusicOn} />
+          </div>
 
           {/* Settings Button */}
           <button
@@ -679,6 +748,14 @@ export default function Header({
           isOpen={showSignupModal}
           onClose={closeAuthModals}
           onSwitchToLogin={switchToLogin}
+        />
+      )}
+
+      {/* Daily Streak Modal */}
+      {showDailyStreak && (
+        <DailyStreak
+          isOpen={showDailyStreak}
+          onClose={() => setShowDailyStreak(false)}
         />
       )}
     </>
