@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router";
 import AddQuestionForm from "./components/admin/AddQuestionForm";
 import AddSuccess from "./components/admin/AddSuccess";
@@ -12,10 +13,20 @@ import WelcomeAdminDashboard from "./components/admin/WelcomeAdminDashboard";
 import Home from "./components/Home";
 import AuthProvider from "./context/AuthContext";
 import LevelProvider from "./context/LevelContext";
-import ProfileProvider from "./context/profileContext";
+import ProfileProvider from "./context/ProfileContext";
+import { hideLoadingScreen } from "./utils/hideLoadingScreen";
 import PrivateRoutes from "./utils/PrivateRoutes";
 
 export default function App() {
+  useEffect(() => {
+    // Hide the loading screen when the app is fully loaded
+    const timer = setTimeout(() => {
+      hideLoadingScreen();
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, []);
+
   return (
     <AuthProvider>
       <LevelProvider>

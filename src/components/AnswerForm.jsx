@@ -214,9 +214,9 @@ export default function AnswerForm({ onAnswer, mark, levelIndex, showLogin }) {
       {/* Question Display */}
       <div className="mb-3 px-4">
         <div
-          className={`bg-yellow-50/50 rounded-lg p-3 flex-1 overflow-y-auto border border-yellow-200 answer-form-question ${
+          className={`rounded-lg p-3 flex-1 overflow-y-auto answer-form-question ${
             !levels[levelIndex]?.options?.length > 0
-              ? "h-[220px]"
+              ? "h-[180px]"
               : " max-h-[120px]"
           }`}
         >
@@ -252,13 +252,13 @@ export default function AnswerForm({ onAnswer, mark, levelIndex, showLogin }) {
       {/* Enhanced Options */}
       {levels[levelIndex]?.options?.length > 0 && (
         <div className="px-4 mb-3">
-          <div className="bg-white rounded-xl border-2 border-gray-200 p-4 shadow-sm">
-            <div className="grid grid-cols-1 gap-3 h-[280px] overflow-y-auto">
+          <div className="bg-white">
+            <div className="grid grid-cols-1 gap-2">
               {levels[levelIndex]?.options?.map((option, index) => (
                 <button
                   key={index}
                   onClick={() => handleOptionAnswer(option)}
-                  className="w-full h-[60px] text-left px-4 py-3 rounded-lg border-2 border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 hover:border-blue-300 transition-all duration-200 font-medium text-responsive-sm shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-400 flex items-center group"
+                  className="w-full h-[40px] text-left px-4 py-3 rounded-lg border-2 border-gray-200 bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 hover:border-blue-300 transition-all duration-200 font-medium text-responsive-sm shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-blue-400 flex items-center group"
                   aria-label={`Select option ${String.fromCharCode(
                     65 + index
                   )}: ${option}`}

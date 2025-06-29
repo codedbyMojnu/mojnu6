@@ -1,4 +1,5 @@
 import { useCallback, useState } from "react";
+import { useNavigate } from "react-router";
 import { useAuth } from "../../context/AuthContext";
 import checkUserType from "../../utils/checkUserType";
 import playSound from "../../utils/playSound";
@@ -10,6 +11,8 @@ export default function LoginModal({ isOpen, onClose, onSwitchToSignup }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const { setUser } = useAuth();
+
+  const navigate = useNavigate();
 
   // Enhanced form submission with better error handling
   const handleSubmit = useCallback(
@@ -39,7 +42,7 @@ export default function LoginModal({ isOpen, onClose, onSwitchToSignup }) {
 
           const { role } = checkUserType(response?.data?.token);
           if (role === "admin") {
-            window.location.href = "/dashboard";
+            navigate("/dashboard");
           }
         }
       } catch (err) {
