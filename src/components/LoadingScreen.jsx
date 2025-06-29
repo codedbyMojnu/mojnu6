@@ -47,28 +47,28 @@ const LoadingScreen = () => {
     >
       <div className="w-full max-w-sm sm:max-w-md md:max-w-lg mx-2 sm:mx-4">
         <div className="card p-4 sm:p-6 md:p-8 text-center animate-fade-in">
-          <div className="w-12 h-12 sm:w-16 sm:h-16 border-4 border-primary-green border-t-transparent rounded-full animate-spin mx-auto mb-4 sm:mb-6"></div>
+          <div className="w-12 h-12 sm:w-16 sm:h-16 border-4 border-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-4 sm:mb-6"></div>
           <h1 className="text-responsive-lg sm:text-responsive-2xl font-bold text-gray-700 mb-3 sm:mb-4">Loading Application</h1>
           <p className="text-responsive-sm sm:text-responsive-lg text-gray-600 mb-4 sm:mb-6">
             First load takes time, please wait a while{dots}
           </p>
           
           <div className="space-y-3 sm:space-y-4">
-            <div className="flex items-center justify-center space-x-2">
-              <div className="w-2 h-2 sm:w-3 sm:h-3 bg-primary-green rounded-full animate-bounce"></div>
-              <div className="w-2 h-2 sm:w-3 sm:h-3 bg-primary-green rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-              <div className="w-2 h-2 sm:w-3 sm:h-3 bg-primary-green rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+            <div className="flex justify-center gap-1 sm:gap-2 mb-4">
+              <div className="w-2 h-2 sm:w-3 sm:h-3 bg-green-500 rounded-full animate-bounce"></div>
+              <div className="w-2 h-2 sm:w-3 sm:h-3 bg-green-500 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+              <div className="w-2 h-2 sm:w-3 sm:h-3 bg-green-500 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
             </div>
             
             {/* Progress Bar */}
             <div className="space-y-2">
-              <div className="flex justify-between items-center">
+              <div className="flex items-center justify-between mb-2">
                 <span className="text-responsive-xs sm:text-responsive-sm text-gray-600">Loading...</span>
-                <span className="text-responsive-xs sm:text-responsive-sm font-semibold text-primary-green">{progress}%</span>
+                <span className="text-responsive-xs sm:text-responsive-sm font-semibold text-green-500">{progress}%</span>
               </div>
               <div className="w-full h-1.5 sm:h-2 bg-gray-200 rounded-full overflow-hidden">
                 <div 
-                  className="h-full bg-gradient-to-r from-primary-green to-primary-green-hover rounded-full transition-all duration-300 ease-out relative"
+                  className="h-full bg-gradient-to-r from-green-500 to-green-600 rounded-full transition-all duration-300 ease-out relative"
                   style={{ width: `${progress}%` }}
                 >
                   <div 

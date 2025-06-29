@@ -4,9 +4,12 @@ import api from "../api";
 import { useAuth } from "../context/AuthContext";
 import { useProfile } from "../context/ProfileContext";
 import checkUserType from "../utils/checkUserType";
+import Achievements from "./Achievements";
 import LoginModal from "./auth/LoginModal";
 import SignupModal from "./auth/SignupModal";
 import DailyStreak from "./DailyStreak";
+import Leaderboard from "./Leaderboard";
+import Rewards from "./Rewards";
 import SettingsModal from "./SettingsModal";
 
 // Enhanced SVG Icons with better accessibility
@@ -63,48 +66,6 @@ const RefreshIcon = () => (
   </svg>
 );
 
-function MusicNotesFloating({ show }) {
-  if (!show) return null;
-  return (
-    <div className="pointer-events-none absolute -top-6 left-1/2 transform -translate-x-1/2 z-20">
-      <span className="inline-block animate-music-note text-blue-400 text-lg">🎵</span>
-      <span className="inline-block animate-music-note2 text-pink-400 text-base ml-1">🎶</span>
-      <span className="inline-block animate-music-note3 text-yellow-400 text-sm ml-1">🎼</span>
-      <style>{`
-        @keyframes musicNote {
-          0% { opacity: 0; transform: translateY(0) scale(1) rotate(-10deg); }
-          40% { opacity: 1; transform: translateY(-18px) scale(1.2) rotate(8deg); }
-          100% { opacity: 0; transform: translateY(-36px) scale(0.8) rotate(-8deg); }
-        }
-        .animate-music-note { animation: musicNote 1.2s ease-in-out 0s 1; }
-        .animate-music-note2 { animation: musicNote 1.3s ease-in-out 0.2s 1; }
-        .animate-music-note3 { animation: musicNote 1.4s ease-in-out 0.4s 1; }
-      `}</style>
-    </div>
-  );
-}
-
-function SoundWavesFloating({ show }) {
-  if (!show) return null;
-  return (
-    <div className="pointer-events-none absolute -top-6 left-1/2 transform -translate-x-1/2 z-20">
-      <span className="inline-block animate-sound-wave text-green-400 text-lg">🔊</span>
-      <span className="inline-block animate-sound-wave2 text-pink-400 text-base ml-1">📢</span>
-      <span className="inline-block animate-sound-wave3 text-yellow-400 text-sm ml-1">🔔</span>
-      <style>{`
-        @keyframes soundWave {
-          0% { opacity: 0; transform: translateY(0) scale(1) rotate(-10deg); }
-          40% { opacity: 1; transform: translateY(-18px) scale(1.2) rotate(8deg); }
-          100% { opacity: 0; transform: translateY(-36px) scale(0.8) rotate(-8deg); }
-        }
-        .animate-sound-wave { animation: soundWave 1.2s ease-in-out 0s 1; }
-        .animate-sound-wave2 { animation: soundWave 1.3s ease-in-out 0.2s 1; }
-        .animate-sound-wave3 { animation: soundWave 1.4s ease-in-out 0.4s 1; }
-      `}</style>
-    </div>
-  );
-}
-
 export default function Header({
   buttonSoundOn,
   setButtonSoundOn,
@@ -133,9 +94,10 @@ export default function Header({
   const { user } = useAuth();
   const { profile, setProfile } = useProfile();
   const navigate = useNavigate();
-  const [musicNoteBurst, setMusicNoteBurst] = useState(false);
-  const [soundWaveBurst, setSoundWaveBurst] = useState(false);
   const [showDailyStreak, setShowDailyStreak] = useState(false);
+  const [showAchievements, setShowAchievements] = useState(false);
+  const [showRewards, setShowRewards] = useState(false);
+  const [showLeaderboard, setShowLeaderboard] = useState(false);
 
   // Check if user is visiting for the first time
   useEffect(() => {
@@ -282,13 +244,6 @@ export default function Header({
     }
   }, [buttonSoundOn, setButtonSoundOn]);
 
-  // Enhanced background music toggle
-  const toggleBgMusic = useCallback(() => {
-    setBgMusicOn(!bgMusicOn);
-    setMusicNoteBurst(true);
-    setTimeout(() => setMusicNoteBurst(false), 1400);
-  }, [bgMusicOn, setBgMusicOn]);
-
   // Auto-hide notifications
   useEffect(() => {
     if (showSuccessNotification) {
@@ -370,46 +325,58 @@ export default function Header({
             )}
           </div>
 
-          {/* Hint Points Button */}
-          <div className="relative">
+          {/* Achievements Button */}
+          <div className="relative inline-block">
             <button
-              className="p-1.5 rounded-lg transition-colors bg-gray-100 text-gray-500 hover:bg-gray-200 mr-3"
-              aria-label="Hint points available"
+              onClick={() => setShowAchievements(true)}
+              className="p-1.5 rounded-lg transition-colors bg-purple-100 text-purple-700 hover:bg-purple-200 mr-3"
+              aria-label="View achievements"
             >
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                <path
-                  fillRule="evenodd"
-                  d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z"
-                  clipRule="evenodd"
-                />
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
               </svg>
             </button>
-            {profile?.hintPoints !== undefined && profile.hintPoints > 0 && (
-              <div className="absolute -top-2 -right-0.25 bg-orange-100 text-orange-700 text-xs font-bold rounded-md w-5 h-5 flex items-center justify-center border border-orange-300 shadow-sm">
-                {profile.hintPoints}
+            {profile?.achievements?.length > 0 && (
+              <div className="absolute -top-2 -right-1 bg-purple-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center border border-white shadow-sm">
+                {profile.achievements.length}
               </div>
             )}
           </div>
 
-          
-
-          {/* Music Toggle */}
+          {/* Rewards Button */}
           <div className="relative inline-block">
             <button
-              onClick={toggleBgMusic}
-              className={`p-1.5 rounded-lg transition-transform duration-200 ${bgMusicOn ? "bg-blue-100 text-blue-700 hover:bg-blue-200" : "bg-gray-100 text-gray-500 hover:bg-gray-200"} ${musicNoteBurst ? "animate-bounce-music" : ""}`}
-              aria-label={bgMusicOn ? "Turn off music" : "Turn on music"}
-              style={{ outline: "none" }}
+              onClick={() => setShowRewards(true)}
+              className="p-1.5 rounded-lg transition-colors bg-green-100 text-green-700 hover:bg-green-200 mr-3"
+              aria-label="View rewards"
             >
-              <svg className={`w-5 h-5 transition-transform duration-200 ${bgMusicOn ? "rotate-12 scale-110" : "rotate-0 scale-100"}`} fill="currentColor" viewBox="0 0 20 20">
-                {bgMusicOn ? (
-                  <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.369 4.369 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z" />
-                ) : (
-                  <path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.369 4.369 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z" />
-                )}
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 2a1 1 0 01.894.553l1.382 2.764 3.05.444a1 1 0 01.554 1.707l-2.205 2.148.52 3.033a1 1 0 01-1.451 1.054L10 12.347l-2.744 1.446a1 1 0 01-1.451-1.054l.52-3.033-2.205-2.148a1 1 0 01.554-1.707l3.05-.444L9.106 2.553A1 1 0 0110 2z" />
               </svg>
             </button>
-            <MusicNotesFloating show={musicNoteBurst && bgMusicOn} />
+            {profile?.rewards?.length > 0 && (
+              <div className="absolute -top-2 -right-1 bg-green-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center border border-white shadow-sm">
+                {profile.rewards.length}
+              </div>
+            )}
+          </div>
+
+          {/* Leaderboard Button */}
+          <div className="relative inline-block">
+            <button
+              onClick={() => setShowLeaderboard(true)}
+              className="p-1.5 rounded-lg transition-colors bg-yellow-100 text-yellow-700 hover:bg-yellow-200 mr-3"
+              aria-label="View leaderboard"
+            >
+              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M10 2a1 1 0 01.894.553l1.382 2.764 3.05.444a1 1 0 01.554 1.707l-2.205 2.148.52 3.033a1 1 0 01-1.451 1.054L10 12.347l-2.744 1.446a1 1 0 01-1.451-1.054l.52-3.033-2.205-2.148a1 1 0 01.554-1.707l3.05-.444L9.106 2.553A1 1 0 0110 2z" />
+              </svg>
+            </button>
+            {profile?.leaderboardNotifications?.length > 0 && (
+              <div className="absolute -top-2 -right-1 bg-yellow-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center border border-white shadow-sm">
+                {profile.leaderboardNotifications.length}
+              </div>
+            )}
           </div>
 
           {/* Settings Button */}
@@ -756,6 +723,30 @@ export default function Header({
         <DailyStreak
           isOpen={showDailyStreak}
           onClose={() => setShowDailyStreak(false)}
+        />
+      )}
+
+      {/* Achievements Modal */}
+      {showAchievements && (
+        <Achievements
+          isOpen={showAchievements}
+          onClose={() => setShowAchievements(false)}
+        />
+      )}
+
+      {/* Rewards Modal */}
+      {showRewards && (
+        <Rewards
+          isOpen={showRewards}
+          onClose={() => setShowRewards(false)}
+        />
+      )}
+
+      {/* Leaderboard Modal */}
+      {showLeaderboard && (
+        <Leaderboard
+          isOpen={showLeaderboard}
+          onClose={() => setShowLeaderboard(false)}
         />
       )}
     </>

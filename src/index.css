@@ -205,6 +205,51 @@ body {
   100% { transform: scale(1) rotate(0deg); }
 }
 
+/* Leaderboard Animations */
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  40%, 43% {
+    transform: translate3d(0, -8px, 0);
+  }
+  70% {
+    transform: translate3d(0, -4px, 0);
+  }
+  90% {
+    transform: translate3d(0, -2px, 0);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
 /* ===== UTILITY CLASSES ===== */
 .animate-pulse-pop {
   animation: pulseAndPop 3s ease-in-out infinite;
@@ -248,7 +293,7 @@ body {
 
 /* ===== COMPONENT STYLES ===== */
 .btn {
-  @apply px-4 py-2 rounded-lg font-bold transition-transform duration-150 ease-in-out shadow-md focus:outline-none focus:ring-2 focus:ring-primary-green;
+  @apply px-4 py-2 rounded-lg font-bold transition-transform duration-150 ease-in-out shadow-md focus:outline-none focus:ring-2 focus:ring-green-500;
   background: var(--gray-100);
   color: var(--gray-800);
   cursor: pointer;
@@ -983,5 +1028,101 @@ body {
   
   .explanation-content .prose p {
     font-size: 0.85rem;
+  }
+}
+
+/* Leaderboard specific styles */
+.leaderboard-row {
+  animation: slideInFromTop 0.3s ease-out;
+}
+
+.leaderboard-row:hover {
+  transform: translateX(4px);
+  transition: transform 0.2s ease;
+}
+
+.leaderboard-medal {
+  animation: bounce 1s ease-in-out;
+}
+
+.leaderboard-refresh {
+  animation: pulse 2s infinite;
+}
+
+.leaderboard-loading {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200px 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+/* Trophy animations */
+.trophy-gold {
+  animation: bounce 2s ease-in-out infinite;
+}
+
+.trophy-silver {
+  animation: bounce 2s ease-in-out infinite 0.3s;
+}
+
+.trophy-bronze {
+  animation: bounce 2s ease-in-out infinite 0.6s;
+}
+
+/* Challenge animations */
+.challenge-card {
+  animation: slideInFromTop 0.4s ease-out;
+}
+
+.challenge-card:hover {
+  transform: scale(1.02);
+  transition: transform 0.2s ease;
+}
+
+/* Notification animations */
+.notification-new {
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+/* Auto-refresh indicator */
+.auto-refresh-indicator {
+  animation: pulse 2s ease-in-out infinite;
+}
+
+/* Leaderboard table hover effects */
+.leaderboard-table tbody tr {
+  transition: all 0.2s ease;
+}
+
+.leaderboard-table tbody tr:hover {
+  background-color: rgba(59, 130, 246, 0.05);
+  transform: translateX(2px);
+}
+
+/* Rank badge animations */
+.rank-badge {
+  transition: all 0.3s ease;
+}
+
+.rank-badge:hover {
+  transform: scale(1.1);
+}
+
+/* User highlight animation */
+.user-highlight {
+  animation: pulse 2s ease-in-out infinite;
+  background: linear-gradient(45deg, #3b82f6, #8b5cf6);
+  background-size: 200% 200%;
+  animation: pulse 2s ease-in-out infinite, gradientShift 3s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }

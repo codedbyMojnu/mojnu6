@@ -202,7 +202,7 @@ export default function Home() {
         style={{ backgroundImage: "url('/bg-images/notepad.png')" }}
       >
         <div className="card p-6 sm:p-8 text-center animate-fade-in max-w-sm mx-4">
-          <div className="w-16 h-16 border-4 border-primary-green border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <div className="w-16 h-16 border-4 border-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
           <h2 className="text-responsive-xl font-bold text-gray-700 mb-2">
             Loading Game...
           </h2>
