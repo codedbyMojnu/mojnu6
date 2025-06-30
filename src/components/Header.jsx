@@ -314,9 +314,7 @@ export default function Header({
               className="p-1.5 rounded-lg transition-colors bg-orange-100 text-orange-700 hover:bg-orange-200 mr-3"
               aria-label="View daily streak"
             >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-              </svg>
+              🔥
             </button>
             {profile?.currentStreak > 0 && (
               <div className="absolute -top-2 -right-1 bg-red-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center border border-white shadow-sm">
@@ -332,9 +330,7 @@ export default function Header({
               className="p-1.5 rounded-lg transition-colors bg-purple-100 text-purple-700 hover:bg-purple-200 mr-3"
               aria-label="View achievements"
             >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-              </svg>
+              🏆
             </button>
             {profile?.achievements?.length > 0 && (
               <div className="absolute -top-2 -right-1 bg-purple-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center border border-white shadow-sm">
@@ -350,9 +346,7 @@ export default function Header({
               className="p-1.5 rounded-lg transition-colors bg-green-100 text-green-700 hover:bg-green-200 mr-3"
               aria-label="View rewards"
             >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M10 2a1 1 0 01.894.553l1.382 2.764 3.05.444a1 1 0 01.554 1.707l-2.205 2.148.52 3.033a1 1 0 01-1.451 1.054L10 12.347l-2.744 1.446a1 1 0 01-1.451-1.054l.52-3.033-2.205-2.148a1 1 0 01.554-1.707l3.05-.444L9.106 2.553A1 1 0 0110 2z" />
-              </svg>
+              🎁
             </button>
             {profile?.rewards?.length > 0 && (
               <div className="absolute -top-2 -right-1 bg-green-500 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center border border-white shadow-sm">
@@ -382,7 +376,7 @@ export default function Header({
           {/* Community Marketplace Button */}
           <div className="relative inline-block">
             <button
-              onClick={() => navigate('/community')}
+              onClick={() => navigate("/community")}
               className="p-1.5 rounded-lg transition-colors bg-indigo-100 text-indigo-700 hover:bg-indigo-200 mr-3"
               aria-label="Community marketplace"
             >
@@ -651,7 +645,9 @@ export default function Header({
               </h3>
 
               <p className="text-responsive-sm text-gray-600 mb-4 leading-relaxed">
-                Welcome to our interactive learning platform! Dive into engaging challenges and enhance your skills with our comprehensive features.
+                Welcome to our interactive learning platform! Dive into engaging
+                challenges and enhance your skills with our comprehensive
+                features.
               </p>
 
               <div className="bg-indigo-50 rounded-lg p-4 mb-6">
@@ -661,7 +657,9 @@ export default function Header({
                 <div className="space-y-2 text-responsive-xs text-indigo-700">
                   <div className="flex items-center gap-2">
                     <span>🎯</span>
-                    <span>Progressive level system with adaptive difficulty</span>
+                    <span>
+                      Progressive level system with adaptive difficulty
+                    </span>
                   </div>
                   <div className="flex items-center gap-2">
                     <span>💡</span>
@@ -677,13 +675,17 @@ export default function Header({
                   </div>
                   <div className="flex items-center gap-2">
                     <span>🎵</span>
-                    <span>Immersive audio experience with background music</span>
+                    <span>
+                      Immersive audio experience with background music
+                    </span>
                   </div>
                 </div>
               </div>
 
               <p className="text-responsive-sm text-gray-600 mb-6 leading-relaxed">
-                <strong>Login to get better UI experience</strong> and unlock personalized features, save your progress, and compete with others!
+                <strong>Login to get better UI experience</strong> and unlock
+                personalized features, save your progress, and compete with
+                others!
               </p>
 
               <div className="space-y-3">
@@ -749,10 +751,7 @@ export default function Header({
 
       {/* Rewards Modal */}
       {showRewards && (
-        <Rewards
-          isOpen={showRewards}
-          onClose={() => setShowRewards(false)}
-        />
+        <Rewards isOpen={showRewards} onClose={() => setShowRewards(false)} />
       )}
 
       {/* Leaderboard Modal */}
