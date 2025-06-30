@@ -120,14 +120,13 @@ export default function SettingsModal({
 
   return (
     <div className="modal-overlay animate-fade-in">
-      <div className="modal-content p-6 sm:p-8 max-w-sm mx-4 animate-bounce-in">
-        {/* Enhanced Close Button */}
+      <div className="modal-content p-6 max-w-sm mx-4 animate-bounce-in relative">
         <button
-          className="absolute top-3 left-3 bg-yellow-100 hover:bg-yellow-200 rounded-full p-2 transition-colors focus:outline-none focus:ring-2 focus:ring-yellow-300"
           onClick={onClose}
-          aria-label="Close settings"
+          className="absolute top-0 right-0 text-gray-500 hover:text-gray-700 text-2xl font-bold w-8 h-8 rounded-full hover:bg-gray-100 transition-colors flex items-center justify-center"
+          aria-label="Close login modal"
         >
-          <CloseIcon />
+          ×
         </button>
 
         {/* Enhanced Title */}
@@ -157,48 +156,76 @@ export default function SettingsModal({
           {/* Background Music Toggle */}
           <div className="flex items-center justify-between p-3 bg-gradient-to-r from-blue-50 to-purple-50 rounded-lg border border-blue-200">
             <div className="flex items-center gap-3">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${bgMusicOn ? 'bg-blue-500 text-white scale-110' : 'bg-gray-300 text-gray-600'}`}>
+              <div
+                className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
+                  bgMusicOn
+                    ? "bg-blue-500 text-white scale-110"
+                    : "bg-gray-300 text-gray-600"
+                }`}
+              >
                 {bgMusicOn ? <MusicOnIcon /> : <MusicOffIcon />}
               </div>
               <div>
-                <h3 className="font-bold text-responsive-sm text-gray-800">🎵 Background Music</h3>
-                <p className="text-responsive-xs text-gray-600">Immerse yourself with ambient tunes</p>
+                <h3 className="font-bold text-responsive-sm text-gray-800">
+                  🎵 Background Music
+                </h3>
+                <p className="text-responsive-xs text-gray-600">
+                  Immerse yourself with ambient tunes
+                </p>
               </div>
             </div>
             <button
               onClick={handleMusicToggle}
               className={`relative px-4 py-2 rounded-lg font-semibold text-responsive-sm transition-all duration-300 transform hover:scale-105 ${
-                bgMusicOn 
-                  ? 'bg-blue-500 text-white shadow-lg shadow-blue-200' 
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                bgMusicOn
+                  ? "bg-blue-500 text-white shadow-lg shadow-blue-200"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
               }`}
-              aria-label={bgMusicOn ? "Turn off background music" : "Turn on background music"}
+              aria-label={
+                bgMusicOn
+                  ? "Turn off background music"
+                  : "Turn on background music"
+              }
             >
-              {bgMusicOn ? 'ON' : 'OFF'}
+              {bgMusicOn ? "ON" : "OFF"}
             </button>
           </div>
 
           {/* Button Sound Toggle */}
           <div className="flex items-center justify-between p-3 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border border-green-200">
             <div className="flex items-center gap-3">
-              <div className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${buttonSoundOn ? 'bg-green-500 text-white scale-110' : 'bg-gray-300 text-gray-600'}`}>
+              <div
+                className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
+                  buttonSoundOn
+                    ? "bg-green-500 text-white scale-110"
+                    : "bg-gray-300 text-gray-600"
+                }`}
+              >
                 {buttonSoundOn ? <SoundOnIcon /> : <SoundOffIcon />}
               </div>
               <div>
-                <h3 className="font-bold text-responsive-sm text-gray-800">🔊 Button Sounds</h3>
-                <p className="text-responsive-xs text-gray-600">Hear satisfying click feedback</p>
+                <h3 className="font-bold text-responsive-sm text-gray-800">
+                  🔊 Button Sounds
+                </h3>
+                <p className="text-responsive-xs text-gray-600">
+                  Hear satisfying click feedback
+                </p>
               </div>
             </div>
             <button
               onClick={handleSoundToggle}
               className={`relative px-4 py-2 rounded-lg font-semibold text-responsive-sm transition-all duration-300 transform hover:scale-105 ${
-                buttonSoundOn 
-                  ? 'bg-green-500 text-white shadow-lg shadow-green-200' 
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                buttonSoundOn
+                  ? "bg-green-500 text-white shadow-lg shadow-green-200"
+                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
               }`}
-              aria-label={buttonSoundOn ? "Turn off button sounds" : "Turn on button sounds"}
+              aria-label={
+                buttonSoundOn
+                  ? "Turn off button sounds"
+                  : "Turn on button sounds"
+              }
             >
-              {buttonSoundOn ? 'ON' : 'OFF'}
+              {buttonSoundOn ? "ON" : "OFF"}
             </button>
           </div>
         </div>

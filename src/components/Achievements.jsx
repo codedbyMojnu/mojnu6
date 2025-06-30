@@ -5,108 +5,119 @@ import { useProfile } from "../context/ProfileContext";
 // Achievement data (same as server config)
 const ACHIEVEMENTS = {
   FIRST_LOGIN: {
-    id: 'FIRST_LOGIN',
-    name: 'Welcome!',
-    description: 'Complete your first login',
-    icon: '👋',
+    id: "FIRST_LOGIN",
+    name: "Welcome!",
+    description: "Complete your first login",
+    icon: "👋",
     points: 5,
-    category: 'First Steps'
+    category: "First Steps",
   },
   FIRST_LEVEL: {
-    id: 'FIRST_LEVEL',
-    name: 'Getting Started',
-    description: 'Complete your first level',
-    icon: '🎯',
+    id: "FIRST_LEVEL",
+    name: "Getting Started",
+    description: "Complete your first level",
+    icon: "🎯",
     points: 10,
-    category: 'First Steps'
+    category: "First Steps",
   },
   STREAK_3: {
-    id: 'STREAK_3',
-    name: 'On Fire!',
-    description: 'Maintain a 3-day streak',
-    icon: '🔥',
+    id: "STREAK_3",
+    name: "On Fire!",
+    description: "Maintain a 3-day streak",
+    icon: "🔥",
     points: 15,
-    category: 'Streaks'
+    category: "Streaks",
   },
   STREAK_7: {
-    id: 'STREAK_7',
-    name: 'Week Warrior',
-    description: 'Maintain a 7-day streak',
-    icon: '⚡',
+    id: "STREAK_7",
+    name: "Week Warrior",
+    description: "Maintain a 7-day streak",
+    icon: "⚡",
     points: 25,
-    category: 'Streaks'
+    category: "Streaks",
   },
   STREAK_30: {
-    id: 'STREAK_30',
-    name: 'Dedication Master',
-    description: 'Maintain a 30-day streak',
-    icon: '👑',
+    id: "STREAK_30",
+    name: "Dedication Master",
+    description: "Maintain a 30-day streak",
+    icon: "👑",
     points: 100,
-    category: 'Streaks'
+    category: "Streaks",
   },
   LEVEL_5: {
-    id: 'LEVEL_5',
-    name: 'Puzzle Explorer',
-    description: 'Complete 5 levels',
-    icon: '🧩',
+    id: "LEVEL_5",
+    name: "Puzzle Explorer",
+    description: "Complete 5 levels",
+    icon: "🧩",
     points: 20,
-    category: 'Levels'
+    category: "Levels",
   },
   LEVEL_10: {
-    id: 'LEVEL_10',
-    name: 'Puzzle Master',
-    description: 'Complete 10 levels',
-    icon: '🏆',
+    id: "LEVEL_10",
+    name: "Puzzle Master",
+    description: "Complete 10 levels",
+    icon: "🏆",
     points: 50,
-    category: 'Levels'
+    category: "Levels",
   },
   POINTS_100: {
-    id: 'POINTS_100',
-    name: 'Point Collector',
-    description: 'Earn 100 total points',
-    icon: '⭐',
+    id: "POINTS_100",
+    name: "Point Collector",
+    description: "Earn 100 total points",
+    icon: "⭐",
     points: 30,
-    category: 'Points'
+    category: "Points",
   },
   POINTS_500: {
-    id: 'POINTS_500',
-    name: 'Point Hunter',
-    description: 'Earn 500 total points',
-    icon: '💎',
+    id: "POINTS_500",
+    name: "Point Hunter",
+    description: "Earn 500 total points",
+    icon: "💎",
     points: 75,
-    category: 'Points'
+    category: "Points",
   },
   HINT_MASTER: {
-    id: 'HINT_MASTER',
-    name: 'Hint Master',
-    description: 'Use hints on 5 different levels',
-    icon: '💡',
+    id: "HINT_MASTER",
+    name: "Hint Master",
+    description: "Use hints on 5 different levels",
+    icon: "💡",
     points: 25,
-    category: 'Skills'
+    category: "Skills",
   },
   PERFECT_STREAK: {
-    id: 'PERFECT_STREAK',
-    name: 'Perfect Streak',
-    description: 'Complete 5 levels without using hints',
-    icon: '🌟',
+    id: "PERFECT_STREAK",
+    name: "Perfect Streak",
+    description: "Complete 5 levels without using hints",
+    icon: "🌟",
     points: 50,
-    category: 'Special'
-  }
+    category: "Special",
+  },
 };
 
 export default function Achievements({ isOpen, onClose }) {
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState("All");
   const [showUnlockAnimation, setShowUnlockAnimation] = useState(false);
   const [unlockedAchievement, setUnlockedAchievement] = useState(null);
   const { user } = useAuth();
   const { profile } = useProfile();
 
   // Group achievements by category
-  const categories = ['All', 'First Steps', 'Streaks', 'Levels', 'Points', 'Skills', 'Special'];
-  
-  const filteredAchievements = selectedCategory === 'All' 
-    ? Object.values(ACHIEVEMENTS)
-    : Object.values(ACHIEVEMENTS).filter(a => a.category === selectedCategory);
+  const categories = [
+    "All",
+    "First Steps",
+    "Streaks",
+    "Levels",
+    "Points",
+    "Skills",
+    "Special",
+  ];
+
+  const filteredAchievements =
+    selectedCategory === "All"
+      ? Object.values(ACHIEVEMENTS)
+      : Object.values(ACHIEVEMENTS).filter(
+          (a) => a.category === selectedCategory
+        );
 
   const unlockedCount = profile?.achievements?.length || 0;
   const totalCount = Object.keys(ACHIEVEMENTS).length;
@@ -128,12 +139,11 @@ export default function Achievements({ isOpen, onClose }) {
 
   return (
     <div className="modal-overlay animate-fade-in">
-      <div className="modal-content p-6 max-w-4xl mx-4 animate-bounce-in max-h-[90vh] overflow-y-auto">
-        {/* Close Button */}
+      <div className="modal-content p-6 max-w-sm mx-4 animate-bounce-in relative">
         <button
           onClick={onClose}
-          className="absolute top-2 right-2 text-indigo-700 hover:text-indigo-900 text-xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-indigo-100 transition-colors"
-          aria-label="Close achievements modal"
+          className="absolute top-0 right-0 text-gray-500 hover:text-gray-700 text-2xl font-bold w-8 h-8 rounded-full hover:bg-gray-100 transition-colors flex items-center justify-center"
+          aria-label="Close login modal"
         >
           ×
         </button>
@@ -145,29 +155,30 @@ export default function Achievements({ isOpen, onClose }) {
           <p className="text-responsive-sm text-gray-600 mb-4">
             Unlock badges and earn points for your accomplishments!
           </p>
-          
+
           {/* Progress Bar */}
           <div className="bg-gray-200 rounded-full h-3 mb-4">
-            <div 
+            <div
               className="bg-gradient-to-r from-yellow-400 to-orange-500 h-3 rounded-full transition-all duration-500"
               style={{ width: `${progressPercentage}%` }}
             ></div>
           </div>
           <p className="text-responsive-sm text-gray-600">
-            {unlockedCount} of {totalCount} achievements unlocked ({Math.round(progressPercentage)}%)
+            {unlockedCount} of {totalCount} achievements unlocked (
+            {Math.round(progressPercentage)}%)
           </p>
         </div>
 
         {/* Category Filter */}
         <div className="flex flex-wrap gap-2 mb-6 justify-center">
-          {categories.map(category => (
+          {categories.map((category) => (
             <button
               key={category}
               onClick={() => setSelectedCategory(category)}
               className={`px-3 py-1 rounded-full text-responsive-xs font-semibold transition-colors ${
                 selectedCategory === category
-                  ? 'bg-indigo-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? "bg-indigo-600 text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
               {category}
@@ -177,7 +188,7 @@ export default function Achievements({ isOpen, onClose }) {
 
         {/* Achievements Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {filteredAchievements.map(achievement => {
+          {filteredAchievements.map((achievement) => {
             const unlocked = isUnlocked(achievement.id);
             return (
               <div
@@ -185,29 +196,39 @@ export default function Achievements({ isOpen, onClose }) {
                 onClick={() => handleAchievementClick(achievement)}
                 className={`p-4 rounded-xl border-2 transition-all duration-300 cursor-pointer ${
                   unlocked
-                    ? 'bg-gradient-to-br from-yellow-50 to-orange-50 border-yellow-300 hover:shadow-lg hover:scale-105'
-                    : 'bg-gray-50 border-gray-200 opacity-60'
+                    ? "bg-gradient-to-br from-yellow-50 to-orange-50 border-yellow-300 hover:shadow-lg hover:scale-105"
+                    : "bg-gray-50 border-gray-200 opacity-60"
                 }`}
               >
                 <div className="text-center">
-                  <div className={`text-4xl mb-2 ${unlocked ? 'animate-pulse-pop' : 'grayscale'}`}>
+                  <div
+                    className={`text-4xl mb-2 ${
+                      unlocked ? "animate-pulse-pop" : "grayscale"
+                    }`}
+                  >
                     {achievement.icon}
                   </div>
-                  <h3 className={`text-responsive-sm font-bold mb-1 ${
-                    unlocked ? 'text-gray-800' : 'text-gray-500'
-                  }`}>
+                  <h3
+                    className={`text-responsive-sm font-bold mb-1 ${
+                      unlocked ? "text-gray-800" : "text-gray-500"
+                    }`}
+                  >
                     {achievement.name}
                   </h3>
-                  <p className={`text-responsive-xs mb-2 ${
-                    unlocked ? 'text-gray-600' : 'text-gray-400'
-                  }`}>
+                  <p
+                    className={`text-responsive-xs mb-2 ${
+                      unlocked ? "text-gray-600" : "text-gray-400"
+                    }`}
+                  >
                     {achievement.description}
                   </p>
-                  <div className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-responsive-xs font-semibold ${
-                    unlocked
-                      ? 'bg-yellow-100 text-yellow-700'
-                      : 'bg-gray-100 text-gray-500'
-                  }`}>
+                  <div
+                    className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-responsive-xs font-semibold ${
+                      unlocked
+                        ? "bg-yellow-100 text-yellow-700"
+                        : "bg-gray-100 text-gray-500"
+                    }`}
+                  >
                     <span>⭐</span>
                     <span>{achievement.points} pts</span>
                   </div>
@@ -264,4 +285,4 @@ export default function Achievements({ isOpen, onClose }) {
       )}
     </div>
   );
-} 
+}

@@ -11,6 +11,7 @@ import DailyStreak from "./DailyStreak";
 import Leaderboard from "./Leaderboard";
 import Rewards from "./Rewards";
 import SettingsModal from "./SettingsModal";
+import SurveyModal from './SurveyModal';
 
 // Enhanced SVG Icons with better accessibility
 const GearIcon = () => (
@@ -98,6 +99,8 @@ export default function Header({
   const [showAchievements, setShowAchievements] = useState(false);
   const [showRewards, setShowRewards] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [showSurvey, setShowSurvey] = useState(false);
+  const [surveyTaken, setSurveyTaken] = useState(false);
 
   // Check if user is visiting for the first time
   useEffect(() => {
@@ -259,6 +262,28 @@ export default function Header({
     }
   }, [showErrorNotification]);
 
+  useEffect(() => {
+    // Check if user has already submitted the survey
+    async function checkSurvey() {
+      if (user?.token && user?.username) {
+        try {
+          const res = await api.get('/api/survey/summary', {
+            headers: { Authorization: `Bearer ${user.token}` }
+          });
+          if (res.data && res.data.suggestions) {
+            // If the user's username is in the survey list, they've taken it
+            setSurveyTaken(res.data.suggestions.some(s => s.user === user.username));
+          }
+        } catch (err) {
+          setSurveyTaken(false);
+        }
+      } else {
+        setSurveyTaken(false);
+      }
+    }
+    checkSurvey();
+  }, [user]);
+
   return (
     <>
       {/* Enhanced Header */}
@@ -385,6 +410,30 @@ export default function Header({
               </svg>
             </button>
           </div>
+
+          {/* Survey Icon: only show if logged in and not taken */}
+          {user?.token && !surveyTaken && (
+            <button
+              onClick={() => setShowSurvey(true)}
+              className="p-1.5 rounded-lg transition-colors bg-pink-100 text-pink-700 hover:bg-pink-200 mr-3"
+              aria-label="Survey"
+              title="Survey / ফিডব্যাক"
+            >
+              📝
+            </button>
+          )}
+
+          {/* If not logged in, show survey icon that redirects to login */}
+          {!user?.token && (
+            <button
+              onClick={handleLoginClick}
+              className="p-1.5 rounded-lg transition-colors bg-pink-100 text-pink-700 hover:bg-pink-200 mr-3"
+              aria-label="Survey (Login Required)"
+              title="Login to give survey"
+            >
+              📝
+            </button>
+          )}
 
           {/* Settings Button */}
           <button
@@ -761,6 +810,8 @@ export default function Header({
           onClose={() => setShowLeaderboard(false)}
         />
       )}
+
+      <SurveyModal isOpen={showSurvey} onClose={() => setShowSurvey(false)} token={user?.token} />
     </>
   );
 }

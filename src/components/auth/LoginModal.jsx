@@ -4,6 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 import checkUserType from "../../utils/checkUserType";
 import playSound from "../../utils/playSound";
 import api from "./../../api/index";
+import ForgotPasswordModal from "./ForgotPasswordModal";
 
 export default function LoginModal({ isOpen, onClose, onSwitchToSignup }) {
   const [userName, setUserName] = useState("");
@@ -11,6 +12,7 @@ export default function LoginModal({ isOpen, onClose, onSwitchToSignup }) {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const { setUser } = useAuth();
+  const [showForgot, setShowForgot] = useState(false);
 
   const navigate = useNavigate();
 
@@ -83,11 +85,10 @@ export default function LoginModal({ isOpen, onClose, onSwitchToSignup }) {
 
   return (
     <div className="modal-overlay animate-fade-in">
-      <div className="modal-content p-6 max-w-sm mx-4 animate-bounce-in">
-        {/* Close Button */}
+      <div className="modal-content p-6 max-w-sm mx-4 animate-bounce-in relative">
         <button
           onClick={handleClose}
-          className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+          className="absolute top-0 right-0 text-gray-500 hover:text-gray-700 text-2xl font-bold w-8 h-8 rounded-full hover:bg-gray-100 transition-colors flex items-center justify-center"
           aria-label="Close login modal"
         >
           ×
@@ -124,7 +125,7 @@ export default function LoginModal({ isOpen, onClose, onSwitchToSignup }) {
         )}
 
         <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Username Field */}
+          {/* Username or Email Field */}
           <div>
             <label className="block text-sm font-semibold mb-2 text-gray-700">
               Username
@@ -158,6 +159,15 @@ export default function LoginModal({ isOpen, onClose, onSwitchToSignup }) {
               aria-label="Password"
               required
             />
+            <div className="text-right mt-1">
+              <button
+                type="button"
+                className="text-xs text-blue-600 hover:underline focus:outline-none"
+                onClick={() => setShowForgot(true)}
+              >
+                Forgot Password?
+              </button>
+            </div>
           </div>
 
           {/* Submit Button */}
@@ -190,7 +200,11 @@ export default function LoginModal({ isOpen, onClose, onSwitchToSignup }) {
             </button>
           </p>
         </div>
+        <ForgotPasswordModal
+          isOpen={showForgot}
+          onClose={() => setShowForgot(false)}
+        />
       </div>
     </div>
   );
-} 
+}

@@ -7,108 +7,108 @@ import { useProfile } from "../context/ProfileContext";
 const REWARDS = {
   LEVEL_COMPLETION: {
     FINISH_GAME: {
-      id: 'FINISH_GAME',
-      name: 'Win a T-Shirt',
-      description: 'Complete all levels in the game',
-      icon: '👕',
-      type: 'level_completion',
-      levelRequired: 'all'
+      id: "FINISH_GAME",
+      name: "Win a T-Shirt",
+      description: "Complete all levels in the game",
+      icon: "👕",
+      type: "level_completion",
+      levelRequired: "all",
     },
     LEVEL_500: {
-      id: 'LEVEL_500',
-      name: 'Get a Notepad',
-      description: 'Complete 500 levels',
-      icon: '📓',
-      type: 'level_completion',
-      levelRequired: 500
+      id: "LEVEL_500",
+      name: "Get a Notepad",
+      description: "Complete 500 levels",
+      icon: "📓",
+      type: "level_completion",
+      levelRequired: 500,
     },
     LEVEL_100: {
-      id: 'LEVEL_100',
-      name: 'Get a Pen',
-      description: 'Complete 100 levels',
-      icon: '✒️',
-      type: 'level_completion',
-      levelRequired: 100
+      id: "LEVEL_100",
+      name: "Get a Pen",
+      description: "Complete 100 levels",
+      icon: "✒️",
+      type: "level_completion",
+      levelRequired: 100,
     },
     LEVEL_50: {
-      id: 'LEVEL_50',
-      name: 'Get a Sticker',
-      description: 'Complete 50 levels',
-      icon: '🏷️',
-      type: 'level_completion',
-      levelRequired: 50
+      id: "LEVEL_50",
+      name: "Get a Sticker",
+      description: "Complete 50 levels",
+      icon: "🏷️",
+      type: "level_completion",
+      levelRequired: 50,
     },
     LEVEL_25: {
-      id: 'LEVEL_25',
-      name: 'Get a Keychain',
-      description: 'Complete 25 levels',
-      icon: '🔑',
-      type: 'level_completion',
-      levelRequired: 25
-    }
+      id: "LEVEL_25",
+      name: "Get a Keychain",
+      description: "Complete 25 levels",
+      icon: "🔑",
+      type: "level_completion",
+      levelRequired: 25,
+    },
   },
   POINTS_EARNING: {
     POINTS_10000: {
-      id: 'POINTS_10000',
-      name: 'Win a T-Shirt',
-      description: 'Earn 10,000 total points',
-      icon: '👕',
-      type: 'points_earning',
-      pointsRequired: 10000
+      id: "POINTS_10000",
+      name: "Win a T-Shirt",
+      description: "Earn 10,000 total points",
+      icon: "👕",
+      type: "points_earning",
+      pointsRequired: 10000,
     },
     POINTS_5000: {
-      id: 'POINTS_5000',
-      name: 'Get a Hoodie',
-      description: 'Earn 5,000 total points',
-      icon: '🧥',
-      type: 'points_earning',
-      pointsRequired: 5000
+      id: "POINTS_5000",
+      name: "Get a Hoodie",
+      description: "Earn 5,000 total points",
+      icon: "🧥",
+      type: "points_earning",
+      pointsRequired: 5000,
     },
     POINTS_2000: {
-      id: 'POINTS_2000',
-      name: 'Get a Cap',
-      description: 'Earn 2,000 total points',
-      icon: '🧢',
-      type: 'points_earning',
-      pointsRequired: 2000
+      id: "POINTS_2000",
+      name: "Get a Cap",
+      description: "Earn 2,000 total points",
+      icon: "🧢",
+      type: "points_earning",
+      pointsRequired: 2000,
     },
     POINTS_1000: {
-      id: 'POINTS_1000',
-      name: 'Get a Mug',
-      description: 'Earn 1,000 total points',
-      icon: '☕',
-      type: 'points_earning',
-      pointsRequired: 1000
+      id: "POINTS_1000",
+      name: "Get a Mug",
+      description: "Earn 1,000 total points",
+      icon: "☕",
+      type: "points_earning",
+      pointsRequired: 1000,
     },
     POINTS_500: {
-      id: 'POINTS_500',
-      name: 'Get a Notepad',
-      description: 'Earn 500 total points',
-      icon: '📓',
-      type: 'points_earning',
-      pointsRequired: 500
+      id: "POINTS_500",
+      name: "Get a Notepad",
+      description: "Earn 500 total points",
+      icon: "📓",
+      type: "points_earning",
+      pointsRequired: 500,
     },
     POINTS_250: {
-      id: 'POINTS_250',
-      name: 'Get a Pencil',
-      description: 'Earn 250 total points',
-      icon: '✏️',
-      type: 'points_earning',
-      pointsRequired: 250
+      id: "POINTS_250",
+      name: "Get a Pencil",
+      description: "Earn 250 total points",
+      icon: "✏️",
+      type: "points_earning",
+      pointsRequired: 250,
     },
     POINTS_100: {
-      id: 'POINTS_100',
-      name: 'Get a Sticker',
-      description: 'Earn 100 total points',
-      icon: '🏷️',
-      type: 'points_earning',
-      pointsRequired: 100
-    }
-  }
+      id: "POINTS_100",
+      name: "Get a Sticker",
+      description: "Earn 100 total points",
+      icon: "🏷️",
+      type: "points_earning",
+      pointsRequired: 100,
+    },
+  },
 };
 
 export default function Rewards({ isOpen, onClose }) {
-  const [selectedCategory, setSelectedCategory] = useState('All');
+  const [selectedCategory, setSelectedCategory] = useState("All");
   const [showUnlockAnimation, setShowUnlockAnimation] = useState(false);
   const [unlockedReward, setUnlockedReward] = useState(null);
   const { user } = useAuth();
@@ -116,23 +116,23 @@ export default function Rewards({ isOpen, onClose }) {
   const { levels } = useLevels();
 
   // Group rewards by category
-  const categories = ['All', 'Level Completion', 'Points Earning'];
-  
+  const categories = ["All", "Level Completion", "Points Earning"];
+
   const getFilteredRewards = () => {
-    if (selectedCategory === 'All') {
+    if (selectedCategory === "All") {
       return {
         levelCompletion: Object.values(REWARDS.LEVEL_COMPLETION),
-        pointsEarning: Object.values(REWARDS.POINTS_EARNING)
+        pointsEarning: Object.values(REWARDS.POINTS_EARNING),
       };
-    } else if (selectedCategory === 'Level Completion') {
+    } else if (selectedCategory === "Level Completion") {
       return {
         levelCompletion: Object.values(REWARDS.LEVEL_COMPLETION),
-        pointsEarning: []
+        pointsEarning: [],
       };
     } else {
       return {
         levelCompletion: [],
-        pointsEarning: Object.values(REWARDS.POINTS_EARNING)
+        pointsEarning: Object.values(REWARDS.POINTS_EARNING),
       };
     }
   };
@@ -140,7 +140,9 @@ export default function Rewards({ isOpen, onClose }) {
   const { levelCompletion, pointsEarning } = getFilteredRewards();
 
   const unlockedCount = profile?.rewards?.length || 0;
-  const totalCount = Object.keys(REWARDS.LEVEL_COMPLETION).length + Object.keys(REWARDS.POINTS_EARNING).length;
+  const totalCount =
+    Object.keys(REWARDS.LEVEL_COMPLETION).length +
+    Object.keys(REWARDS.POINTS_EARNING).length;
   const progressPercentage = (unlockedCount / totalCount) * 100;
 
   const isUnlocked = (rewardId) => {
@@ -156,9 +158,12 @@ export default function Rewards({ isOpen, onClose }) {
   };
 
   const getProgressText = (reward) => {
-    if (reward.type === 'level_completion') {
+    if (reward.type === "level_completion") {
       const current = profile?.maxLevel || 0;
-      const required = reward.levelRequired === 'all' ? levels?.length || 0 : reward.levelRequired;
+      const required =
+        reward.levelRequired === "all"
+          ? levels?.length || 0
+          : reward.levelRequired;
       return `${current}/${required} levels`;
     } else {
       const current = profile?.totalPoints || 0;
@@ -168,9 +173,12 @@ export default function Rewards({ isOpen, onClose }) {
   };
 
   const getProgressPercentage = (reward) => {
-    if (reward.type === 'level_completion') {
+    if (reward.type === "level_completion") {
       const current = profile?.maxLevel || 0;
-      const required = reward.levelRequired === 'all' ? levels?.length || 0 : reward.levelRequired;
+      const required =
+        reward.levelRequired === "all"
+          ? levels?.length || 0
+          : reward.levelRequired;
       return Math.min((current / required) * 100, 100);
     } else {
       const current = profile?.totalPoints || 0;
@@ -183,12 +191,11 @@ export default function Rewards({ isOpen, onClose }) {
 
   return (
     <div className="modal-overlay animate-fade-in">
-      <div className="modal-content p-6 max-w-4xl mx-4 animate-bounce-in max-h-[90vh] overflow-y-auto">
-        {/* Close Button */}
+      <div className="modal-content p-6 max-w-sm mx-4 animate-bounce-in relative">
         <button
           onClick={onClose}
-          className="absolute top-2 right-2 text-indigo-700 hover:text-indigo-900 text-xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-indigo-100 transition-colors"
-          aria-label="Close rewards modal"
+          className="absolute top-0 right-0 text-gray-500 hover:text-gray-700 text-2xl font-bold w-8 h-8 rounded-full hover:bg-gray-100 transition-colors flex items-center justify-center"
+          aria-label="Close login modal"
         >
           ×
         </button>
@@ -200,29 +207,30 @@ export default function Rewards({ isOpen, onClose }) {
           <p className="text-responsive-sm text-gray-600 mb-4">
             Unlock real rewards by completing levels and earning points!
           </p>
-          
+
           {/* Progress Bar */}
           <div className="bg-gray-200 rounded-full h-3 mb-4">
-            <div 
+            <div
               className="bg-gradient-to-r from-green-400 to-blue-500 h-3 rounded-full transition-all duration-500"
               style={{ width: `${progressPercentage}%` }}
             ></div>
           </div>
           <p className="text-responsive-sm text-gray-600">
-            {unlockedCount} of {totalCount} rewards unlocked ({Math.round(progressPercentage)}%)
+            {unlockedCount} of {totalCount} rewards unlocked (
+            {Math.round(progressPercentage)}%)
           </p>
         </div>
 
         {/* Category Filter */}
         <div className="flex flex-wrap gap-2 mb-6 justify-center">
-          {categories.map(category => (
+          {categories.map((category) => (
             <button
               key={category}
               onClick={() => setSelectedCategory(category)}
               className={`px-3 py-1 rounded-full text-responsive-xs font-semibold transition-colors ${
                 selectedCategory === category
-                  ? 'bg-indigo-600 text-white'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? "bg-indigo-600 text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
               {category}
@@ -237,7 +245,7 @@ export default function Rewards({ isOpen, onClose }) {
               🎯 Level Completion Rewards
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {levelCompletion.map(reward => {
+              {levelCompletion.map((reward) => {
                 const unlocked = isUnlocked(reward.id);
                 const progress = getProgressPercentage(reward);
                 return (
@@ -246,40 +254,50 @@ export default function Rewards({ isOpen, onClose }) {
                     onClick={() => handleRewardClick(reward)}
                     className={`p-4 rounded-xl border-2 transition-all duration-300 cursor-pointer ${
                       unlocked
-                        ? 'bg-gradient-to-br from-blue-50 to-green-50 border-green-300 hover:shadow-lg hover:scale-105'
-                        : 'bg-gray-50 border-gray-200 opacity-60'
+                        ? "bg-gradient-to-br from-blue-50 to-green-50 border-green-300 hover:shadow-lg hover:scale-105"
+                        : "bg-gray-50 border-gray-200 opacity-60"
                     }`}
                   >
                     <div className="text-center">
-                      <div className={`text-4xl mb-2 ${unlocked ? 'animate-pulse-pop' : 'grayscale'}`}>
+                      <div
+                        className={`text-4xl mb-2 ${
+                          unlocked ? "animate-pulse-pop" : "grayscale"
+                        }`}
+                      >
                         {reward.icon}
                       </div>
-                      <h3 className={`text-responsive-sm font-bold mb-1 ${
-                        unlocked ? 'text-gray-800' : 'text-gray-500'
-                      }`}>
+                      <h3
+                        className={`text-responsive-sm font-bold mb-1 ${
+                          unlocked ? "text-gray-800" : "text-gray-500"
+                        }`}
+                      >
                         {reward.name}
                       </h3>
-                      <p className={`text-responsive-xs mb-3 ${
-                        unlocked ? 'text-gray-600' : 'text-gray-400'
-                      }`}>
+                      <p
+                        className={`text-responsive-xs mb-3 ${
+                          unlocked ? "text-gray-600" : "text-gray-400"
+                        }`}
+                      >
                         {reward.description}
                       </p>
-                      
+
                       {/* Progress Bar */}
                       <div className="bg-gray-200 rounded-full h-2 mb-2">
-                        <div 
+                        <div
                           className={`h-2 rounded-full transition-all duration-500 ${
-                            unlocked ? 'bg-green-500' : 'bg-blue-400'
+                            unlocked ? "bg-green-500" : "bg-blue-400"
                           }`}
                           style={{ width: `${progress}%` }}
                         ></div>
                       </div>
-                      <p className={`text-responsive-xs ${
-                        unlocked ? 'text-green-600' : 'text-gray-500'
-                      }`}>
+                      <p
+                        className={`text-responsive-xs ${
+                          unlocked ? "text-green-600" : "text-gray-500"
+                        }`}
+                      >
                         {getProgressText(reward)}
                       </p>
-                      
+
                       {unlocked && (
                         <div className="mt-2 text-green-600 text-responsive-xs font-semibold">
                           ✓ Unlocked
@@ -300,7 +318,7 @@ export default function Rewards({ isOpen, onClose }) {
               ⭐ Points Earning Rewards
             </h3>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {pointsEarning.map(reward => {
+              {pointsEarning.map((reward) => {
                 const unlocked = isUnlocked(reward.id);
                 const progress = getProgressPercentage(reward);
                 return (
@@ -309,40 +327,50 @@ export default function Rewards({ isOpen, onClose }) {
                     onClick={() => handleRewardClick(reward)}
                     className={`p-4 rounded-xl border-2 transition-all duration-300 cursor-pointer ${
                       unlocked
-                        ? 'bg-gradient-to-br from-purple-50 to-pink-50 border-pink-300 hover:shadow-lg hover:scale-105'
-                        : 'bg-gray-50 border-gray-200 opacity-60'
+                        ? "bg-gradient-to-br from-purple-50 to-pink-50 border-pink-300 hover:shadow-lg hover:scale-105"
+                        : "bg-gray-50 border-gray-200 opacity-60"
                     }`}
                   >
                     <div className="text-center">
-                      <div className={`text-4xl mb-2 ${unlocked ? 'animate-pulse-pop' : 'grayscale'}`}>
+                      <div
+                        className={`text-4xl mb-2 ${
+                          unlocked ? "animate-pulse-pop" : "grayscale"
+                        }`}
+                      >
                         {reward.icon}
                       </div>
-                      <h3 className={`text-responsive-sm font-bold mb-1 ${
-                        unlocked ? 'text-gray-800' : 'text-gray-500'
-                      }`}>
+                      <h3
+                        className={`text-responsive-sm font-bold mb-1 ${
+                          unlocked ? "text-gray-800" : "text-gray-500"
+                        }`}
+                      >
                         {reward.name}
                       </h3>
-                      <p className={`text-responsive-xs mb-3 ${
-                        unlocked ? 'text-gray-600' : 'text-gray-400'
-                      }`}>
+                      <p
+                        className={`text-responsive-xs mb-3 ${
+                          unlocked ? "text-gray-600" : "text-gray-400"
+                        }`}
+                      >
                         {reward.description}
                       </p>
-                      
+
                       {/* Progress Bar */}
                       <div className="bg-gray-200 rounded-full h-2 mb-2">
-                        <div 
+                        <div
                           className={`h-2 rounded-full transition-all duration-500 ${
-                            unlocked ? 'bg-pink-500' : 'bg-purple-400'
+                            unlocked ? "bg-pink-500" : "bg-purple-400"
                           }`}
                           style={{ width: `${progress}%` }}
                         ></div>
                       </div>
-                      <p className={`text-responsive-xs ${
-                        unlocked ? 'text-pink-600' : 'text-gray-500'
-                      }`}>
+                      <p
+                        className={`text-responsive-xs ${
+                          unlocked ? "text-pink-600" : "text-gray-500"
+                        }`}
+                      >
                         {getProgressText(reward)}
                       </p>
-                      
+
                       {unlocked && (
                         <div className="mt-2 text-pink-600 text-responsive-xs font-semibold">
                           ✓ Unlocked
@@ -398,4 +426,4 @@ export default function Rewards({ isOpen, onClose }) {
       )}
     </div>
   );
-} 
+}

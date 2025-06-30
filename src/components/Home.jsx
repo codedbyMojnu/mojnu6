@@ -313,7 +313,15 @@ export default function Home() {
       {/* Completion Modal */}
       {showCompletionModal && (
         <div className="modal-overlay animate-fade-in">
-          <div className="modal-content p-4 sm:p-6 md:p-8 max-w-sm mx-2 sm:mx-4">
+          <div className="modal-content p-4 sm:p-6 md:p-8 max-w-sm mx-2 sm:mx-4 relative">
+            {/* Close Button */}
+            <button
+              onClick={() => setShowCompletionModal(false)}
+              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+              aria-label="Close completion modal"
+            >
+              ×
+            </button>
             <div className="text-center">
               <div className="text-4xl sm:text-6xl mb-4">🏆</div>
               <h2 className="text-responsive-lg sm:text-responsive-xl font-bold text-green-700 mb-4">

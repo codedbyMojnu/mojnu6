@@ -28,23 +28,28 @@ export default function DailyStreak({ isOpen, onClose }) {
       );
 
       if (response.status === 200) {
-        const { message, pointsEarned, streakUpdated, profile: updatedProfile } = response.data;
-        
+        const {
+          message,
+          pointsEarned,
+          streakUpdated,
+          profile: updatedProfile,
+        } = response.data;
+
         if (streakUpdated) {
           setRewardMessage(message);
           setPointsEarned(pointsEarned);
           setShowReward(true);
-          
+
           // Update local profile state
           setProfile({
             ...profile,
             currentStreak: updatedProfile.currentStreak,
             longestStreak: updatedProfile.longestStreak,
             totalPoints: updatedProfile.totalPoints,
-            hintPoints: updatedProfile.hintPoints
+            hintPoints: updatedProfile.hintPoints,
           });
         }
-        
+
         setStreakData(updatedProfile);
       }
     } catch (error) {
@@ -64,12 +69,11 @@ export default function DailyStreak({ isOpen, onClose }) {
 
   return (
     <div className="modal-overlay animate-fade-in">
-      <div className="modal-content p-6 max-w-md mx-4 animate-bounce-in">
-        {/* Close Button */}
+      <div className="modal-content p-6 max-w-sm mx-4 animate-bounce-in relative">
         <button
           onClick={onClose}
-          className="absolute top-2 right-2 text-indigo-700 hover:text-indigo-900 text-xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-indigo-100 transition-colors"
-          aria-label="Close daily streak modal"
+          className="absolute top-0 right-0 text-gray-500 hover:text-gray-700 text-2xl font-bold w-8 h-8 rounded-full hover:bg-gray-100 transition-colors flex items-center justify-center"
+          aria-label="Close login modal"
         >
           ×
         </button>
@@ -88,7 +92,9 @@ export default function DailyStreak({ isOpen, onClose }) {
           {isLoading ? (
             <div className="py-8">
               <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-              <p className="text-responsive-sm text-gray-600">Checking your streak...</p>
+              <p className="text-responsive-sm text-gray-600">
+                Checking your streak...
+              </p>
             </div>
           ) : streakData ? (
             <div className="space-y-6">
@@ -137,7 +143,9 @@ export default function DailyStreak({ isOpen, onClose }) {
             </div>
           ) : (
             <div className="py-8">
-              <p className="text-responsive-sm text-gray-600">Failed to load streak data</p>
+              <p className="text-responsive-sm text-gray-600">
+                Failed to load streak data
+              </p>
             </div>
           )}
 
@@ -180,4 +188,4 @@ export default function DailyStreak({ isOpen, onClose }) {
       )}
     </div>
   );
-} 
+}

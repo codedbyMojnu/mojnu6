@@ -3,6 +3,7 @@ import { useNavigate, useParams } from "react-router";
 import api from "../../api";
 import { useAuth } from "../../context/AuthContext";
 import { useLevels } from "../../context/LevelContext";
+import SuccessModal from '../SuccessModal';
 import MarkdownEditor from "./MarkdownEditor";
 
 export default function AddQuestionForm() {
@@ -18,6 +19,8 @@ export default function AddQuestionForm() {
   const { levels, setLevels } = useLevels();
   const navigate = useNavigate();
   const params = useParams();
+  const [successModalOpen, setSuccessModalOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   const categories = ['HTTP', 'REST', 'API', 'Web Development', 'Programming', 'General', 'Advanced'];
 
@@ -55,7 +58,7 @@ export default function AddQuestionForm() {
     setLevelData((prev) => ({ ...prev, options: newOptions }));
   }
 
-  function resetFormAndNavigate(path) {
+  function resetForm() {
     setLevelData({
       question: "",
       answer: "",
@@ -64,7 +67,6 @@ export default function AddQuestionForm() {
       options: [],
       category: 'General',
     });
-    navigate(path);
   }
 
   async function handleDelete() {
@@ -76,7 +78,9 @@ export default function AddQuestionForm() {
       });
       if (response.status === 200) {
         setLevels(levels?.filter((level) => level._id !== params?.id));
-        resetFormAndNavigate(`/dashboard/deleted/${params?.id}`);
+        resetForm();
+        setSuccessMessage("Question deleted successfully!");
+        setSuccessModalOpen(true);
       }
     } catch (error) {
       console.error("Failed to delete level:", error);
@@ -85,19 +89,18 @@ export default function AddQuestionForm() {
 
   async function addLevel() {
     try {
-      // Filter out empty options before sending
       const dataToSend = {
         ...levelData,
         options: levelData.options.filter(option => option.trim() !== "")
       };
-      
       const response = await api.post("/api/levels", dataToSend, {
         headers: { Authorization: `Bearer ${user?.token}` },
       });
       if (response.status === 201) {
-        // ✅ Use 201 for Created
         setLevels([...levels, response?.data]);
-        resetFormAndNavigate(`/dashboard/added/${response?.data?._id}`);
+        resetForm();
+        setSuccessMessage("Question added successfully!");
+        setSuccessModalOpen(true);
       }
     } catch (error) {
       console.error("Failed to add level:", error);
@@ -106,12 +109,10 @@ export default function AddQuestionForm() {
 
   async function updateLevel() {
     try {
-      // Filter out empty options before sending
       const dataToSend = {
         ...levelData,
         options: levelData.options.filter(option => option.trim() !== "")
       };
-      
       const response = await api.put(`/api/levels/${params?.id}`, dataToSend, {
         headers: { Authorization: `Bearer ${user?.token}` },
       });
@@ -121,7 +122,9 @@ export default function AddQuestionForm() {
             level._id === params?.id ? response.data : level
           )
         );
-        resetFormAndNavigate(`/dashboard/edited/${params?.id}`);
+        resetForm();
+        setSuccessMessage("Question updated successfully!");
+        setSuccessModalOpen(true);
       }
     } catch (error) {
       console.error("Failed to update level:", error);
@@ -305,6 +308,11 @@ export default function AddQuestionForm() {
           </div>
         </div>
       </div>
+      <SuccessModal
+        isOpen={successModalOpen}
+        message={successMessage}
+        onClose={() => setSuccessModalOpen(false)}
+      />
     </div>
   );
 }

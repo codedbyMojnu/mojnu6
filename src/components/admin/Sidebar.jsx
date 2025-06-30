@@ -30,6 +30,13 @@ export default function Sidebar() {
         </button>
       </div>
       <NavLink
+        to="/dashboard/survey"
+        style={({ isActive }) => (isActive ? activeLinkStyle : undefined)}
+        className="block w-full text-left font-bold px-4 py-2 text-xl text-pink-600 rounded-lg hover:bg-pink-100/80 transition-colors duration-200 mb-2"
+      >
+        📝 Survey
+      </NavLink>
+      <NavLink
         to="/dashboard/transactions"
         style={({ isActive }) => (isActive ? activeLinkStyle : undefined)}
         className="block w-full text-left font-bold px-4 py-2 text-xl text-blue-600 rounded-lg hover:bg-blue-100/80 transition-colors duration-200"

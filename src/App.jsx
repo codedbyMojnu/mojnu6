@@ -1,13 +1,10 @@
 import { useEffect } from "react";
 import { BrowserRouter, Route, Routes } from "react-router";
 import AddQuestionForm from "./components/admin/AddQuestionForm";
-import AddSuccess from "./components/admin/AddSuccess";
-import DashboardLayout from "./components/admin/DashboardLayout";
-import { DeletedSuccess } from "./components/admin/DeletedSuccess";
-import EditedSuccess from "./components/admin/EditedSuccess";
-
 import ApprovedTransactionList from "./components/admin/ApprovedTransactionList";
+import DashboardLayout from "./components/admin/DashboardLayout";
 import FakedTransactionList from "./components/admin/FakedTransactionList";
+import SurveyTable from "./components/admin/SurveyTable";
 import TransactionList from "./components/admin/TransactionList";
 import WelcomeAdminDashboard from "./components/admin/WelcomeAdminDashboard";
 import CommunityMarketplace from "./components/CommunityMarketplace";
@@ -43,15 +40,16 @@ export default function App() {
                   <Route index element={<WelcomeAdminDashboard />} />
                   <Route path="add" element={<AddQuestionForm />} />
                   <Route path="edit/:id" element={<AddQuestionForm />} />
-                  <Route path="deleted/:id" element={<DeletedSuccess />} />
-                  <Route path="edited/:id" element={<EditedSuccess />} />
-                  <Route path="added/:id" element={<AddSuccess />} />
                   <Route path="transactions" element={<TransactionList />} />
                   <Route
                     path="approved-transactions"
                     element={<ApprovedTransactionList />}
                   />
-                   <Route path="faked-transactions" element={<FakedTransactionList />} />
+                  <Route
+                    path="faked-transactions"
+                    element={<FakedTransactionList />}
+                  />
+                  <Route path="survey" element={<SurveyTable />} />
                 </Route>
               </Route>
             </Routes>

@@ -5,6 +5,7 @@ import playSound from "../../utils/playSound";
 export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
   const [formData, setFormData] = useState({
     username: "",
+    email: "",
     password: "",
   });
   const [isLoading, setIsLoading] = useState(false);
@@ -32,8 +33,13 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
       setError("");
 
       // Validation
-      if (!formData.username.trim() || !formData.password.trim()) {
+      if (!formData.username.trim() || !formData.email.trim() || !formData.password.trim()) {
         setError("Please fill in all fields");
+        return;
+      }
+      // Simple email validation
+      if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(formData.email)) {
+        setError("Please enter a valid email address");
         return;
       }
 
@@ -47,6 +53,7 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
       try {
         const response = await api.post("/api/auth/register", {
           username: formData.username.trim(),
+          email: formData.email.trim(),
           password: formData.password,
         });
 
@@ -55,7 +62,7 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
           setTimeout(() => {
             onSwitchToLogin();
             setSuccess(false);
-            setFormData({ username: "", password: "" });
+            setFormData({ username: "", email: "", password: "" });
           }, 2000);
         }
       } catch (err) {
@@ -75,7 +82,7 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
   const handleClose = useCallback(() => {
     setError("");
     setSuccess(false);
-    setFormData({ username: "", password: "" });
+    setFormData({ username: "", email: "", password: "" });
     onClose();
   }, [onClose]);
 
@@ -83,12 +90,11 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
 
   return (
     <div className="modal-overlay animate-fade-in">
-      <div className="modal-content p-6 max-w-sm mx-4 animate-bounce-in">
-        {/* Close Button */}
+      <div className="modal-content p-6 max-w-sm mx-4 animate-bounce-in relative">
         <button
           onClick={handleClose}
-          className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
-          aria-label="Close signup modal"
+          className="absolute top-0 right-0 text-gray-500 hover:text-gray-700 text-2xl font-bold w-8 h-8 rounded-full hover:bg-gray-100 transition-colors flex items-center justify-center"
+          aria-label="Close login modal"
         >
           ×
         </button>
@@ -164,6 +170,24 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
             />
           </div>
 
+          {/* Email Field */}
+          <div>
+            <label className="block text-sm font-semibold mb-2 text-gray-700">
+              Email
+            </label>
+            <input
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="input"
+              placeholder="Enter your email"
+              type="email"
+              disabled={isLoading}
+              aria-label="Email"
+              required
+            />
+          </div>
+
           {/* Password Field */}
           <div>
             <label className="block text-sm font-semibold mb-2 text-gray-700">
@@ -215,4 +239,4 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
       </div>
     </div>
   );
-} 
+}

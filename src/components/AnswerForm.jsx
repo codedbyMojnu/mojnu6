@@ -396,12 +396,11 @@ export default function AnswerForm({ onAnswer, mark, levelIndex, showLogin }) {
       {/* Enhanced Hints Modal */}
       {showHints && (
         <div className="modal-overlay">
-          <div className="modal-content p-4 max-w-sm mx-4 hint-modal animate-bounce-in">
-            {/* Close Button */}
+          <div className="modal-content p-6 max-w-sm mx-4 animate-bounce-in relative">
             <button
               onClick={() => setShowHints(false)}
-              className="absolute top-2 right-2 text-indigo-700 hover:text-indigo-900 text-xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-indigo-100 transition-colors"
-              aria-label="Close hint"
+              className="absolute top-0 right-0 text-gray-500 hover:text-gray-700 text-2xl font-bold w-8 h-8 rounded-full hover:bg-gray-100 transition-colors flex items-center justify-center"
+              aria-label="Close login modal"
             >
               ×
             </button>
@@ -566,12 +565,11 @@ export default function AnswerForm({ onAnswer, mark, levelIndex, showLogin }) {
       {/* Skip Level Modal */}
       {showSkipModal && (
         <div className="modal-overlay">
-          <div className="modal-content p-4 max-w-sm mx-4 animate-bounce-in">
-            {/* Close Button */}
+          <div className="modal-content p-6 max-w-sm mx-4 animate-bounce-in relative">
             <button
               onClick={() => setShowSkipModal(false)}
-              className="absolute top-2 right-2 text-indigo-700 hover:text-indigo-900 text-xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-indigo-100 transition-colors"
-              aria-label="Close skip modal"
+              className="absolute top-0 right-0 text-gray-500 hover:text-gray-700 text-2xl font-bold w-8 h-8 rounded-full hover:bg-gray-100 transition-colors flex items-center justify-center"
+              aria-label="Close login modal"
             >
               ×
             </button>
