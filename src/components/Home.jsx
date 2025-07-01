@@ -11,6 +11,7 @@ import Explanation from "./Explanation";
 import Header from "./Header";
 import WelcomeToGame from "./WelcomeToGame.jsx";
 import LoginModal from "./auth/LoginModal";
+import SignupModal from "./auth/SignupModal";
 
 export default function Home() {
   const [welcome, setWelcome] = useState(true);
@@ -25,6 +26,7 @@ export default function Home() {
   const [showCompletionModal, setShowCompletionModal] = useState(false);
   const [hasInitializedLevel, setHasInitializedLevel] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [showSignupModal, setShowSignupModal] = useState(false);
   const [showChatRoom, setShowChatRoom] = useState(false);
 
   // For Passed Levels
@@ -196,6 +198,23 @@ export default function Home() {
     setShowLoginModal(true);
   }, []);
 
+  // Switch between login and signup modals
+  const switchToSignup = useCallback(() => {
+    setShowLoginModal(false);
+    setShowSignupModal(true);
+  }, []);
+
+  const switchToLogin = useCallback(() => {
+    setShowSignupModal(false);
+    setShowLoginModal(true);
+  }, []);
+
+  // Close auth modals
+  const closeAuthModals = useCallback(() => {
+    setShowLoginModal(false);
+    setShowSignupModal(false);
+  }, []);
+
   // Loading state
   if (isLoading) {
     return (
@@ -353,11 +372,17 @@ export default function Home() {
       {showLoginModal && (
         <LoginModal
           isOpen={showLoginModal}
-          onClose={() => setShowLoginModal(false)}
-          onSwitchToSignup={() => {
-            setShowLoginModal(false);
-            // Note: Signup modal would need to be added here if needed
-          }}
+          onClose={closeAuthModals}
+          onSwitchToSignup={switchToSignup}
+        />
+      )}
+
+      {/* Signup Modal */}
+      {showSignupModal && (
+        <SignupModal
+          isOpen={showSignupModal}
+          onClose={closeAuthModals}
+          onSwitchToLogin={switchToLogin}
         />
       )}
 

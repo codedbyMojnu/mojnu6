@@ -118,14 +118,14 @@ export default function ChatRoom({ isOpen, onClose, roomId = "general" }) {
         playSound("/sounds/button-sound.mp3");
       });
 
-      // Listen for user join/leave notifications
-      socket.on("user-joined", (data) => {
-        addSystemMessage(`${data.username} joined the chat 👋`);
-      });
+      // Listen for user join/leave notifications (IN_FUTURE)
+      // socket.on("user-joined", (data) => {
+      //   addSystemMessage(`${data.username} joined the chat 👋`);
+      // });
 
-      socket.on("user-left", (data) => {
-        addSystemMessage(`${data.username} left the chat 👋`);
-      });
+      // socket.on("user-left", (data) => {
+      //   addSystemMessage(`${data.username} left the chat 👋`);
+      // });
 
       // Listen for online users updates
       socket.on("online-users", (users) => {

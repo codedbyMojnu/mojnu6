@@ -11,7 +11,7 @@ import DailyStreak from "./DailyStreak";
 import Leaderboard from "./Leaderboard";
 import Rewards from "./Rewards";
 import SettingsModal from "./SettingsModal";
-import SurveyModal from './SurveyModal';
+import SurveyModal from "./SurveyModal";
 
 // Enhanced SVG Icons with better accessibility
 const GearIcon = () => (
@@ -267,12 +267,14 @@ export default function Header({
     async function checkSurvey() {
       if (user?.token && user?.username) {
         try {
-          const res = await api.get('/api/survey/summary', {
-            headers: { Authorization: `Bearer ${user.token}` }
+          const res = await api.get("/api/survey/summary", {
+            headers: { Authorization: `Bearer ${user.token}` },
           });
           if (res.data && res.data.suggestions) {
             // If the user's username is in the survey list, they've taken it
-            setSurveyTaken(res.data.suggestions.some(s => s.user === user.username));
+            setSurveyTaken(
+              res.data.suggestions.some((s) => s.user === user.username)
+            );
           }
         } catch (err) {
           setSurveyTaken(false);
@@ -398,7 +400,7 @@ export default function Header({
             )}
           </div>
 
-          {/* Community Marketplace Button */}
+          {/* Community Marketplace Button (IN FUTURE)
           <div className="relative inline-block">
             <button
               onClick={() => navigate("/community")}
@@ -409,7 +411,7 @@ export default function Header({
                 <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
               </svg>
             </button>
-          </div>
+          </div> */}
 
           {/* Survey Icon: only show if logged in and not taken */}
           {user?.token && !surveyTaken && (
@@ -494,7 +496,7 @@ export default function Header({
       {/* Enhanced Levels Modal */}
       {showLevelsModal && (
         <div className="modal-overlay">
-          <div className="modal-content p-4 max-w-sm mx-4 animate-bounce-in max-h-[80vh] overflow-y-auto">
+          <div className="modal-content p-4 max-w-sm mx-4 animate-bounce-in max-h-[80vh] overflow-y-auto relative">
             {/* Close Button */}
             <button
               onClick={toggleLevelsModal}
@@ -538,7 +540,7 @@ export default function Header({
       {/* Enhanced Profile Modal */}
       {showProfileModal && (
         <div className="modal-overlay">
-          <div className="modal-content p-4 max-w-sm mx-4 animate-bounce-in">
+          <div className="modal-content p-4 max-w-sm mx-4 animate-bounce-in relative">
             {/* Close Button */}
             <button
               onClick={toggleProfileModal}
@@ -811,7 +813,11 @@ export default function Header({
         />
       )}
 
-      <SurveyModal isOpen={showSurvey} onClose={() => setShowSurvey(false)} token={user?.token} />
+      <SurveyModal
+        isOpen={showSurvey}
+        onClose={() => setShowSurvey(false)}
+        token={user?.token}
+      />
     </>
   );
 }

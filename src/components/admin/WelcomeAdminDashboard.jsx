@@ -33,18 +33,6 @@ export default function WelcomeAdminDashboard() {
               <div>😊 খুশি: <span className="font-bold text-green-600">{survey.happyCount}</span></div>
               <div>😞 খুশি না: <span className="font-bold text-red-600">{survey.unhappyCount}</span></div>
             </div>
-            <div className="text-left mt-4">
-              <div className="font-semibold mb-1">📝 পরামর্শসমূহ:</div>
-              <ul className="list-disc pl-6 space-y-1 text-base">
-                {survey.suggestions.length === 0 && <li className="text-gray-500">No suggestions yet.</li>}
-                {survey.suggestions.map((s, i) => (
-                  <li key={i}>
-                    <span className="text-gray-800">{s.suggestion}</span>
-                    <span className="text-xs text-gray-400 ml-2">({new Date(s.createdAt).toLocaleString()})</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
           </div>
         )}
 
