@@ -218,16 +218,13 @@ export default function Home() {
   // Loading state
   if (isLoading) {
     return (
-      <div
-        className="h-screen w-full bg-cover bg-center bg-no-repeat flex items-center justify-center"
-        style={{ backgroundImage: "url('/bg-images/notepad.png')" }}
-      >
-        <div className="card p-6 sm:p-8 text-center animate-fade-in max-w-sm mx-4">
-          <div className="w-16 h-16 border-4 border-green-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <h2 className="text-responsive-xl font-bold text-gray-700 mb-2">
+      <div className="h-screen w-full bg-[#181f2a] flex items-center justify-center">
+        <div className="bg-[#232b3e] rounded-3xl shadow-2xl p-8 text-center max-w-sm mx-4">
+          <div className="w-16 h-16 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
+          <h2 className="text-2xl font-extrabold text-yellow-400 mb-2 tracking-wide">
             Loading Game...
           </h2>
-          <p className="text-responsive-sm text-gray-500">
+          <p className="text-base text-gray-300">
             Preparing your puzzle adventure
           </p>
         </div>
@@ -238,17 +235,17 @@ export default function Home() {
   // Error state
   if (error) {
     return (
-      <div
-        className="h-screen w-full bg-cover bg-center bg-no-repeat flex items-center justify-center"
-        style={{ backgroundImage: "url('/bg-images/notepad.png')" }}
-      >
-        <div className="card p-6 sm:p-8 text-center animate-fade-in max-w-sm mx-4">
+      <div className="h-screen w-full bg-[#181f2a] flex items-center justify-center">
+        <div className="bg-[#232b3e] rounded-3xl shadow-2xl p-8 text-center max-w-sm mx-4">
           <div className="text-6xl mb-4">⚠️</div>
-          <h2 className="text-responsive-xl font-bold text-red-600 mb-4">
+          <h2 className="text-2xl font-extrabold text-red-400 mb-4 tracking-wide">
             Oops! Something went wrong
           </h2>
-          <p className="text-responsive-sm text-gray-600 mb-6">{error}</p>
-          <button onClick={fetchLevels} className="btn btn-primary w-full">
+          <p className="text-base text-gray-300 mb-6">{error}</p>
+          <button
+            onClick={fetchLevels}
+            className="w-full px-6 py-3 rounded-2xl bg-yellow-400 text-[#181f2a] font-bold text-lg shadow-lg hover:bg-green-400 hover:text-[#181f2a] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-300"
+          >
             🔄 Try Again
           </button>
         </div>
@@ -257,15 +254,12 @@ export default function Home() {
   }
 
   return (
-    <div
-      className="h-screen w-full bg-cover bg-center bg-no-repeat flex items-center justify-center overflow-hidden relative"
-      style={{ backgroundImage: "url('/bg-images/notepad.png')" }}
-    >
+    <div className="h-screen w-full flex items-center justify-center bg-[#181f2a] relative">
       {/* Animated playful background */}
       <AnimatedBackground />
-      {/* Mobile: Full width with small margins, Desktop: Wider container */}
-      <div className="w-full max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl mx-2 sm:mx-4 relative z-10">
-        <div className="card p-3 sm:p-4 md:p-6 relative animate-fade-in h-screen flex flex-col" style={{ borderRadius: 0, border: 'none' }}>
+      {/* Main Card Container */}
+      <div className="w-full ">
+        <div className="bg-[#232b3e] rounded-3xl shadow-2xl p-0 sm:p-2 md:p-6 flex flex-col">
           <Header
             buttonSoundOn={buttonSoundOn}
             setButtonSoundOn={setButtonSoundOn}
@@ -280,7 +274,7 @@ export default function Home() {
             setExplanation={setExplanation}
           />
 
-          <div className="flex-1 flex flex-col overflow-hidden">
+          <div className="flex-1 flex flex-col items-center justify-center px-2 sm:px-6">
             {welcome && (
               <WelcomeToGame
                 setBgMusicOn={setBgMusicOn}
@@ -307,17 +301,17 @@ export default function Home() {
                   )
                 ) : (
                   <div className="flex-1 flex flex-col items-center justify-center text-center animate-fade-in px-4">
-                    <div className="text-4xl sm:text-6xl mb-4">🎉</div>
-                    <h2 className="text-responsive-xl sm:text-responsive-2xl font-bold text-green-700 mb-4">
+                    <div className="text-7xl mb-6">🎉</div>
+                    <h2 className="text-3xl sm:text-4xl font-extrabold text-yellow-400 mb-4 tracking-wide">
                       All Questions Completed!
                     </h2>
-                    <p className="text-responsive-sm sm:text-responsive-base text-gray-700 mb-6">
+                    <p className="text-lg sm:text-xl text-gray-200 mb-8 font-semibold">
                       Congratulations! You've solved all {levels?.length}{" "}
                       puzzles! 🧠🔥
                     </p>
                     <button
                       onClick={handleRestart}
-                      className="btn btn-primary text-responsive-base sm:text-responsive-lg"
+                      className="w-full px-6 py-4 rounded-2xl bg-green-400 text-[#181f2a] font-extrabold text-xl shadow-xl hover:bg-yellow-400 hover:text-[#181f2a] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-300"
                     >
                       🔁 Play Again
                     </button>
@@ -332,33 +326,33 @@ export default function Home() {
       {/* Completion Modal */}
       {showCompletionModal && (
         <div className="modal-overlay animate-fade-in">
-          <div className="modal-content p-4 sm:p-6 md:p-8 max-w-sm mx-2 sm:mx-4 relative">
+          <div className="modal-content p-6 max-w-sm mx-2 sm:mx-4 relative rounded-3xl bg-[#232b3e] shadow-2xl">
             {/* Close Button */}
             <button
               onClick={() => setShowCompletionModal(false)}
-              className="absolute top-3 right-3 text-gray-500 hover:text-gray-700 text-xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+              className="absolute top-3 right-3 text-gray-400 hover:text-yellow-400 text-2xl font-bold w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#181f2a] transition-colors"
               aria-label="Close completion modal"
             >
               ×
             </button>
             <div className="text-center">
-              <div className="text-4xl sm:text-6xl mb-4">🏆</div>
-              <h2 className="text-responsive-lg sm:text-responsive-xl font-bold text-green-700 mb-4">
+              <div className="text-6xl mb-4">🏆</div>
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-yellow-400 mb-4 tracking-wide">
                 Level {levelIndex + 1} Completed!
               </h2>
-              <p className="text-responsive-xs sm:text-responsive-sm text-gray-600 mb-6">
+              <p className="text-base sm:text-lg text-gray-200 mb-6">
                 Great job! Ready for the next challenge?
               </p>
-              <div className="flex gap-2 sm:gap-3">
+              <div className="flex gap-3">
                 <button
                   onClick={() => setShowCompletionModal(false)}
-                  className="btn btn-secondary flex-1 text-responsive-xs sm:text-responsive-sm"
+                  className="flex-1 px-4 py-3 rounded-2xl bg-blue-400 text-[#181f2a] font-bold text-lg shadow hover:bg-yellow-400 hover:text-[#181f2a] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-300"
                 >
                   Continue
                 </button>
                 <button
                   onClick={handleRestart}
-                  className="btn btn-ghost flex-1 text-responsive-xs sm:text-responsive-sm"
+                  className="flex-1 px-4 py-3 rounded-2xl bg-yellow-400 text-[#181f2a] font-bold text-lg shadow hover:bg-green-400 hover:text-[#181f2a] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-300"
                 >
                   Restart
                 </button>
@@ -409,9 +403,15 @@ export default function Home() {
           title="Join the Chat Room"
         >
           <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-            <path fillRule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd" />
+            <path
+              fillRule="evenodd"
+              d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z"
+              clipRule="evenodd"
+            />
           </svg>
-          <span className="hidden sm:inline text-sm font-semibold">Join Chat</span>
+          <span className="hidden sm:inline text-sm font-semibold">
+            Join Chat
+          </span>
         </button>
       </div>
     </div>

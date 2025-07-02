@@ -289,32 +289,28 @@ export default function Header({
   return (
     <>
       {/* Enhanced Header */}
-      <header className="flex items-center justify-between p-2 bg-white/90 backdrop-blur-sm  mb-3">
-        {/* Left Section - Level Info */}
-        <div className="flex items-center gap-2">
+      <header
+        className="sticky top-0 z-40 w-full bg-[#232b3e] text-white flex items-center justify-between px-12 py-6 rounded-3xl"
+        style={{ minHeight: 80, margin: '0 auto', maxWidth: '1200px', left: 0, right: 0 }}
+      >
+        {/* Left: Logo & Level Selector */}
+        <div className="flex items-center gap-6">
           <button
             onClick={toggleLevelsModal}
-            className="flex items-center gap-1 px-2 py-1 rounded-lg bg-blue-100 hover:bg-blue-200 transition-colors text-blue-700 text-responsive-xs font-semibold"
+            className="flex items-center gap-2 px-5 py-2 rounded-xl bg-yellow-400 text-[#181f2a] font-bold shadow hover:scale-105 transition-transform duration-150 focus:outline-none focus:ring-2 focus:ring-yellow-300"
             aria-label="Select level"
           >
             <span>🎯</span>
             <span>Level {levelIndex + 1}</span>
-            <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fillRule="evenodd"
-                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                clipRule="evenodd"
-              />
-            </svg>
           </button>
         </div>
 
-        {/* Center Section - User Info */}
-        <div className="flex items-center gap-2">
+        {/* Center: User Info or Login */}
+        <div className="flex items-center gap-6">
           {user?.token ? (
             <button
               onClick={toggleProfileModal}
-              className="flex items-center gap-1 px-2 py-1 rounded-lg bg-green-100 hover:bg-green-200 transition-colors text-green-700 text-responsive-xs font-semibold"
+              className="flex items-center gap-2 px-5 py-2 rounded-xl bg-blue-400 text-[#181f2a] font-bold shadow hover:scale-105 transition-transform duration-150 focus:outline-none focus:ring-2 focus:ring-blue-300"
               aria-label="View profile"
             >
               <span>👤</span>
@@ -323,7 +319,7 @@ export default function Header({
           ) : (
             <button
               onClick={handleLoginClick}
-              className="flex items-center gap-1 px-2 py-1 rounded-lg bg-orange-100 hover:bg-orange-200 transition-colors text-orange-700 text-responsive-xs font-semibold"
+              className="flex items-center gap-2 px-5 py-2 rounded-xl bg-blue-400 text-[#181f2a] font-bold shadow hover:scale-105 transition-transform duration-150 focus:outline-none focus:ring-2 focus:ring-blue-300"
               aria-label="Login"
             >
               <span>🔐</span>
@@ -332,13 +328,13 @@ export default function Header({
           )}
         </div>
 
-        {/* Right Section - Controls */}
-        <div className="flex items-center gap-1">
+        {/* Right: Controls */}
+        <div className="flex items-center gap-4">
           {/* Daily Streak Button */}
           <div className="relative inline-block">
             <button
               onClick={() => setShowDailyStreak(true)}
-              className="p-1.5 rounded-lg transition-colors bg-orange-100 text-orange-700 hover:bg-orange-200 mr-3"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-green-400 text-[#181f2a] font-bold shadow hover:scale-105 transition-transform duration-150 focus:outline-none focus:ring-2 focus:ring-green-300"
               aria-label="View daily streak"
             >
               🔥
@@ -349,12 +345,11 @@ export default function Header({
               </div>
             )}
           </div>
-
           {/* Achievements Button */}
           <div className="relative inline-block">
             <button
               onClick={() => setShowAchievements(true)}
-              className="p-1.5 rounded-lg transition-colors bg-purple-100 text-purple-700 hover:bg-purple-200 mr-3"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-yellow-400 text-[#181f2a] font-bold shadow hover:scale-105 transition-transform duration-150 focus:outline-none focus:ring-2 focus:ring-yellow-300"
               aria-label="View achievements"
             >
               🏆
@@ -365,12 +360,11 @@ export default function Header({
               </div>
             )}
           </div>
-
           {/* Rewards Button */}
           <div className="relative inline-block">
             <button
               onClick={() => setShowRewards(true)}
-              className="p-1.5 rounded-lg transition-colors bg-green-100 text-green-700 hover:bg-green-200 mr-3"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-400 text-[#181f2a] font-bold shadow hover:scale-105 transition-transform duration-150 focus:outline-none focus:ring-2 focus:ring-blue-300"
               aria-label="View rewards"
             >
               🎁
@@ -381,12 +375,11 @@ export default function Header({
               </div>
             )}
           </div>
-
           {/* Leaderboard Button */}
           <div className="relative inline-block">
             <button
               onClick={() => setShowLeaderboard(true)}
-              className="p-1.5 rounded-lg transition-colors bg-yellow-100 text-yellow-700 hover:bg-yellow-200 mr-3"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-yellow-400 text-[#181f2a] font-bold shadow hover:scale-105 transition-transform duration-150 focus:outline-none focus:ring-2 focus:ring-yellow-300"
               aria-label="View leaderboard"
             >
               <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
@@ -399,57 +392,13 @@ export default function Header({
               </div>
             )}
           </div>
-
-          {/* Community Marketplace Button (IN FUTURE)
-          <div className="relative inline-block">
-            <button
-              onClick={() => navigate("/community")}
-              className="p-1.5 rounded-lg transition-colors bg-indigo-100 text-indigo-700 hover:bg-indigo-200 mr-3"
-              aria-label="Community marketplace"
-            >
-              <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z" />
-              </svg>
-            </button>
-          </div> */}
-
-          {/* Survey Icon: only show if logged in and not taken */}
-          {user?.token && !surveyTaken && (
-            <button
-              onClick={() => setShowSurvey(true)}
-              className="p-1.5 rounded-lg transition-colors bg-pink-100 text-pink-700 hover:bg-pink-200 mr-3"
-              aria-label="Survey"
-              title="Survey / ফিডব্যাক"
-            >
-              📝
-            </button>
-          )}
-
-          {/* If not logged in, show survey icon that redirects to login */}
-          {!user?.token && (
-            <button
-              onClick={handleLoginClick}
-              className="p-1.5 rounded-lg transition-colors bg-pink-100 text-pink-700 hover:bg-pink-200 mr-3"
-              aria-label="Survey (Login Required)"
-              title="Login to give survey"
-            >
-              📝
-            </button>
-          )}
-
           {/* Settings Button */}
           <button
             onClick={toggleSettings}
-            className="p-1.5 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 transition-colors"
+            className="flex items-center gap-2 px-4 py-2 rounded-xl bg-green-400 text-[#181f2a] font-bold shadow hover:scale-105 transition-transform duration-150 focus:outline-none focus:ring-2 focus:ring-green-300"
             aria-label="Open settings"
           >
-            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-              <path
-                fillRule="evenodd"
-                d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
-                clipRule="evenodd"
-              />
-            </svg>
+            <GearIcon />
           </button>
         </div>
       </header>
