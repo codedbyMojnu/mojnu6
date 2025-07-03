@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:5000",
+  baseURL: "https://brain-test-server.onrender.com/",
 });
 
 // Leaderboard API functions
