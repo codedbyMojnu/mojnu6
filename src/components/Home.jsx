@@ -358,7 +358,7 @@ export default function Home() {
             className="text-xl font-bold text-gray-800"
             style={{ fontFamily: "system-ui, sans-serif" }}
           >
-            Loading mojnu6 Interview Perparation...
+            Loading mojnu6...
           </h2>
         </div>
       </div>
