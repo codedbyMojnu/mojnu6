@@ -6,12 +6,13 @@ import { useProfile } from "../context/ProfileContext.jsx";
 import playSound from "../utils/playSound.jsx";
 import AnimatedBackground from "./AnimatedBackground";
 import AnswerForm from "./AnswerForm";
+import LoginModal from "./auth/LoginModal";
+import SignupModal from "./auth/SignupModal";
 import ChatRoom from "./ChatRoom";
+import Confetti from "./Confetti";
 import Explanation from "./Explanation";
 import Header from "./Header";
 import WelcomeToGame from "./WelcomeToGame.jsx";
-import LoginModal from "./auth/LoginModal";
-import SignupModal from "./auth/SignupModal";
 
 export default function Home() {
   const [welcome, setWelcome] = useState(true);
@@ -29,11 +30,30 @@ export default function Home() {
   const [showSignupModal, setShowSignupModal] = useState(false);
   const [showChatRoom, setShowChatRoom] = useState(false);
   const [completedLevelIndex, setCompletedLevelIndex] = useState(null);
+  const [streakCount, setStreakCount] = useState(0);
+  const [streaksAchieved, setStreaksAchieved] = useState(0);
+  const [showStreakCongrats, setShowStreakCongrats] = useState(false);
+  const [streakCongratsMsg, setStreakCongratsMsg] = useState("");
+  const [confettiTrigger, setConfettiTrigger] = useState(false);
+  const [showSecretMessage, setShowSecretMessage] = useState(false);
 
   const bgMusicRef = useRef();
   const { levels, setLevels } = useLevels();
   const { profile, setProfile } = useProfile();
   const { user } = useAuth();
+
+  const congratsMessages = [
+    "🎉 Wow! 10 in a row! You're on fire! 🔥",
+    "🚀 10 perfect answers! Keep soaring!",
+    "🌟 10/10! Genius mode activated!",
+    "👏 10 streak! You're unstoppable!",
+    "🥳 10 flawless answers! Celebrate!",
+    "🦸 10 correct! Superhero brain!",
+    "💡 10 in a row! Brainpower overload!",
+    "🏆 10 streak! Champion!",
+    "🎊 10/10! Party time!",
+    "😎 10 correct! Cool and clever!"
+  ];
 
   const fetchLevels = useCallback(async () => {
     setIsLoading(true);
@@ -117,10 +137,35 @@ export default function Home() {
 
   const handleSubmitAnswer = useCallback(
     async (userAnswer, level) => {
-      // Use intelligent normalization for answer checking
       if (normalizeAnswer(level.answer) === normalizeAnswer(userAnswer)) {
         playSound("/sounds/right.mp3", 0.25);
         setMark("✔️");
+        setStreakCount((prev) => {
+          const newStreak = prev + 1;
+          if (newStreak === 10) {
+            setStreaksAchieved((prevStreaks) => {
+              const newStreaks = prevStreaks + 1;
+              if (newStreaks === 10) {
+                setTimeout(() => {
+                  setShowSecretMessage(true);
+                  setConfettiTrigger(true);
+                  playSound("/sounds/congratulations.mp3", 0.6);
+                }, 500);
+                return 0; // reset streaksAchieved after secret message
+              } else {
+                setTimeout(() => {
+                  setStreakCongratsMsg(congratsMessages[Math.floor(Math.random() * congratsMessages.length)]);
+                  setShowStreakCongrats(true);
+                  setConfettiTrigger(true);
+                  playSound("/sounds/right.mp3", 0.7);
+                }, 500);
+                return newStreaks;
+              }
+            });
+            return 0; // reset streak
+          }
+          return newStreak;
+        });
         // Update totalPoints if logged in
         if (profile?.username) {
           try {
@@ -149,6 +194,8 @@ export default function Home() {
       } else {
         playSound("/sounds/wrong.mp3");
         setMark("❌");
+        setStreakCount(0); // reset streak on wrong answer
+        setStreaksAchieved(0); // reset streaksAchieved on wrong answer
         setTimeout(() => setMark(""), 1500);
       }
     },
@@ -200,6 +247,19 @@ export default function Home() {
     setShowSignupModal(false);
   }, []);
 
+  // Close streak congrats modal
+  const handleCloseStreakCongrats = () => {
+    setShowStreakCongrats(false);
+    setConfettiTrigger(false);
+  };
+
+  // Close secret message modal
+  const handleCloseSecretMessage = () => {
+    setShowSecretMessage(false);
+    setConfettiTrigger(false);
+    setStreaksAchieved(0); // reset after secret message
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen w-full bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center">
@@ -232,6 +292,8 @@ export default function Home() {
 
   return (
     <div className="min-h-screen w-full bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 relative overflow-hidden">
+      {/* Confetti for streak congrats */}
+      <Confetti trigger={confettiTrigger} />
       {/* Animated Background for Game Mode */}
       {!welcome && <AnimatedBackground />}
 
@@ -362,6 +424,42 @@ export default function Home() {
           isOpen={showChatRoom}
           onClose={() => setShowChatRoom(false)}
         />
+      )}
+
+      {/* Streak Congratulations Modal */}
+      {showStreakCongrats && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+          <div className="bg-white/90 rounded-2xl shadow-2xl p-8 max-w-xs mx-4 text-center border-4 border-yellow-300 animate-bounceIn">
+            <div className="text-5xl mb-2">🎉</div>
+            <h2 className="text-2xl font-bold text-yellow-600 mb-2">Congratulations!</h2>
+            <p className="text-lg text-gray-800 mb-4 font-semibold" style={{fontFamily:'Comic Sans MS, Comic Sans, cursive'}}>{streakCongratsMsg}</p>
+            <p className="text-sm text-gray-600 mb-2">Streaks achieved: {streaksAchieved}</p>
+            <button
+              onClick={handleCloseStreakCongrats}
+              className="px-6 py-3 bg-blue-500 text-white rounded-lg font-bold shadow hover:bg-blue-700 transition-colors"
+            >
+              Continue
+            </button>
+          </div>
+        </div>
+      )}
+      {/* Secret Message Modal */}
+      {showSecretMessage && (
+        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+          <div className="bg-white/95 rounded-2xl shadow-2xl p-8 max-w-sm mx-4 text-center border-4 border-green-400 animate-bounceIn">
+            <div className="text-6xl mb-2">🕵️‍♂️</div>
+            <h2 className="text-2xl font-bold text-green-700 mb-2">Secret Unlocked!</h2>
+            <p className="text-lg text-gray-800 mb-4 font-semibold" style={{fontFamily:'Comic Sans MS, Comic Sans, cursive'}}>
+              You are ready for a job interview!<br/>Meet with mojnu6 <br/><span className="underline">thisismojnu@gmail.com</span>
+            </p>
+            <button
+              onClick={handleCloseSecretMessage}
+              className="px-6 py-3 bg-green-600 text-white rounded-lg font-bold shadow hover:bg-green-800 transition-colors"
+            >
+              Awesome!
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );
