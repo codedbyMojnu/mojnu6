@@ -92,6 +92,78 @@ const ACHIEVEMENTS = {
     points: 50,
     category: "Special",
   },
+  CONSISTENT_100: {
+    id: "CONSISTENT_100",
+    name: "Job Interview Ready!",
+    description: "Consistently answer 100 levels correctly without a wrong answer.",
+    icon: "💼",
+    points: 200,
+    category: "Consistency",
+  },
+  CONSISTENT_500: {
+    id: "CONSISTENT_500",
+    name: "Genius!",
+    description: "Consistently answer 500 levels correctly without a wrong answer.",
+    icon: "🧠",
+    points: 1000,
+    category: "Consistency",
+  },
+  CONSISTENT_1000: {
+    id: "CONSISTENT_1000",
+    name: "Awesome! Mojnu6 wants to meet you!",
+    description: "Consistently answer 1000 levels correctly without a wrong answer. mojnu6: thisismojnu@gmail.com",
+    icon: "🌟",
+    points: 3000,
+    category: "Consistency",
+  },
+  CONSISTENT_1500: {
+    id: "CONSISTENT_1500",
+    name: "Consistency Pro!",
+    description: "Consistently answer 1500 levels correctly without a wrong answer.",
+    icon: "🏅",
+    points: 4000,
+    category: "Consistency",
+  },
+  CONSISTENT_2000: {
+    id: "CONSISTENT_2000",
+    name: "Consistency Master!",
+    description: "Consistently answer 2000 levels correctly without a wrong answer.",
+    icon: "🥇",
+    points: 5000,
+    category: "Consistency",
+  },
+  CONSISTENT_5000: {
+    id: "CONSISTENT_5000",
+    name: "Legendary Consistency!",
+    description: "Consistently answer 5000 levels correctly without a wrong answer.",
+    icon: "🏆",
+    points: 12000,
+    category: "Consistency",
+  },
+  CONSISTENT_10000: {
+    id: "CONSISTENT_10000",
+    name: "Unstoppable!",
+    description: "Consistently answer 10,000 levels correctly without a wrong answer.",
+    icon: "🚀",
+    points: 25000,
+    category: "Consistency",
+  },
+  CONSISTENT_20000: {
+    id: "CONSISTENT_20000",
+    name: "Superhuman!",
+    description: "Consistently answer 20,000 levels correctly without a wrong answer.",
+    icon: "🤖",
+    points: 50000,
+    category: "Consistency",
+  },
+  CONSISTENT_50000: {
+    id: "CONSISTENT_50000",
+    name: "God Mode!",
+    description: "Consistently answer 50,000 levels correctly without a wrong answer.",
+    icon: "👑",
+    points: 150000,
+    category: "Consistency",
+  },
 };
 
 export default function Achievements({ isOpen, onClose }) {
@@ -110,6 +182,7 @@ export default function Achievements({ isOpen, onClose }) {
     "Points",
     "Skills",
     "Special",
+    "Consistency",
   ];
 
   const filteredAchievements =

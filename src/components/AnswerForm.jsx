@@ -145,164 +145,164 @@ export default function AnswerForm({ onAnswer, mark, levelIndex, showLogin, onRe
   );
 
   return (
-    <div className="w-full max-w-3xl mx-auto flex flex-col items-center justify-center p-4">
-      <div className="w-full bg-white/10 backdrop-blur-xl rounded-2xl p-8 flex flex-col items-center justify-center text-white shadow-lg border border-white/20">
+    <div className="w-full max-w-2xl mx-auto flex flex-col items-center justify-center p-2 sm:p-4 font-sans" style={{ fontFamily: 'system-ui, sans-serif' }}>
+      <div className="w-full bg-white rounded-lg p-3 sm:p-6 flex flex-col items-center justify-center text-gray-900 border border-gray-200">
         {levelIndex >= levels.length ? (
           <div className="text-center">
-            <h2 className="text-2xl font-bold text-green-400 mb-4">🎉 All Levels Completed!</h2>
-            <p className="mb-4 text-lg text-gray-100">You've finished all available questions. Do you want to restart from level 1?</p>
+            <h2 className="text-xl font-bold text-green-600 mb-2">🎉 All Levels Completed!</h2>
+            <p className="mb-3 text-base text-gray-700">You've finished all available questions. Do you want to restart from level 1?</p>
             <button
               onClick={onRestart}
-              className="px-8 py-4 bg-blue-600 text-white text-xl font-bold rounded-full shadow-lg hover:bg-blue-700 transition-colors"
+              className="w-full py-3 bg-blue-600 text-white text-lg font-bold rounded-md hover:bg-blue-700 transition-colors"
             >
               Restart from Level 1
             </button>
           </div>
         ) : (
           <>
-        <div className="mb-6 w-full">
-              <div className="bg-white/95 backdrop-blur-sm w-full p-6 rounded-xl shadow-inner border border-white/20">
+        <div className="mb-4 w-full">
+              <div className="bg-gray-50 w-full p-3 rounded-md border border-gray-200">
             <MarkdownRenderer
               content={levels[levelIndex]?.question}
-                  className="text-xl sm:text-2xl font-bold text-gray-800"
+              className="text-lg sm:text-xl font-bold text-gray-800"
             />
           </div>
         </div>
 
         {!levels[levelIndex]?.options?.length > 0 && (
-          <div className="w-full mb-4">
+          <div className="w-full mb-3">
             <input
               type="text"
               value={userAnswer}
               placeholder="Your answer..."
-                  className={`w-full rounded-xl px-5 py-4 text-lg font-semibold bg-white/95 backdrop-blur-sm border-2 ${
-                    inputError ? "border-red-500" : "border-white/30"
-                  } focus:border-blue-400 focus:ring-2 focus:ring-blue-200 transition-all duration-200 text-gray-800 placeholder-gray-500`}
+              className={`w-full rounded-md px-4 py-3 text-base font-semibold bg-white border ${
+                inputError ? "border-red-500" : "border-gray-300"
+              } focus:border-blue-400 focus:ring-2 focus:ring-blue-200 transition-all duration-200 text-gray-800 placeholder-gray-500`}
               onChange={(e) => setUserAnswer(e.target.value)}
               onKeyDown={handleKeyDown}
             />
-                {inputError && (
-                  <p className="text-red-400 text-sm mt-1">{inputError}</p>
-                )}
+            {inputError && (
+              <p className="text-red-500 text-sm mt-1">{inputError}</p>
+            )}
           </div>
         )}
 
         {levels[levelIndex]?.options?.length > 0 && (
-          <div className="w-full mb-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="w-full mb-3 grid grid-cols-1 md:grid-cols-2 gap-2">
             {levels[levelIndex]?.options?.map((option, index) => (
               <button
                 key={index}
                 onClick={() => handleOptionAnswer(option)}
-                    className="w-full flex items-center gap-3 px-5 py-4 rounded-xl bg-white/95 backdrop-blur-sm border-2 border-white/30 hover:border-blue-400 hover:bg-white transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-200 text-gray-800"
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-md bg-white border border-gray-300 hover:border-blue-400 hover:bg-blue-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-200 text-gray-800"
               >
-                    <span className="font-bold text-lg text-blue-500">
-                      {String.fromCharCode(65 + index)}.
-                    </span>
-                <MarkdownRenderer content={option} className="text-lg" />
+                <span className="font-bold text-base text-blue-500">
+                  {String.fromCharCode(65 + index)}.
+                </span>
+                <MarkdownRenderer content={option} className="text-base" />
               </button>
             ))}
           </div>
         )}
 
-        <div className="flex flex-row justify-center gap-4 w-full mb-6">
+        <div className="flex flex-row justify-center gap-2 w-full mb-4">
           <button
             type="button"
             onClick={handleSkipClick}
-                className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-white/50 backdrop-blur-sm border-2 border-white/70 font-bold text-lg hover:bg-white/60 transition-all duration-200 text-white shadow-lg"
+            className="flex-1 px-3 py-2 rounded-md bg-gray-100 border border-gray-300 font-bold text-base text-gray-700 hover:bg-gray-200 transition-all duration-200"
           >
             <span>Skip</span>
           </button>
           <button
             type="button"
             onClick={handleHintClick}
-                className="flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-white/50 backdrop-blur-sm border-2 border-white/70 font-bold text-lg hover:bg-white/60 transition-all duration-200 text-white shadow-lg"
+            className="flex-1 px-3 py-2 rounded-md bg-yellow-100 border border-yellow-300 font-bold text-base text-yellow-800 hover:bg-yellow-200 transition-all duration-200"
           >
             <span>Hint</span>
           </button>
         </div>
 
-            {!levels[levelIndex]?.options?.length > 0 && (
+        {!levels[levelIndex]?.options?.length > 0 && (
         <div className="w-full mt-auto">
             <button
-                  type="button"
+              type="button"
               onClick={handleTextAnswer}
-                  disabled={isSubmitting || !userAnswer.trim()}
-                  className={`w-full py-4 px-6 rounded-xl text-white font-bold text-xl transition-all duration-200 transform shadow-2xl border-2 border-blue-300 focus:outline-none focus:ring-4 focus:ring-blue-200 focus:ring-opacity-70
-                    ${
-                      isSubmitting || !userAnswer.trim()
-                        ? "bg-gray-400 cursor-not-allowed"
-                        : "bg-gradient-to-r from-blue-700 to-purple-800 hover:from-blue-800 hover:to-purple-900 hover:scale-105"
-                    }`}
-                >
-                  {isSubmitting ? (
-                    <span className="flex items-center justify-center">
-                      <svg
-                        className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        ></path>
-                      </svg>
-                      Submitting...
-                    </span>
-                  ) : (
-                    <span className="flex items-center justify-center">
-                      Submit Answer <span className="ml-2">🚀</span>
-                    </span>
-                  )}
+              disabled={isSubmitting || !userAnswer.trim()}
+              className={`w-full py-3 rounded-md text-white font-bold text-lg transition-all duration-200 border border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:ring-opacity-70
+                ${
+                  isSubmitting || !userAnswer.trim()
+                    ? "bg-gray-400 cursor-not-allowed"
+                    : "bg-blue-600 hover:bg-blue-700"
+                }`}
+            >
+              {isSubmitting ? (
+                <span className="flex items-center justify-center">
+                  <svg
+                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    ></circle>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
+                  </svg>
+                  Submitting...
+                </span>
+              ) : (
+                <span className="flex items-center justify-center">
+                  Submit Answer <span className="ml-2">🚀</span>
+                </span>
+              )}
             </button>
         </div>
-            )}
+        )}
 
-            {/* Mark Display */}
-            {mark && (
-              <div className="mt-4">
-                <Marker mark={mark} />
-              </div>
-            )}
+        {/* Mark Display */}
+        {mark && (
+          <div className="mt-3">
+            <Marker mark={mark} />
+          </div>
+        )}
 
-            {/* Hint Modal */}
-            {showHintModal && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-                <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 relative border-2 border-yellow-200">
-                  <button
-                    onClick={() => setShowHintModal(false)}
-                    className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl font-bold focus:outline-none"
-                    aria-label="Close hint modal"
-                  >
-                    ×
-                  </button>
-                  <h3 className="text-xl font-bold text-yellow-600 mb-4 flex items-center">
-                    <span className="mr-2">💡</span>Hint
-                  </h3>
-                  {levels[levelIndex]?.hint ? (
-                    <MarkdownRenderer
-                      content={levels[levelIndex].hint}
-                      className="text-yellow-800"
-                    />
-                  ) : (
-                    <div className="text-yellow-800">
-                      No hint available for this question.
-                    </div>
-                  )}
+        {/* Hint Modal */}
+        {showHintModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
+            <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6 relative border-2 border-yellow-200">
+              <button
+                onClick={() => setShowHintModal(false)}
+                className="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-2xl font-bold focus:outline-none"
+                aria-label="Close hint modal"
+              >
+                ×
+              </button>
+              <h3 className="text-xl font-bold text-yellow-600 mb-4 flex items-center">
+                <span className="mr-2">💡</span>Hint
+              </h3>
+              {levels[levelIndex]?.hint ? (
+                <MarkdownRenderer
+                  content={levels[levelIndex].hint}
+                  className="text-yellow-800"
+                />
+              ) : (
+                <div className="text-yellow-800">
+                  No hint available for this question.
+                </div>
+              )}
             </div>
           </div>
         )}
 
-            {/* Request Points Form */}
+        {/* Request Points Form */}
         {showRequestForm && (
           <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
             <div className="bg-white p-7 max-w-md mx-4 rounded-2xl shadow-2xl border-2 border-blue-200 w-full" style={{ boxShadow: '0 8px 32px 0 rgba(80, 120, 255, 0.18)' }}>
@@ -364,56 +364,55 @@ export default function AnswerForm({ onAnswer, mark, levelIndex, showLogin, onRe
           </div>
         )}
 
-            {/* Wait Modal */}
-            {showWaitModal && (
-              <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-                <div className="bg-white/95 backdrop-blur-xl p-6 max-w-sm mx-4 rounded-2xl shadow-xl border border-white/20 text-center">
-                  <h3 className="text-lg font-bold text-gray-800 mb-4">
-                    Request Submitted!
-                  </h3>
-                  <p className="text-gray-600 mb-4">
-                    Your transaction is being reviewed. You'll receive your hint
-                    points soon.
-                  </p>
-                  <button
-                    onClick={() => setShowWaitModal(false)}
-                    className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
-                  >
-                    OK
-                  </button>
-                </div>
-              </div>
-            )}
+        {/* Wait Modal */}
+        {showWaitModal && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+            <div className="bg-white/95 backdrop-blur-xl p-6 max-w-sm mx-4 rounded-2xl shadow-xl border border-white/20 text-center">
+              <h3 className="text-lg font-bold text-gray-800 mb-4">
+                Request Submitted!
+              </h3>
+              <p className="text-gray-600 mb-4">
+                Your transaction is being reviewed. You'll receive your hint
+                points soon.
+              </p>
+              <button
+                onClick={() => setShowWaitModal(false)}
+                className="px-6 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+              >
+                OK
+              </button>
+            </div>
+          </div>
+        )}
 
-            {/* Skip Modal */}
-            {showSkipModal && (
-              <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-                <div className="bg-white/95 backdrop-blur-xl p-6 max-w-sm mx-4 rounded-2xl shadow-xl border border-white/20 text-center">
-                  <h3 className="text-lg font-bold text-gray-800 mb-4">
-                    Skip Level?
-                  </h3>
-                  <p className="text-gray-600 mb-4">
-                    Are you sure you want to skip this level? You are not allowed to
-                    Skip a level.
-                  </p>
-                  <div className="flex gap-3">
-                    <button
-                      onClick={() => setShowSkipModal(false)}
-                      className="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
-                    >
-                      Ok
-                    </button>
+        {/* Skip Modal */}
+        {showSkipModal && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+            <div className="bg-white/95 backdrop-blur-xl p-6 max-w-sm mx-4 rounded-2xl shadow-xl border border-white/20 text-center">
+              <h3 className="text-lg font-bold text-gray-800 mb-4">
+                Skip Level?
+              </h3>
+              <p className="text-gray-600 mb-4">
+                We are not allowd our user to skip a level!
+              </p>
+              <div className="flex gap-3">
+                <button
+                  onClick={() => setShowSkipModal(false)}
+                  className="flex-1 px-4 py-2 bg-gray-300 text-gray-700 rounded-lg hover:bg-gray-400"
+                >
+                  Ok
+                </button>
               </div>
             </div>
           </div>
-            )}
+        )}
 
-            {/* Success Notification */}
-            {showSuccessNotification && (
-              <div className="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50">
-                Transaction submitted successfully!
-              </div>
-            )}
+        {/* Success Notification */}
+        {showSuccessNotification && (
+          <div className="fixed top-4 right-4 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg z-50">
+            Transaction submitted successfully!
+          </div>
+        )}
           </>
         )}
       </div>

@@ -36,6 +36,8 @@ export default function Home() {
   const [streakCongratsMsg, setStreakCongratsMsg] = useState("");
   const [confettiTrigger, setConfettiTrigger] = useState(false);
   const [showSecretMessage, setShowSecretMessage] = useState(false);
+  const [consistencyStreak, setConsistencyStreak] = useState(0);
+  const [achievementNotification, setAchievementNotification] = useState(null);
 
   const bgMusicRef = useRef();
   const { levels, setLevels } = useLevels();
@@ -53,6 +55,19 @@ export default function Home() {
     "🏆 10 streak! Champion!",
     "🎊 10/10! Party time!",
     "😎 10 correct! Cool and clever!"
+  ];
+
+  // Consistency achievement thresholds and their corresponding achievement IDs and points
+  const CONSISTENCY_ACHIEVEMENTS = [
+    { threshold: 100, id: "CONSISTENT_100", points: 200 },
+    { threshold: 500, id: "CONSISTENT_500", points: 1000 },
+    { threshold: 1000, id: "CONSISTENT_1000", points: 3000 },
+    { threshold: 1500, id: "CONSISTENT_1500", points: 4000 },
+    { threshold: 2000, id: "CONSISTENT_2000", points: 5000 },
+    { threshold: 5000, id: "CONSISTENT_5000", points: 12000 },
+    { threshold: 10000, id: "CONSISTENT_10000", points: 25000 },
+    { threshold: 20000, id: "CONSISTENT_20000", points: 50000 },
+    { threshold: 50000, id: "CONSISTENT_50000", points: 150000 },
   ];
 
   const fetchLevels = useCallback(async () => {
@@ -142,6 +157,36 @@ export default function Home() {
         setMark("✔️");
         setStreakCount((prev) => {
           const newStreak = prev + 1;
+          // Consistency streak logic
+          setConsistencyStreak((prevConsistent) => {
+            const newConsistent = prevConsistent + 1;
+            // Check for new achievements
+            for (const ach of CONSISTENCY_ACHIEVEMENTS) {
+              if (newConsistent === ach.threshold && (!profile?.achievements || !profile.achievements.includes(ach.id))) {
+                // Unlock achievement and add points
+                const updatedAchievements = [...(profile?.achievements || []), ach.id];
+                const updatedPoints = (profile?.totalPoints || 0) + ach.points;
+                setProfile((prevProfile) => ({
+                  ...prevProfile,
+                  achievements: updatedAchievements,
+                  totalPoints: updatedPoints,
+                }));
+                setAchievementNotification({
+                  icon: ach.id === "CONSISTENT_1000" ? "🌟" : ach.icon,
+                  name: ach.name,
+                  points: ach.points,
+                });
+                setTimeout(() => setAchievementNotification(null), 4000);
+                if (profile?.username && user?.token) {
+                  api.patch(`/api/profile/${profile.username}`, {
+                    achievements: updatedAchievements,
+                    totalPoints: updatedPoints,
+                  }, { headers: { Authorization: `Bearer ${user.token}` } });
+                }
+              }
+            }
+            return newConsistent;
+          });
           if (newStreak === 10) {
             setStreaksAchieved((prevStreaks) => {
               const newStreaks = prevStreaks + 1;
@@ -166,20 +211,6 @@ export default function Home() {
           }
           return newStreak;
         });
-        // Update totalPoints if logged in
-        if (profile?.username) {
-          try {
-            const response = await api.patch(`/api/profile/${profile.username}`, {
-              totalPoints: (profile.totalPoints || 0) + 1,
-            });
-            if (response.status === 200 && response.data?.profile) {
-              setProfile({ ...profile, totalPoints: response.data.profile.totalPoints });
-            }
-          } catch (err) {
-            // Optionally handle error (e.g., show notification)
-            console.error("Failed to update totalPoints:", err);
-          }
-        }
         // Only update maxLevel in backend, do not update levelIndex here
         if (levelIndex >= maxLevel) {
           updateMaxLevel(levelIndex + 1);
@@ -196,6 +227,7 @@ export default function Home() {
         setMark("❌");
         setStreakCount(0); // reset streak on wrong answer
         setStreaksAchieved(0); // reset streaksAchieved on wrong answer
+        setConsistencyStreak(0); // reset consistency streak on wrong answer
 
         // Add wrong answer to profile if logged in
         if (profile?.username && user?.token) {
@@ -298,10 +330,10 @@ export default function Home() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen w-full bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center">
+      <div className="min-h-screen w-full bg-white flex items-center justify-center">
         <div className="text-center">
-          <div className="w-16 h-16 border-4 border-blue-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <h2 className="text-2xl font-bold text-white">
+          <div className="w-12 h-12 border-4 border-blue-400 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
+          <h2 className="text-xl font-bold text-gray-800" style={{ fontFamily: 'system-ui, sans-serif' }}>
             Loading Puzzle Quest...
           </h2>
         </div>
@@ -311,13 +343,13 @@ export default function Home() {
 
   if (error) {
     return (
-      <div className="min-h-screen w-full bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center">
-        <div className="text-center p-8 bg-white/10 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20">
-          <h2 className="text-2xl font-bold text-red-400 mb-4">Error</h2>
-          <p className="text-white mb-4">{error}</p>
+      <div className="min-h-screen w-full bg-white flex items-center justify-center">
+        <div className="text-center p-4 bg-red-50 rounded-lg border border-red-200 w-full max-w-xs mx-auto">
+          <h2 className="text-xl font-bold text-red-500 mb-2">Error</h2>
+          <p className="text-gray-700 mb-3">{error}</p>
           <button
             onClick={fetchLevels}
-            className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
+            className="w-full py-2 bg-blue-500 text-white rounded-md font-bold hover:bg-blue-600 transition-colors"
           >
             Try Again
           </button>
@@ -327,11 +359,19 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 relative overflow-hidden">
+    <div className="min-h-screen w-full bg-white relative overflow-hidden font-sans" style={{ fontFamily: 'system-ui, sans-serif' }}>
+      {/* Achievement Notification */}
+      {achievementNotification && (
+        <div className="fixed top-4 left-1/2 transform -translate-x-1/2 bg-green-600 text-white px-6 py-3 rounded-lg shadow z-50 flex items-center gap-3 animate-fade-in">
+          <span className="text-2xl">{achievementNotification.icon}</span>
+          <span className="font-bold">{achievementNotification.name}</span>
+          <span className="ml-2 text-yellow-200 font-semibold">+{achievementNotification.points} pts</span>
+        </div>
+      )}
       {/* Confetti for streak congrats */}
       <Confetti trigger={confettiTrigger} />
-      {/* Animated Background for Game Mode */}
-      {!welcome && <AnimatedBackground />}
+      {/* Animated Background for Game Mode (desktop only) */}
+      {!welcome && <div className="hidden sm:block"><AnimatedBackground /></div>}
 
       {/* Main Layout */}
       <div className="relative z-10 flex flex-col min-h-screen">
@@ -353,14 +393,14 @@ export default function Home() {
         )}
 
         {/* Main Content Area */}
-        <main className="flex-1 flex items-center justify-center p-4">
+        <main className="flex-1 flex flex-col items-center justify-center p-2 sm:p-4 w-full">
         {welcome ? (
             <WelcomeToGame
               setBgMusicOn={setBgMusicOn}
               setWelcome={setWelcome}
             />
         ) : (
-            <div className="w-full max-w-4xl">
+            <div className="w-full max-w-2xl mx-auto">
             {levelIndex < levels?.length ? (
               !explanation ? (
                 <AnswerForm
@@ -379,14 +419,14 @@ export default function Home() {
                 />
               )
             ) : (
-                <div className="text-center p-8 bg-white/10 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20">
-                  <h2 className="text-3xl font-bold text-green-500 mb-4">
+                <div className="text-center p-4 bg-green-50 rounded-lg border border-green-200">
+                  <h2 className="text-2xl font-bold text-green-600 mb-2">
                     🎉 Congratulations! 🎉
                   </h2>
-                  <p className="text-lg text-gray-100 mb-6">You've completed all levels. Do you want to restart from level 1? <br/>(This will not reset your maxLevel or achievements.)</p>
+                  <p className="text-base text-gray-700 mb-4">You've completed all levels. Do you want to restart from level 1? <br/>(This will not reset your maxLevel or achievements.)</p>
                   <button
                     onClick={handleRestart}
-                    className="px-8 py-4 bg-blue-600 text-white text-xl font-bold rounded-full shadow-lg hover:bg-blue-700 transition-colors"
+                    className="w-full py-3 bg-blue-600 text-white text-lg font-bold rounded-md hover:bg-blue-700 transition-colors"
                   >
                     Restart from Level 1
                   </button>
@@ -398,7 +438,7 @@ export default function Home() {
 
         {/* Chat Room Button - Only show when not in welcome mode */}
         {!welcome && (
-      <div className="fixed bottom-4 right-4 z-20">
+          <div className="fixed bottom-3 right-3 z-20 sm:bottom-4 sm:right-4">
         <button
           onClick={() => {
             if (!user?.token) {
@@ -408,7 +448,7 @@ export default function Home() {
             setShowChatRoom(true);
             playSound("/sounds/button-sound.mp3");
           }}
-              className="bg-blue-500 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 transition-all duration-300"
+              className="bg-blue-500 text-white p-3 rounded-full sm:shadow-lg hover:bg-blue-700 transition-all duration-300 w-14 h-14 flex items-center justify-center"
           title="Chat Room"
         >
               <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
@@ -425,15 +465,15 @@ export default function Home() {
 
       {/* Modals */}
       {showCompletionModal && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white/10 backdrop-blur-xl p-6 max-w-sm mx-4 rounded-2xl text-center border border-white/20">
-            <h2 className="text-3xl font-bold text-green-500 mb-4">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div className="bg-white p-4 max-w-xs mx-4 rounded-lg text-center border border-gray-200">
+            <h2 className="text-2xl font-bold text-green-600 mb-2">
               🎉 Congratulations! 🎉
             </h2>
-            <p className="text-lg text-gray-100 mb-6">You've completed all levels. Do you want to restart from level 1? <br/>(This will not reset your maxLevel or achievements.)</p>
+            <p className="text-base text-gray-700 mb-4">You've completed all levels. Do you want to restart from level 1? <br/>(This will not reset your maxLevel or achievements.)</p>
             <button
               onClick={handleRestart}
-              className="px-8 py-4 bg-blue-600 text-white text-xl font-bold rounded-full shadow-lg hover:bg-blue-700 transition-colors"
+              className="w-full py-3 bg-blue-600 text-white text-lg font-bold rounded-md hover:bg-blue-700 transition-colors"
             >
               Restart from Level 1
             </button>

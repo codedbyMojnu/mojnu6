@@ -125,19 +125,20 @@ export default function Header({
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full bg-white/10 backdrop-blur-xl border-b border-white/20 text-white flex items-center justify-between px-4 sm:px-6 py-3 sm:py-4 shadow-lg">
+      <header
+        className="sticky top-0 z-40 w-full bg-white text-gray-900 flex flex-col sm:flex-row items-center justify-between px-2 sm:px-6 py-2 sm:py-4 border-b border-gray-200 font-sans"
+        style={{ fontFamily: 'system-ui, sans-serif' }}
+      >
         {/* Left: Logo & Level Selector */}
-        <div className="flex items-center gap-3 sm:gap-4">
-          <h1 className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-            Puzzle Quest
-          </h1>
+        <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 w-full sm:w-auto">
+          <h1 className="text-lg sm:text-2xl font-bold text-blue-700 tracking-tight mb-1 sm:mb-0">Mojnu6 InterviewPrep</h1>
           <button
             onClick={(e) => {
               e.stopPropagation();
               setShowLevelsModal(true);
             }}
-            className="flex items-center gap-2 px-6 py-2 rounded-full bg-blue-50/80 border border-blue-200 shadow-lg font-semibold text-blue-700 text-base hover:bg-blue-100 focus:bg-blue-100 hover:scale-105 focus:scale-105 transition-all duration-200 outline-none focus:ring-2 focus:ring-blue-300 focus:ring-opacity-60"
-            style={{ minWidth: '130px', letterSpacing: '0.01em' }}
+            className="flex items-center gap-2 px-3 py-2 rounded-md bg-blue-100 border border-blue-200 font-semibold text-blue-700 text-base hover:bg-blue-200 focus:bg-blue-200 transition-all duration-200 outline-none focus:ring-2 focus:ring-blue-300 focus:ring-opacity-60 w-full sm:w-auto"
+            style={{ minWidth: '110px', letterSpacing: '0.01em' }}
           >
             <span className="text-lg">🎯</span>
             <span className="font-semibold">Level {(showingExplanationForLevel != null ? showingExplanationForLevel : levelIndex) + 1}</span>
@@ -145,7 +146,7 @@ export default function Header({
           </button>
           {/* Profile Stats Area */}
           {user?.token && (
-            <div className="hidden sm:flex items-center gap-3 ml-2 px-3 py-1 rounded-lg bg-white/10 border border-white/20 text-xs font-semibold shadow-sm">
+            <div className="hidden sm:flex items-center gap-3 ml-2 px-2 py-1 rounded bg-gray-100 border border-gray-200 text-xs font-semibold">
               <span title="Total Points" className="flex items-center gap-1"><span role="img" aria-label="points">⭐</span> {profile?.totalPoints ?? 0}</span>
               <span className="mx-1 text-gray-400">|</span>
               <span title="Hint Points" className="flex items-center gap-1"><span role="img" aria-label="hint points">💡</span> {profile?.hintPoints ?? 0}</span>
@@ -156,22 +157,22 @@ export default function Header({
         </div>
 
         {/* Right: User Info or Login & Zenith Menu */}
-        <div className="flex items-center gap-3 sm:gap-4">
+        <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 w-full sm:w-auto mt-2 sm:mt-0">
           {user?.token ? (
-            <div className="relative">
+            <div className="relative w-full sm:w-auto">
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   setShowProfilePopover(!showProfilePopover);
                 }}
-                className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg bg-white/20 backdrop-blur-sm font-bold hover:bg-white/30 transition-all duration-200 text-sm sm:text-base"
+                className="flex items-center gap-2 px-3 py-2 rounded-md bg-gray-100 font-bold hover:bg-gray-200 transition-all duration-200 text-sm sm:text-base w-full sm:w-auto"
               >
                 <span>👤</span>
                 <span className="hidden sm:inline">{profile?.username || "User"}</span>
                 <span className="sm:hidden">User</span>
               </button>
               {showProfilePopover && (
-                <div className="absolute right-0 mt-2 w-48 bg-white/95 backdrop-blur-xl rounded-lg shadow-xl z-50 border border-white/20">
+                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg border border-gray-200 z-50">
                   <div className="p-4">
                     <p className="font-bold text-gray-800">{profile?.username}</p>
                     <p className="text-sm text-gray-600">Hint Points: {profile?.hintPoints || 0}</p>
@@ -190,7 +191,7 @@ export default function Header({
           ) : (
             <button
               onClick={handleLoginClick}
-              className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg bg-blue-500 text-white font-bold hover:bg-blue-600 transition-all duration-200 text-sm sm:text-base"
+              className="flex items-center gap-2 px-3 py-2 rounded-md bg-blue-500 text-white font-bold hover:bg-blue-600 transition-all duration-200 text-sm sm:text-base w-full sm:w-auto"
             >
               <span>🔐</span>
               <span className="hidden sm:inline">Login</span>
@@ -198,18 +199,18 @@ export default function Header({
             </button>
           )}
 
-          <div className="relative">
+          <div className="relative w-full sm:w-auto">
             <button 
               onClick={(e) => {
                 e.stopPropagation();
                 setShowZenithMenu(!showZenithMenu);
               }} 
-              className="p-2 rounded-lg hover:bg-white/20 transition-all duration-200"
+              className="p-2 rounded-md hover:bg-gray-200 transition-all duration-200 w-full sm:w-auto"
             >
               <ZenithMenuIcon />
             </button>
             {showZenithMenu && (
-              <div className="absolute right-0 mt-2 w-56 bg-white/95 backdrop-blur-xl rounded-lg shadow-xl z-50 border border-white/20">
+              <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg border border-gray-200 z-50">
                 <div className="py-2">
                   <button 
                     onClick={() => { setShowLeaderboard(true); setShowZenithMenu(false); }} 
@@ -256,14 +257,14 @@ export default function Header({
           {user?.token && (
             <button
               onClick={handleWrongAnswersClick}
-              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-red-500/80 hover:bg-red-600 text-white font-bold shadow transition-all duration-200 text-sm sm:text-base"
-              style={{ marginLeft: 4 }}
+              className="flex items-center gap-2 px-3 py-2 rounded-md bg-red-100 hover:bg-red-200 text-red-700 font-bold transition-all duration-200 text-sm sm:text-base w-full sm:w-auto"
+              style={{ marginLeft: 0 }}
               title="Your Wrong Answers"
               disabled={loadingTransactions}
             >
               <span>❌</span>
               <span className="hidden sm:inline">Your Wrong Answers</span>
-              <span className="ml-1 bg-white/80 text-red-600 rounded-full px-2 py-0.5 text-xs font-bold">{profile?.wrongAnswers?.length || 0}</span>
+              <span className="ml-1 bg-white text-red-600 rounded-full px-2 py-0.5 text-xs font-bold">{profile?.wrongAnswers?.length || 0}</span>
             </button>
           )}
         </div>
