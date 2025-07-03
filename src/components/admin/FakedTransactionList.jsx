@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import api from "../../api"; // Adjust path if needed
+import api from "../../api";
 import { useAuth } from "../../context/AuthContext";
 
 export default function FakedTransactionList() {
@@ -9,61 +9,50 @@ export default function FakedTransactionList() {
   useEffect(() => {
     async function fetchTransactions() {
       try {
-        const res = await api.get("/api/transactions", {
-          headers: { Authorization: `Bearer ${user?.token}` },
-        });
+        const res = await api.get("/api/transactions", { headers: { Authorization: `Bearer ${user?.token}` } });
         if (res.status === 200) {
-          // Only show faked transactions
-          const faked = res.data.filter(
-            (tx) => tx.approveStatus === "faked"
-          );
+          const faked = res.data.filter((tx) => tx.approveStatus === "faked");
           setTransactions(faked);
         }
       } catch (err) {
         console.error("Failed to fetch transactions:", err);
       }
     }
-
     fetchTransactions();
   }, [user]);
 
   return (
-    <div className="p-6 font-[Patrick_Hand] w-full h-full overflow-y-auto bg-yellow-50/30">
-      <h2 className="text-3xl text-center font-bold text-yellow-700 mb-6">
-        Faked Transactions
-      </h2>
-
-      <div className="overflow-x-auto rounded-xl border border-yellow-300 shadow-md">
-        <table className="min-w-full text-lg text-gray-700">
-          <thead className="bg-yellow-200 text-gray-800 font-semibold text-left">
-            <tr>
-              <th className="p-3 border-b">Username</th>
-              <th className="p-3 border-b">Transaction ID</th>
-              <th className="p-3 border-b">Package Name</th>
-              <th className="p-3 border-b">Faked Time</th>
-            </tr>
-          </thead>
-          <tbody>
-            {transactions?.length === 0 ? (
+    <div className="p-8 bg-[--primary-bg] text-[--text-color]">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-3xl font-bold text-red-500 mb-6">Faked Transactions</h1>
+        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+          <table className="min-w-full text-left">
+            <thead className="bg-[--secondary-bg]">
               <tr>
-                <td colSpan={4} className="text-center p-4 text-gray-500">
-                  No faked transactions found.
-                </td>
+                <th className="p-4 font-bold">Username</th>
+                <th className="p-4 font-bold">Transaction ID</th>
+                <th className="p-4 font-bold">Package</th>
+                <th className="p-4 font-bold">Time</th>
               </tr>
-            ) : (
-              transactions.map((tx) => (
-                <tr key={tx._id} className="hover:bg-yellow-100 transition">
-                  <td className="p-3 border-b">{tx.username}</td>
-                  <td className="p-3 border-b">{tx.transactionId}</td>
-                  <td className="p-3 border-b">{tx.selectedPackage}</td>
-                  <td className="p-3 border-b">
-                    {new Date(tx.updatedAt || tx.createdAt).toLocaleString()}
-                  </td>
+            </thead>
+            <tbody>
+              {transactions.length === 0 ? (
+                <tr>
+                  <td colSpan={4} className="text-center p-4 text-gray-500">No faked transactions.</td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                transactions.map((tx) => (
+                  <tr key={tx._id} className="border-b border-gray-200 hover:bg-gray-50">
+                    <td className="p-4">{tx.username}</td>
+                    <td className="p-4">{tx.transactionId}</td>
+                    <td className="p-4">{tx.selectedPackage}</td>
+                    <td className="p-4">{new Date(tx.updatedAt || tx.createdAt).toLocaleString()}</td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

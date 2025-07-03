@@ -28,19 +28,16 @@ export default function Home() {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showSignupModal, setShowSignupModal] = useState(false);
   const [showChatRoom, setShowChatRoom] = useState(false);
+  const [completedLevelIndex, setCompletedLevelIndex] = useState(null);
 
-  // For Passed Levels
-  const [slicesLevels, setSlicesLevels] = useState([]);
   const bgMusicRef = useRef();
   const { levels, setLevels } = useLevels();
-  const { profile } = useProfile();
+  const { profile, setProfile } = useProfile();
   const { user } = useAuth();
 
-  // Fetch levels with error handling and loading states
   const fetchLevels = useCallback(async () => {
     setIsLoading(true);
     setError(null);
-
     try {
       const response = await api.get("/api/levels");
       if (response.status === 200) {
@@ -50,9 +47,7 @@ export default function Home() {
       }
     } catch (err) {
       console.error("Error fetching levels:", err);
-      setError(
-        "Failed to load game levels. Please check your connection and try again."
-      );
+      setError("Failed to load game levels. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -62,29 +57,19 @@ export default function Home() {
     fetchLevels();
   }, [fetchLevels]);
 
-  // Background music management with error handling
   useEffect(() => {
     if (bgMusicOn) {
       try {
         const bg = new Audio("/sounds/bg-music.mp3");
         bg.loop = true;
-        bg.volume = 0.15;
-
-        const playPromise = bg.play();
-        if (playPromise !== undefined) {
-          playPromise.catch((error) => {
-            console.warn("Background music autoplay failed:", error);
-            setBgMusicOn(false);
-          });
-        }
-
+        bg.volume = 0.06;
+        bg.play().catch(console.warn);
         bgMusicRef.current = bg;
       } catch (error) {
         console.error("Error setting up background music:", error);
         setBgMusicOn(false);
       }
     }
-
     return () => {
       if (bgMusicRef.current) {
         bgMusicRef.current.pause();
@@ -93,7 +78,6 @@ export default function Home() {
     };
   }, [bgMusicOn]);
 
-  // Set user's max level on first load only
   useEffect(() => {
     if (!hasInitializedLevel && profile?.maxLevel > 0) {
       setLevelIndex(profile.maxLevel);
@@ -102,25 +86,17 @@ export default function Home() {
     }
   }, [profile?.maxLevel, hasInitializedLevel]);
 
-  // Update max level with error handling
   const updateMaxLevel = useCallback(
     async (level) => {
       if (!user?.token || !profile?.username) return;
-
       try {
         const response = await api.patch(
           `/api/profile/${profile.username}`,
           { maxLevel: level },
-          {
-            headers: {
-              Authorization: `Bearer ${user.token}`,
-            },
-          }
+          { headers: { Authorization: `Bearer ${user.token}` } }
         );
-
         if (response?.status === 200) {
-          setLevelIndex(response?.data?.profile?.maxLevel);
-          setMaxLevel(response?.data?.profile?.maxLevel);
+          setMaxLevel(response.data.profile.maxLevel);
         }
       } catch (error) {
         console.error("Failed to update max level:", error);
@@ -129,124 +105,125 @@ export default function Home() {
     [user?.token, profile?.username]
   );
 
-  // Enhanced sound playing with error handling
-  const playRightOrWrongSound = useCallback((src) => {
-    try {
-      const audio = new Audio(src);
-      audio.volume = 0.4;
-      audio.play().catch((error) => {
-        console.warn("Sound playback failed:", error);
-      });
-    } catch (error) {
-      console.error("Error playing sound:", error);
-    }
-  }, []);
+  // Utility to normalize answers for intelligent comparison
+  function normalizeAnswer(str) {
+    if (!str) return '';
+    return str
+      .toLowerCase() // case-insensitive
+      .replace(/\s+/g, '') // remove all whitespace
+      .replace(/;/g, '') // ignore semicolons
+      .replace(/\r?\n|\r/g, ''); // remove newlines (if any left)
+  }
 
-  // Enhanced answer submission with better feedback
   const handleSubmitAnswer = useCallback(
-    (userAnswer, level) => {
-      if (level.answer == userAnswer) {
-        playRightOrWrongSound("/sounds/right.mp3");
+    async (userAnswer, level) => {
+      // Use intelligent normalization for answer checking
+      if (normalizeAnswer(level.answer) === normalizeAnswer(userAnswer)) {
+        playSound("/sounds/right.mp3", 0.25);
         setMark("✔️");
-
-        // Update max level if user completed a new level
-        if (levelIndex > maxLevel) {
-          updateMaxLevel(levelIndex);
+        // Update totalPoints if logged in
+        if (profile?.username) {
+          try {
+            const response = await api.patch(`/api/profile/${profile.username}`, {
+              totalPoints: (profile.totalPoints || 0) + 1,
+            });
+            if (response.status === 200 && response.data?.profile) {
+              setProfile({ ...profile, totalPoints: response.data.profile.totalPoints });
+            }
+          } catch (err) {
+            // Optionally handle error (e.g., show notification)
+            console.error("Failed to update totalPoints:", err);
+          }
         }
-
+        // Only update maxLevel in backend, do not update levelIndex here
+        if (levelIndex >= maxLevel) {
+          updateMaxLevel(levelIndex + 1);
+        }
         setTimeout(() => {
+          setCompletedLevelIndex(levelIndex);
           setExplanation(true);
           setMark("");
-        }, 2000);
+          // Scroll to top when showing explanation
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }, 1500);
       } else {
-        playRightOrWrongSound("/sounds/wrong.mp3");
+        playSound("/sounds/wrong.mp3");
         setMark("❌");
-        setTimeout(() => {
-          setMark("");
-        }, 2000);
+        setTimeout(() => setMark(""), 1500);
       }
     },
-    [levelIndex, maxLevel, playRightOrWrongSound, updateMaxLevel]
+    [levelIndex, maxLevel, updateMaxLevel, profile, setProfile]
   );
 
-  // Enhanced next level handling
   const handleExplationNextButtonClick = useCallback(() => {
     playSound("/sounds/button-sound.mp3");
     setExplanation(false);
-
-    const nextLevel = levelIndex + 1;
+    setCompletedLevelIndex(null);
+    const nextLevel = (completedLevelIndex ?? levelIndex) + 1;
+    // If user just finished the last level, update maxLevel to levels.length
     if (nextLevel >= levels?.length) {
+      if (maxLevel < levels.length) {
+        updateMaxLevel(levels.length);
+      }
       setShowCompletionModal(true);
     } else {
       setLevelIndex(nextLevel);
+      // Scroll to top when moving to next level
+      window.scrollTo({ top: 0, behavior: "smooth" });
+      // If user just unlocked a new maxLevel, update maxLevel in backend as well
+      if (nextLevel > maxLevel) {
+        updateMaxLevel(nextLevel);
+      }
     }
-  }, [levelIndex, levels?.length]);
+  }, [completedLevelIndex, levelIndex, levels?.length, maxLevel, updateMaxLevel]);
 
-  // Handle game restart
   const handleRestart = useCallback(() => {
-    playRightOrWrongSound("/sounds/button-sound.mp3");
+    playSound("/sounds/button-sound.mp3");
     setLevelIndex(0);
-    setMaxLevel(0);
     setExplanation(false);
     setMark("");
     setShowCompletionModal(false);
-    localStorage.setItem("level", JSON.stringify(0));
-  }, [playRightOrWrongSound]);
-
-  // Handle login modal
-  const handleShowLogin = useCallback(() => {
-    setShowLoginModal(true);
+    setCompletedLevelIndex(null);
   }, []);
 
-  // Switch between login and signup modals
+  const handleShowLogin = useCallback(() => setShowLoginModal(true), []);
   const switchToSignup = useCallback(() => {
     setShowLoginModal(false);
     setShowSignupModal(true);
   }, []);
-
   const switchToLogin = useCallback(() => {
     setShowSignupModal(false);
     setShowLoginModal(true);
   }, []);
-
-  // Close auth modals
   const closeAuthModals = useCallback(() => {
     setShowLoginModal(false);
     setShowSignupModal(false);
   }, []);
 
-  // Loading state
   if (isLoading) {
     return (
-      <div className="h-screen w-full bg-[#181f2a] flex items-center justify-center">
-        <div className="bg-[#232b3e] rounded-3xl shadow-2xl p-8 text-center max-w-sm mx-4">
-          <div className="w-16 h-16 border-4 border-yellow-400 border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
-          <h2 className="text-2xl font-extrabold text-yellow-400 mb-2 tracking-wide">
-            Loading Game...
+      <div className="min-h-screen w-full bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 border-4 border-blue-400 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <h2 className="text-2xl font-bold text-white">
+            Loading Puzzle Quest...
           </h2>
-          <p className="text-base text-gray-300">
-            Preparing your puzzle adventure
-          </p>
         </div>
       </div>
     );
   }
 
-  // Error state
   if (error) {
     return (
-      <div className="h-screen w-full bg-[#181f2a] flex items-center justify-center">
-        <div className="bg-[#232b3e] rounded-3xl shadow-2xl p-8 text-center max-w-sm mx-4">
-          <div className="text-6xl mb-4">⚠️</div>
-          <h2 className="text-2xl font-extrabold text-red-400 mb-4 tracking-wide">
-            Oops! Something went wrong
-          </h2>
-          <p className="text-base text-gray-300 mb-6">{error}</p>
+      <div className="min-h-screen w-full bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 flex items-center justify-center">
+        <div className="text-center p-8 bg-white/10 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20">
+          <h2 className="text-2xl font-bold text-red-400 mb-4">Error</h2>
+          <p className="text-white mb-4">{error}</p>
           <button
             onClick={fetchLevels}
-            className="w-full px-6 py-3 rounded-2xl bg-yellow-400 text-[#181f2a] font-bold text-lg shadow-lg hover:bg-green-400 hover:text-[#181f2a] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-300"
+            className="px-6 py-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition-colors"
           >
-            🔄 Try Again
+            Try Again
           </button>
         </div>
       </div>
@@ -254,141 +231,75 @@ export default function Home() {
   }
 
   return (
-    <div className="h-screen w-full flex items-center justify-center bg-[#181f2a] relative">
-      {/* Animated playful background */}
-      <AnimatedBackground />
-      {/* Main Card Container */}
-      <div className="w-full ">
-        <div className="bg-[#232b3e] rounded-3xl shadow-2xl p-0 sm:p-2 md:p-6 flex flex-col">
-          <Header
-            buttonSoundOn={buttonSoundOn}
-            setButtonSoundOn={setButtonSoundOn}
-            bgMusicOn={bgMusicOn}
-            setBgMusicOn={setBgMusicOn}
-            slicesLevels={slicesLevels}
-            setSlicesLevels={setSlicesLevels}
-            levels={levels}
-            levelIndex={levelIndex}
-            setLevelIndex={setLevelIndex}
-            totalHintPoints={15}
-            setExplanation={setExplanation}
-          />
+    <div className="min-h-screen w-full bg-gradient-to-br from-blue-900 via-purple-900 to-indigo-900 relative overflow-hidden">
+      {/* Animated Background for Game Mode */}
+      {!welcome && <AnimatedBackground />}
 
-          <div className="flex-1 flex flex-col items-center justify-center px-2 sm:px-6">
-            {welcome && (
-              <WelcomeToGame
-                setBgMusicOn={setBgMusicOn}
-                setWelcome={setWelcome}
-                levelIndex={levelIndex}
-              />
-            )}
+      {/* Main Layout */}
+      <div className="relative z-10 flex flex-col min-h-screen">
+        {/* Header - Only show when not in welcome mode */}
+        {!welcome && (
+      <Header
+        buttonSoundOn={buttonSoundOn}
+        setButtonSoundOn={setButtonSoundOn}
+        bgMusicOn={bgMusicOn}
+        setBgMusicOn={setBgMusicOn}
+        levels={levels}
+        levelIndex={levelIndex}
+        setLevelIndex={setLevelIndex}
+        setExplanation={setExplanation}
+            explanation={explanation}
+            completedLevelIndex={completedLevelIndex}
+            showingExplanationForLevel={completedLevelIndex}
+      />
+        )}
 
-            {!welcome && (
-              <>
-                {levelIndex < levels?.length ? (
-                  !explanation ? (
-                    <AnswerForm
-                      onAnswer={handleSubmitAnswer}
-                      mark={mark}
-                      levelIndex={levelIndex}
-                      showLogin={handleShowLogin}
-                    />
-                  ) : (
-                    <Explanation
-                      onNext={handleExplationNextButtonClick}
-                      levelIndex={levelIndex}
-                    />
-                  )
-                ) : (
-                  <div className="flex-1 flex flex-col items-center justify-center text-center animate-fade-in px-4">
-                    <div className="text-7xl mb-6">🎉</div>
-                    <h2 className="text-3xl sm:text-4xl font-extrabold text-yellow-400 mb-4 tracking-wide">
-                      All Questions Completed!
-                    </h2>
-                    <p className="text-lg sm:text-xl text-gray-200 mb-8 font-semibold">
-                      Congratulations! You've solved all {levels?.length}{" "}
-                      puzzles! 🧠🔥
-                    </p>
-                    <button
-                      onClick={handleRestart}
-                      className="w-full px-6 py-4 rounded-2xl bg-green-400 text-[#181f2a] font-extrabold text-xl shadow-xl hover:bg-yellow-400 hover:text-[#181f2a] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-300"
-                    >
-                      🔁 Play Again
-                    </button>
-                  </div>
-                )}
-              </>
-            )}
-          </div>
-        </div>
-      </div>
-
-      {/* Completion Modal */}
-      {showCompletionModal && (
-        <div className="modal-overlay animate-fade-in">
-          <div className="modal-content p-6 max-w-sm mx-2 sm:mx-4 relative rounded-3xl bg-[#232b3e] shadow-2xl">
-            {/* Close Button */}
-            <button
-              onClick={() => setShowCompletionModal(false)}
-              className="absolute top-3 right-3 text-gray-400 hover:text-yellow-400 text-2xl font-bold w-10 h-10 flex items-center justify-center rounded-full hover:bg-[#181f2a] transition-colors"
-              aria-label="Close completion modal"
-            >
-              ×
-            </button>
-            <div className="text-center">
-              <div className="text-6xl mb-4">🏆</div>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-yellow-400 mb-4 tracking-wide">
-                Level {levelIndex + 1} Completed!
-              </h2>
-              <p className="text-base sm:text-lg text-gray-200 mb-6">
-                Great job! Ready for the next challenge?
-              </p>
-              <div className="flex gap-3">
-                <button
-                  onClick={() => setShowCompletionModal(false)}
-                  className="flex-1 px-4 py-3 rounded-2xl bg-blue-400 text-[#181f2a] font-bold text-lg shadow hover:bg-yellow-400 hover:text-[#181f2a] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-300"
-                >
-                  Continue
-                </button>
-                <button
-                  onClick={handleRestart}
-                  className="flex-1 px-4 py-3 rounded-2xl bg-yellow-400 text-[#181f2a] font-bold text-lg shadow hover:bg-green-400 hover:text-[#181f2a] transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-green-300"
-                >
-                  Restart
-                </button>
+        {/* Main Content Area */}
+        <main className="flex-1 flex items-center justify-center p-4">
+        {welcome ? (
+            <WelcomeToGame
+              setBgMusicOn={setBgMusicOn}
+              setWelcome={setWelcome}
+            />
+        ) : (
+            <div className="w-full max-w-4xl">
+            {levelIndex < levels?.length ? (
+              !explanation ? (
+                <AnswerForm
+                  onAnswer={handleSubmitAnswer}
+                  mark={mark}
+                  levelIndex={levelIndex}
+                  showLogin={handleShowLogin}
+                    onRestart={handleRestart}
+                />
+              ) : (
+                <Explanation
+                  onNext={handleExplationNextButtonClick}
+                    levelIndex={completedLevelIndex}
+                    onRestart={handleRestart}
+                    isLastLevel={completedLevelIndex === levels.length - 1}
+                />
+              )
+            ) : (
+                <div className="text-center p-8 bg-white/10 backdrop-blur-xl rounded-2xl shadow-lg border border-white/20">
+                  <h2 className="text-3xl font-bold text-green-500 mb-4">
+                    🎉 Congratulations! 🎉
+                  </h2>
+                  <p className="text-lg text-gray-100 mb-6">You've completed all levels. Do you want to restart from level 1? <br/>(This will not reset your maxLevel or achievements.)</p>
+                  <button
+                    onClick={handleRestart}
+                    className="px-8 py-4 bg-blue-600 text-white text-xl font-bold rounded-full shadow-lg hover:bg-blue-700 transition-colors"
+                  >
+                    Restart from Level 1
+                  </button>
               </div>
+            )}
             </div>
-          </div>
-        </div>
-      )}
+        )}
+      </main>
 
-      {/* Login Modal */}
-      {showLoginModal && (
-        <LoginModal
-          isOpen={showLoginModal}
-          onClose={closeAuthModals}
-          onSwitchToSignup={switchToSignup}
-        />
-      )}
-
-      {/* Signup Modal */}
-      {showSignupModal && (
-        <SignupModal
-          isOpen={showSignupModal}
-          onClose={closeAuthModals}
-          onSwitchToLogin={switchToLogin}
-        />
-      )}
-
-      {/* Chat Room */}
-      {showChatRoom && (
-        <ChatRoom
-          isOpen={showChatRoom}
-          onClose={() => setShowChatRoom(false)}
-        />
-      )}
-
-      {/* Chat Button - Fixed at bottom */}
+        {/* Chat Room Button - Only show when not in welcome mode */}
+        {!welcome && (
       <div className="fixed bottom-4 right-4 z-20">
         <button
           onClick={() => {
@@ -399,21 +310,59 @@ export default function Home() {
             setShowChatRoom(true);
             playSound("/sounds/button-sound.mp3");
           }}
-          className="bg-indigo-600 text-white p-3 rounded-full shadow-lg hover:bg-indigo-700 transition-all duration-300 hover:scale-110 flex items-center gap-2"
-          title="Join the Chat Room"
+              className="bg-blue-500 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 transition-all duration-300"
+          title="Chat Room"
         >
-          <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fillRule="evenodd"
-              d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z"
-              clipRule="evenodd"
-            />
-          </svg>
-          <span className="hidden sm:inline text-sm font-semibold">
-            Join Chat
-          </span>
+              <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20">
+                <path
+                  fillRule="evenodd"
+                  d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z"
+                  clipRule="evenodd"
+                />
+              </svg>
         </button>
+          </div>
+        )}
       </div>
+
+      {/* Modals */}
+      {showCompletionModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white/10 backdrop-blur-xl p-6 max-w-sm mx-4 rounded-2xl text-center border border-white/20">
+            <h2 className="text-3xl font-bold text-green-500 mb-4">
+              🎉 Congratulations! 🎉
+            </h2>
+            <p className="text-lg text-gray-100 mb-6">You've completed all levels. Do you want to restart from level 1? <br/>(This will not reset your maxLevel or achievements.)</p>
+            <button
+              onClick={handleRestart}
+              className="px-8 py-4 bg-blue-600 text-white text-xl font-bold rounded-full shadow-lg hover:bg-blue-700 transition-colors"
+            >
+              Restart from Level 1
+            </button>
+          </div>
+        </div>
+      )}
+
+      {showLoginModal && (
+        <LoginModal
+          isOpen={showLoginModal}
+          onClose={closeAuthModals}
+          onSwitchToSignup={switchToSignup}
+        />
+      )}
+      {showSignupModal && (
+        <SignupModal
+          isOpen={showSignupModal}
+          onClose={closeAuthModals}
+          onSwitchToLogin={switchToLogin}
+        />
+      )}
+      {showChatRoom && (
+        <ChatRoom
+          isOpen={showChatRoom}
+          onClose={() => setShowChatRoom(false)}
+        />
+      )}
     </div>
   );
 }

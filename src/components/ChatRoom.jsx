@@ -363,40 +363,23 @@ export default function ChatRoom({ isOpen, onClose, roomId = "general" }) {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-xl shadow-2xl max-w-6xl w-full max-h-[90vh] flex">
-        {/* Main Chat Area */}
+    <div className="fixed inset-0 flex items-center justify-center bg-black/60 z-50">
+      <div className="bg-white rounded-3xl shadow-2xl max-w-4xl w-full flex flex-col md:flex-row overflow-hidden">
+        {/* Chat Area */}
         <div className="flex-1 flex flex-col">
           {/* Header */}
-          <div className="p-4 border-b border-gray-200 flex items-center justify-between">
-            <div>
-              <h2 className="text-xl font-bold text-gray-900">
-                💬 Challenge Chat Room
-              </h2>
-              <div className="flex items-center gap-2 text-sm text-gray-600">
-                <span className={`${getConnectionStatusColor()} font-semibold`}>
-                  {connectionStatus === "connected"
-                    ? "🟢 Connected"
-                    : connectionStatus === "connecting"
-                    ? "🟡 Connecting..."
-                    : "🔴 Disconnected"}
-                </span>
-                <span>•</span>
-                <span>{onlineUsers.length} online</span>
-                <span>•</span>
-                <span>Room: {roomId}</span>
-              </div>
+          <div className="flex items-center justify-between p-5 border-b">
+            <div className="flex items-center gap-3">
+              <span className="text-2xl">💬</span>
+              <h2 className="font-bold text-xl">Chat Room</h2>
+              <span className="ml-2 w-3 h-3 rounded-full" style={{ background: connectionStatus === 'connected' ? '#22c55e' : '#f59e42' }} />
             </div>
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-gray-600 text-2xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
-            >
+            <button onClick={onClose} className="text-gray-400 hover:text-gray-700 text-2xl rounded-full p-1 transition">
               ×
             </button>
           </div>
-
-          {/* Messages Area */}
-          <div className="flex-1 overflow-y-auto p-4 space-y-3 min-h-0">
+          {/* Messages */}
+          <div className="flex-1 overflow-y-auto p-5 space-y-4 bg-gray-50">
             {loading ? (
               <div className="text-center py-8">
                 <div className="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
@@ -422,44 +405,61 @@ export default function ChatRoom({ isOpen, onClose, roomId = "general" }) {
                   messages.map((message) => (
                     <div
                       key={message._id}
-                      className={`p-3 rounded-lg border ${getMessageColor(
-                        message.username
-                      )} ${getMessageTypeStyle(message.messageType)}`}
+                      className={`flex ${message.username === profile?.username ? 'justify-end' : message.messageType === 'system' ? 'justify-center' : 'justify-start'}`}
                     >
-                      <div className="flex items-start justify-between mb-1">
-                        <span className="font-semibold text-sm text-gray-800">
-                          {message.username}
-                        </span>
-                        <span className="text-xs text-gray-500">
-                          {message.formattedTime}
-                        </span>
+                      <div className={`max-w-xs px-4 py-2 rounded-2xl shadow transition-all duration-200
+                        ${message.username === profile?.username ? 'bg-blue-100 text-blue-900' : message.messageType === 'system' ? 'bg-gray-200 text-gray-500' : 'bg-white text-gray-800'}
+                        ${message.messageType === 'system' ? 'mx-auto' : ''}
+                      `}>
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="text-xs font-semibold">{message.username}</span>
+                          <span className="text-[10px] text-gray-400">{message.formattedTime}</span>
+                        </div>
+                        <div className="text-sm whitespace-pre-wrap">{message.message}</div>
                       </div>
-                      <p className="text-gray-700 text-sm whitespace-pre-wrap">
-                        {message.message}
-                      </p>
                     </div>
                   ))
                 )}
-
                 {/* Typing indicators */}
                 {typingUsers.size > 0 && (
                   <div className="p-1 bg-gray-50">
                     <p className="text-sm text-gray-600 italic">
-                      {Array.from(typingUsers).join(", ")}{" "}
-                      {typingUsers.size === 1 ? "is" : "are"} typing...
+                      {Array.from(typingUsers).join(", ")} {typingUsers.size === 1 ? "is" : "are"} typing...
                     </p>
                   </div>
                 )}
-
                 <div ref={messagesEndRef} />
               </>
             )}
           </div>
-
+          {/* Input */}
+          <div className="p-4 border-t flex gap-2 bg-white">
+            <input
+              value={newMessage}
+              onChange={handleTyping}
+              onKeyPress={handleKeyPress}
+              placeholder="Type your message..."
+              className="flex-1 rounded-full px-4 py-2 border border-gray-200 focus:ring-2 focus:ring-blue-400"
+              maxLength="500"
+              disabled={!isConnected}
+            />
+            <button
+              onClick={sendMessage}
+              disabled={!newMessage.trim() || !isConnected}
+              className="bg-blue-600 text-white rounded-full px-5 py-2 font-bold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
+            >
+              Send
+            </button>
+            <button
+              onClick={() => setShowHelpForm(!showHelpForm)}
+              className="border border-orange-400 text-orange-600 rounded-full px-4 py-2 font-bold hover:bg-orange-100 transition text-sm"
+            >
+              🤔 Help
+            </button>
+          </div>
           {/* Help Request Form */}
           {showHelpForm && (
-            <div className="p-4 border-t border-gray-200 bg-orange-50">
-              <div className="flex gap-2">
+            <div className="p-4 border-t border-orange-200 bg-orange-50 flex gap-2">
                 <input
                   type="text"
                   value={helpQuestion}
@@ -480,76 +480,27 @@ export default function ChatRoom({ isOpen, onClose, roomId = "general" }) {
                 >
                   Cancel
                 </button>
-              </div>
             </div>
           )}
-
-          {/* Input Area */}
-          <div className="p-4 border-t border-gray-200">
-            <div className="flex gap-2">
-              <div className="flex-1">
-                <textarea
-                  value={newMessage}
-                  onChange={handleTyping}
-                  onKeyPress={handleKeyPress}
-                  placeholder="Type your message..."
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"
-                  rows="2"
-                  maxLength="500"
-                  disabled={!isConnected}
-                />
-                <div className="text-xs text-gray-500 mt-1 text-right">
-                  {newMessage.length}/500
-                </div>
-              </div>
-              <div className="flex flex-col gap-2">
-                <button
-                  onClick={sendMessage}
-                  disabled={!newMessage.trim() || !isConnected}
-                  className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-semibold"
-                >
-                  Send
-                </button>
-                <button
-                  onClick={() => setShowHelpForm(!showHelpForm)}
-                  className="px-4 py-2 bg-orange-100 text-orange-700 rounded-lg hover:bg-orange-200 transition-colors font-semibold text-sm"
-                >
-                  🤔 Help
-                </button>
-              </div>
-            </div>
-          </div>
         </div>
-
-        {/* Online Users Sidebar */}
-        <div className="w-64 border-l border-gray-200 flex flex-col">
-          <div className="p-4 border-b border-gray-200">
-            <h3 className="font-semibold text-gray-900">👥 Online Users</h3>
-            <p className="text-sm text-gray-600">{onlineUsers.length} active</p>
-          </div>
-
-          <div className="flex-1 overflow-y-auto p-4">
+        {/* Online Users */}
+        <div className="w-64 bg-gray-50 border-l flex flex-col">
+          <div className="p-4 border-b font-semibold">Online Users</div>
+          <div className="flex-1 overflow-y-auto p-4 space-y-2">
             {onlineUsers.length === 0 ? (
               <p className="text-gray-500 text-sm text-center">
                 No users online
               </p>
             ) : (
-              <div className="space-y-2">
-                {onlineUsers.map((user, index) => (
+              onlineUsers.map((user) => (
                   <div
-                    key={index}
-                    className="flex items-center gap-2 p-2 rounded-lg bg-green-50"
+                  key={user.username}
+                  className={`flex items-center gap-2 p-2 rounded-lg ${user.username === profile?.username ? 'bg-blue-50' : 'bg-green-50'}`}
                   >
-                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-                    <span className="text-sm font-medium text-gray-800">
-                      {user.username}
-                    </span>
-                    {user.username === profile?.username && (
-                      <span className="text-xs text-gray-500">(You)</span>
-                    )}
+                  <span className="w-2 h-2 bg-green-500 rounded-full" />
+                  <span className="text-sm">{user.username}{user.username === profile?.username && ' (You)'}</span>
                   </div>
-                ))}
-              </div>
+              ))
             )}
           </div>
         </div>

@@ -21,41 +21,42 @@ export default function SurveyTable() {
   }, []);
 
   return (
-    <div className="p-6">
-      <h2 className="text-3xl font-bold text-pink-700 mb-6 text-center">All Survey Responses</h2>
-      {loading ? (
-        <div className="text-center text-gray-500">Loading...</div>
-      ) : error ? (
-        <div className="text-center text-red-500">{error}</div>
-      ) : (
-        <div className="overflow-x-auto max-h-[70vh]">
-          <table className="min-w-full text-left text-base">
-            <thead className="bg-gray-100">
+    <div className="p-8 bg-[--primary-bg] text-[--text-color]">
+      <div className="max-w-6xl mx-auto">
+        <h1 className="text-3xl font-bold text-[--accent-blue] mb-6">Survey Responses</h1>
+        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
+          <table className="min-w-full text-left">
+            <thead className="bg-[--secondary-bg]">
               <tr>
-                <th className="p-2">Username</th>
-                <th className="p-2">Rating</th>
-                <th className="p-2">Happy?</th>
-                <th className="p-2">Suggestion</th>
-                <th className="p-2">Date</th>
+                <th className="p-4 font-bold">Username</th>
+                <th className="p-4 font-bold">Rating</th>
+                <th className="p-4 font-bold">Happy?</th>
+                <th className="p-4 font-bold">Suggestion</th>
+                <th className="p-4 font-bold">Date</th>
               </tr>
             </thead>
             <tbody>
-              {allSurveys.length === 0 && (
-                <tr><td colSpan={5} className="text-center text-gray-400 p-4">No survey responses yet.</td></tr>
+              {loading ? (
+                <tr><td colSpan={5} className="text-center p-4">Loading...</td></tr>
+              ) : error ? (
+                <tr><td colSpan={5} className="text-center p-4 text-red-500">{error}</td></tr>
+              ) : allSurveys.length === 0 ? (
+                <tr><td colSpan={5} className="text-center p-4 text-gray-500">No survey responses yet.</td></tr>
+              ) : (
+                allSurveys.map((s, i) => (
+                  <tr key={i} className="border-b border-gray-200 hover:bg-gray-50">
+                    <td className="p-4 font-semibold text-[--accent-blue]">{s.user}</td>
+                    <td className="p-4">{s.rating} / 5</td>
+                    <td className="p-4">{s.happyIfClosed ? '😊' : '😞'}</td>
+                    <td className="p-4 max-w-xs break-words">{s.suggestion || <span className="text-gray-400">—</span>}</td>
+                    <td className="p-4 text-sm text-gray-500">{new Date(s.createdAt).toLocaleString()}</td>
+                  </tr>
+                ))
               )}
-              {allSurveys.map((s, i) => (
-                <tr key={i} className="border-b border-gray-200 hover:bg-pink-50">
-                  <td className="p-2 font-semibold text-indigo-700">{s.user}</td>
-                  <td className="p-2">{s.rating} / 5</td>
-                  <td className="p-2">{s.happyIfClosed ? '😊' : '😞'}</td>
-                  <td className="p-2 max-w-xs break-words">{s.suggestion || <span className="text-gray-400">—</span>}</td>
-                  <td className="p-2 text-xs text-gray-500">{new Date(s.createdAt).toLocaleString()}</td>
-                </tr>
-              ))}
             </tbody>
           </table>
         </div>
-      )}
+      </div>
     </div>
   );
 } 

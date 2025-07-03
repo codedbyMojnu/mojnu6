@@ -5,39 +5,14 @@
   <meta charset="UTF-8" />
   <link rel="icon" type="image/svg+xml" href="/vite.svg" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Vite + React</title>
+  <title>Puzzle Quest - Challenge Your Mind</title>
   <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Google+Sans&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css"
     integrity="sha384-GvrOXuhMATgEsSwCs4smul74iXGOixntILdUW9XmUC6+HX0sLNAK3q71HotJqlAn" crossorigin="anonymous">
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    /* Design System Colors */
-    :root {
-      --primary-green: #85cc3c;
-      --primary-green-hover: #76b535;
-      --secondary-yellow: #fbbf24;
-      --secondary-yellow-light: #fef3c7;
-      --accent-blue: #3b82f6;
-      --accent-purple: #8b5cf6;
-      --accent-pink: #ec4899;
-      --accent-orange: #f97316;
-      --gray-50: #f9fafb;
-      --gray-100: #f3f4f6;
-      --gray-200: #e5e7eb;
-      --gray-300: #d1d5db;
-      --gray-400: #9ca3af;
-      --gray-500: #6b7280;
-      --gray-600: #4b5563;
-      --gray-700: #374151;
-      --gray-800: #1f2937;
-      --gray-900: #111827;
-      --wood-primary: #a17358;
-      --wood-secondary: #8b5a3c;
-      --wood-light: #d4a574;
-    }
-
-    /* Animations */
+    /* Base Loading Screen Styles - Minimal and Non-Conflicting */
     @keyframes spin {
       to {
         transform: rotate(360deg);
@@ -60,18 +35,6 @@
 
       60% {
         transform: translateY(-5px);
-      }
-    }
-
-    @keyframes pulse {
-
-      0%,
-      100% {
-        opacity: 1;
-      }
-
-      50% {
-        opacity: 0.5;
       }
     }
 
@@ -116,177 +79,140 @@
       }
     }
 
-    .animate-spin {
+    .loading-spin {
       animation: spin 1s linear infinite;
     }
 
-    .animate-bounce {
+    .loading-bounce {
       animation: bounce 1s infinite;
     }
 
-    .animate-pulse {
-      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-    }
-
-    .animate-fade-in {
+    .loading-fade-in {
       animation: fadeIn 0.3s ease-out;
     }
 
-    .animate-progress-fill {
+    .loading-progress-fill {
       animation: progressFill 0.5s ease-out;
     }
 
-    .dots::after {
+    .loading-dots::after {
       content: "";
       animation: dots 2s infinite;
     }
 
-    /* Card Styles */
-    .card {
+    /* Loading Screen Specific Styles */
+    .loading-card {
       background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(10px);
-      border: 2px solid var(--gray-200);
+      border: 2px solid #e5e7eb;
       border-radius: 1rem;
       box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
-      transition: all 0.3s ease;
     }
 
-    /* Progress Bar */
-    .progress-container {
+    .loading-progress-container {
       width: 100%;
       height: 8px;
-      background-color: var(--gray-200);
+      background-color: #e5e7eb;
       border-radius: 4px;
       overflow: hidden;
       position: relative;
     }
 
-    .progress-fill {
+    .loading-progress-fill {
       height: 100%;
-      background: linear-gradient(90deg, var(--primary-green), var(--primary-green-hover));
+      background: linear-gradient(90deg, #85cc3c, #76b535);
       border-radius: 4px;
       transition: width 0.3s ease;
-      position: relative;
     }
 
-    .progress-fill::after {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      bottom: 0;
-      right: 0;
-      background-image: linear-gradient(-45deg,
-          rgba(255, 255, 255, 0.2) 25%,
-          transparent 25%,
-          transparent 50%,
-          rgba(255, 255, 255, 0.2) 50%,
-          rgba(255, 255, 255, 0.2) 75%,
-          transparent 75%,
-          transparent);
-      background-size: 20px 20px;
-      animation: progressShimmer 1s linear infinite;
-    }
-
-    @keyframes progressShimmer {
-      0% {
-        transform: translateX(-20px);
-      }
-
-      100% {
-        transform: translateX(20px);
-      }
-    }
-
-    /* Responsive Text */
-    .text-responsive-sm {
+    /* Responsive Text for Loading Screen Only */
+    .loading-text-sm {
       font-size: 0.875rem;
     }
 
-    .text-responsive-base {
+    .loading-text-base {
       font-size: 1rem;
     }
 
-    .text-responsive-lg {
+    .loading-text-lg {
       font-size: 1.125rem;
     }
 
-    .text-responsive-xl {
+    .loading-text-xl {
       font-size: 1.25rem;
     }
 
-    .text-responsive-2xl {
+    .loading-text-2xl {
       font-size: 1.5rem;
     }
 
     @media (min-width: 640px) {
-      .text-responsive-sm {
+      .loading-text-sm {
         font-size: 1rem;
       }
 
-      .text-responsive-base {
+      .loading-text-base {
         font-size: 1.125rem;
       }
 
-      .text-responsive-lg {
+      .loading-text-lg {
         font-size: 1.25rem;
       }
 
-      .text-responsive-xl {
+      .loading-text-xl {
         font-size: 1.5rem;
       }
 
-      .text-responsive-2xl {
+      .loading-text-2xl {
         font-size: 1.875rem;
       }
     }
 
-    /* Font Family */
-    body {
+    /* Loading Screen Font */
+    .loading-body {
       font-family: 'Patrick Hand', cursive, system-ui, -apple-system, sans-serif;
     }
   </style>
 </head>
 
-<body>
+<body class="loading-body">
   <!-- Initial Loading Screen -->
   <div id="initial-loading"
-    class="h-screen w-full bg-cover bg-center bg-no-repeat flex items-center justify-center overflow-hidden animate-fade-in"
+    class="h-screen w-full bg-cover bg-center bg-no-repeat flex items-center justify-center overflow-hidden loading-fade-in"
     style="background-image: url('/bg-images/notepad.png')">
     <div class="w-full max-w-sm sm:max-w-md md:max-w-lg mx-2 sm:mx-4">
-      <div class="card p-4 sm:p-6 md:p-8 text-center animate-fade-in">
+      <div class="loading-card p-4 sm:p-6 md:p-8 text-center loading-fade-in">
         <div
-          class="w-12 h-12 sm:w-16 sm:h-16 border-4 border-primary-green border-t-transparent rounded-full animate-spin mx-auto mb-4 sm:mb-6">
+          class="w-12 h-12 sm:w-16 sm:h-16 border-4 border-green-500 border-t-transparent rounded-full loading-spin mx-auto mb-4 sm:mb-6">
         </div>
-        <h1 class="text-responsive-lg sm:text-responsive-2xl font-bold text-gray-700 mb-3 sm:mb-4">Loading Application
-        </h1>
-        <p class="text-responsive-sm sm:text-responsive-lg text-gray-600 mb-4 sm:mb-6">
-          First load takes time, please wait a while<span class="dots"></span>
+        <h1 class="loading-text-lg sm:loading-text-2xl font-bold text-gray-700 mb-3 sm:mb-4">Loading mojnu6
+          InterviewPrep</h1>
+        <p class="loading-text-sm sm:loading-text-lg text-gray-600 mb-4 sm:mb-6">
+          Daily frontend interview questions are on the way<span class="loading-dots"></span>
         </p>
 
         <div class="space-y-3 sm:space-y-4">
           <div class="flex items-center justify-center space-x-2">
-            <div class="w-2 h-2 sm:w-3 sm:h-3 bg-primary-green rounded-full animate-bounce"></div>
-            <div class="w-2 h-2 sm:w-3 sm:h-3 bg-primary-green rounded-full animate-bounce"
-              style="animation-delay: 0.1s;"></div>
-            <div class="w-2 h-2 sm:w-3 sm:h-3 bg-primary-green rounded-full animate-bounce"
-              style="animation-delay: 0.2s;"></div>
+            <div class="w-2 h-2 sm:w-3 sm:h-3 bg-green-500 rounded-full loading-bounce"></div>
+            <div class="w-2 h-2 sm:w-3 sm:h-3 bg-green-500 rounded-full loading-bounce" style="animation-delay: 0.1s;">
+            </div>
+            <div class="w-2 h-2 sm:w-3 sm:h-3 bg-green-500 rounded-full loading-bounce" style="animation-delay: 0.2s;">
+            </div>
           </div>
 
           <!-- Progress Bar -->
           <div class="space-y-2">
             <div class="flex justify-between items-center">
-              <span class="text-responsive-xs sm:text-responsive-sm text-gray-600">Loading...</span>
-              <span id="progress-text"
-                class="text-responsive-xs sm:text-responsive-sm font-semibold text-primary-green">0%</span>
+              <span class="loading-text-sm text-gray-600">Loading...</span>
+              <span id="progress-text" class="loading-text-sm font-semibold text-green-500">0%</span>
             </div>
-            <div class="progress-container">
-              <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+            <div class="loading-progress-container">
+              <div id="progress-fill" class="loading-progress-fill" style="width: 0%"></div>
             </div>
           </div>
         </div>
 
-        <div class="mt-4 sm:mt-6 text-responsive-xs sm:text-responsive-sm text-gray-500">
+        <div class="mt-4 sm:mt-6 loading-text-sm text-gray-500">
           <p id="loading-status">Initializing application...</p>
           <p class="mt-1">This may take a few moments on first load</p>
         </div>

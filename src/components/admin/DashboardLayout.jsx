@@ -3,15 +3,10 @@ import Sidebar from "./Sidebar";
 
 export default function DashboardLayout() {
   return (
-    <div className="h-screen flex overflow-hidden font-[Patrick_Hand]">
-      {/* Sidebar with independent scroll */}
+    <div className="h-screen flex bg-[--primary-bg]">
       <Sidebar />
-
-      {/* Right Content Panel: No scrolling here */}
-      <main className="flex-1 h-full overflow-hidden">
-        <div className="h-full w-full ">
-          <Outlet />
-        </div>
+      <main className="flex-1 h-full overflow-y-auto">
+        <Outlet />
       </main>
     </div>
   );

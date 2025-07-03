@@ -8,41 +8,39 @@ export default function WelcomeAdminDashboard() {
   }, []);
 
   return (
-    <div
-      className="w-full h-full p-6 font-[Patrick_Hand] text-gray-800"
-      style={{ backgroundImage: "url('/bg-images/wood.png')" }}
-    >
-      <div className="max-w-3xl mx-auto text-center">
-        <h1 className="text-5xl font-bold text-indigo-800 mb-4">
-          Welcome, Admin!
-        </h1>
-        <p className="mt-8 text-xl text-gray-600">
-          🚀 Let's build something fun and brainy!
-        </p>
-        <p className="text-2xl text-gray-700 mb-6">
-          This is your control panel to manage levels and questions.
-        </p>
+    <div className="p-8 bg-[--primary-bg] text-[--text-color]">
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-4xl font-bold text-[--accent-blue] mb-4">Welcome, Admin!</h1>
+        <p className="text-lg text-gray-600 mb-8">This is your control panel to manage levels, questions, and users.</p>
 
-        {/* Survey Analytics */}
         {survey && (
-          <div className="bg-pink-100/60 border border-pink-300 p-6 rounded-2xl shadow-md text-xl space-y-2 mb-8">
-            <div className="font-bold text-pink-700 text-2xl mb-2">Survey Analytics</div>
-            <div className="flex flex-wrap gap-6 justify-center mb-2">
-              <div>⭐ গড় রেটিং: <span className="font-bold text-yellow-600">{survey.avgRating}</span> / 5</div>
-              <div>👥 মোট রেসপন্স: <span className="font-bold">{survey.total}</span></div>
-              <div>😊 খুশি: <span className="font-bold text-green-600">{survey.happyCount}</span></div>
-              <div>😞 খুশি না: <span className="font-bold text-red-600">{survey.unhappyCount}</span></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <h2 className="text-lg font-bold text-gray-700 mb-2">Avg. Rating</h2>
+              <p className="text-3xl font-bold text-[--accent-blue]">{survey.avgRating} / 5</p>
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <h2 className="text-lg font-bold text-gray-700 mb-2">Total Responses</h2>
+              <p className="text-3xl font-bold text-[--accent-blue]">{survey.total}</p>
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <h2 className="text-lg font-bold text-gray-700 mb-2">Happy Users</h2>
+              <p className="text-3xl font-bold text-green-500">{survey.happyCount}</p>
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <h2 className="text-lg font-bold text-gray-700 mb-2">Unhappy Users</h2>
+              <p className="text-3xl font-bold text-red-500">{survey.unhappyCount}</p>
             </div>
           </div>
         )}
 
-        <div className="bg-yellow-100/60 border border-dashed border-gray-400 p-6 rounded-2xl shadow-md text-xl space-y-4">
-          <div>Instructions</div>
-          <div className="text-left">
-            <p>✅ Add new quiz levels with questions.</p>
-            <p>📝 Edit or delete existing ones easily.</p>
-            <p>📊 Monitor and improve the quiz experience.</p>
-          </div>
+        <div className="bg-white p-8 rounded-lg shadow-md">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">Instructions</h2>
+          <ul className="list-disc list-inside space-y-2 text-gray-700">
+            <li>Add new quiz levels with questions.</li>
+            <li>Edit or delete existing ones easily.</li>
+            <li>Monitor and improve the quiz experience.</li>
+          </ul>
         </div>
       </div>
     </div>

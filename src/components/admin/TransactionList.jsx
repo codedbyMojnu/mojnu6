@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import api from "../../api"; // Adjust path if needed
+import api from "../../api";
 import { useAuth } from "../../context/AuthContext";
 import playSound from "../../utils/playSound";
 
@@ -7,16 +7,14 @@ export default function TransactionList() {
   const [transactions, setTransactions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [showNewTransactionAlert, setShowNewTransactionAlert] = useState(false);
+  const [actionLoadingId, setActionLoadingId] = useState(null);
   const { user } = useAuth();
   const prevTransactionCountRef = useRef(0);
 
-  // Function to fetch transactions
   const fetchTransactions = async () => {
     try {
       setIsLoading(true);
-      const res = await api.get("/api/transactions", {
-        headers: { Authorization: `Bearer ${user?.token}` },
-      });
+      const res = await api.get("/api/transactions", { headers: { Authorization: `Bearer ${user?.token}` } });
       if (res.status === 200) {
         const newTransactions = res.data;
         const pendingCount = newTransactions.filter(
@@ -24,11 +22,9 @@ export default function TransactionList() {
         ).length;
         const prevCount = prevTransactionCountRef.current;
 
-        // Show alert if new transactions arrived
         if (pendingCount > prevCount && prevCount > 0) {
           setShowNewTransactionAlert(true);
           setTimeout(() => setShowNewTransactionAlert(false), 5000);
-          // Play notification sound
           playSound("/sounds/next-2.mp3");
         }
 
@@ -44,85 +40,62 @@ export default function TransactionList() {
 
   useEffect(() => {
     if (user?.token) {
-      // Initial fetch
       fetchTransactions();
-
-      // Set up polling every 10 seconds to check for new transactions
-      const pollInterval = setInterval(() => {
-        fetchTransactions();
-      }, 10000); // 10 seconds
-
-      // Cleanup interval on unmount or when user changes
+      const pollInterval = setInterval(fetchTransactions, 10000);
       return () => clearInterval(pollInterval);
     }
   }, [user?.token]);
 
-  // get specific user profile data includes hintPoints, maxLevel
   async function fetchProfile(username) {
-    const response = await api.get(`/api/profile/${username}`);
+    const response = await api.get(`/api/profile/${username}`, {
+      headers: { Authorization: `Bearer ${user?.token}` },
+    });
     if (response?.status === 200) {
       return response?.data;
     }
+    throw new Error("Failed to fetch profile");
   }
 
-  async function handleApprove(id, username, packege) {
-    const profile = await fetchProfile(username);
-    let updatedProfileData = null;
-    if (packege === "20tk") {
-      updatedProfileData = {
-        ...profile,
-        hintPoints: profile?.hintPoints + 100,
-      };
-    }
+  async function handleApprove(id, username, selectedPackage) {
+    if (!window.confirm("Approve this transaction and add hint points?")) return;
+    setActionLoadingId(id);
+    try {
+      const profile = await fetchProfile(username);
+      if (!profile) throw new Error("Profile not found");
 
-    if (packege === "50tk") {
-      updatedProfileData = {
-        ...profile,
-        hintPoints: profile?.hintPoints + 500,
-      };
-    }
-    // This must be protect route on server and must header admin bearer api
-    const response = await api.put(
-      `/api/profile/${profile?.username}`,
-      updatedProfileData
-    );
-    if (response.status === 200) {
-      console.log("Hint Point Added");
-    }
+      let pointsToAdd = 0;
+      if (selectedPackage === "basic") pointsToAdd = 100;
+      else if (selectedPackage === "premium") pointsToAdd = 250;
+      else if (selectedPackage === "ultimate") pointsToAdd = 500;
+      if (pointsToAdd === 0) throw new Error("Unknown package type");
 
-    // approve Status Set True When Approve a Transaction
-    async function handleApproveStatus() {
-      try {
-        const response = await api.patch(
-          `/api/transactions/${id}`,
-          {
-            approveStatus: "approved",
-          },
-          {
-            headers: { Authorization: `Bearer ${user?.token}` },
-          }
-        );
-        console.log(response);
-        if (response.status === 200) {
-          const updatedTransactions = transactions?.filter(
-            (transaction) => transaction._id !== id
-          );
-          setTransactions(updatedTransactions);
-        }
-      } catch (err) {
-        if (err.response && err.response.status === 404) {
-          console.error("Transaction not found.");
-        } else {
-          console.error(
-            "An error occurred while updating the transaction status."
-          );
-        }
+      const patchRes = await api.patch(
+        `/api/profile/${username}`,
+        { hintPoints: profile.hintPoints + pointsToAdd },
+        { headers: { Authorization: `Bearer ${user?.token}` } }
+      );
+      if (patchRes.status !== 200) throw new Error("Profile update failed");
+
+      const txRes = await api.patch(
+        `/api/transactions/${id}`,
+        { approveStatus: "approved" },
+        { headers: { Authorization: `Bearer ${user?.token}` } }
+      );
+      if (txRes.status === 200) {
+        setTransactions((prev) => prev.filter((tx) => tx._id !== id));
+      } else {
+        throw new Error("Failed to approve transaction");
       }
+    } catch (err) {
+      alert("Failed to approve transaction: " + (err.message || "Unknown error"));
+    } finally {
+      setActionLoadingId(null);
     }
-    await handleApproveStatus();
   }
 
   async function handleCancel(id) {
+    if (!window.confirm("Are you sure you want to cancel this transaction?")) return;
+    setActionLoadingId(id);
     try {
       const res = await api.patch(
         `/api/transactions/${id}`,
@@ -135,20 +108,22 @@ export default function TransactionList() {
       );
       if (res.status === 200) {
         setTransactions((prev) => prev.filter((tx) => tx._id !== id));
+      } else {
+        throw new Error("Failed to cancel transaction");
       }
     } catch (err) {
-      console.error("Cancel failed:", err);
+      alert("Cancel failed: " + (err.message || "Unknown error"));
+    } finally {
+      setActionLoadingId(null);
     }
   }
 
-  // Manual refresh function
   const handleManualRefresh = () => {
     fetchTransactions();
   };
 
   return (
     <div className="p-6 font-[Patrick_Hand] w-full h-full overflow-y-auto bg-yellow-50/30">
-      {/* New Transaction Alert */}
       {showNewTransactionAlert && (
         <div className="fixed top-4 right-4 z-50 bg-green-500 text-white px-6 py-3 rounded-lg shadow-lg animate-bounce">
           <div className="flex items-center gap-2">
@@ -247,10 +222,9 @@ export default function TransactionList() {
                     </td>
                     <td className="p-3 border-b text-center">
                       <button
-                        onClick={() =>
-                          handleApprove(tx._id, tx.username, tx.selectedPackage)
-                        }
-                        className="text-green-700 hover:text-green-900 transition"
+                        onClick={() => handleApprove(tx._id, tx.username, tx.selectedPackage)}
+                        className="text-green-700 hover:text-green-900 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled={!!actionLoadingId}
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -269,7 +243,8 @@ export default function TransactionList() {
                     <td className="p-3 border-b text-center">
                       <button
                         onClick={() => handleCancel(tx._id)}
-                        className="text-red-600 hover:text-red-800 transition"
+                        className="text-red-600 hover:text-red-800 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                        disabled={!!actionLoadingId}
                       >
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -294,3 +269,4 @@ export default function TransactionList() {
     </div>
   );
 }
+

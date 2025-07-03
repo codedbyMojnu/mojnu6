@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import { Prism as SyntaxHighlighter } from "react-syntax-highlighter";
-import { tomorrow } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { a11yDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import rehypeKatex from "rehype-katex";
 import remarkGfm from "remark-gfm";
 import remarkMath from "remark-math";
@@ -18,7 +18,6 @@ export default function MarkdownEditor({
   const [isFocused, setIsFocused] = useState(false);
   const textareaRef = useRef(null);
 
-  // Auto-resize textarea
   useEffect(() => {
     if (textareaRef.current && !isPreview) {
       textareaRef.current.style.height = "auto";
@@ -267,7 +266,7 @@ export default function MarkdownEditor({
                   const match = /language-(\w+)/.exec(className || "");
                   return !inline && match ? (
                     <SyntaxHighlighter
-                      style={tomorrow}
+                      style={a11yDark}
                       language={match[1]}
                       PreTag="div"
                       {...props}
