@@ -1,5 +1,6 @@
 import { useCallback, useEffect, useState } from "react";
 import { useNavigate } from "react-router";
+import api from "../api";
 import { useAuth } from "../context/AuthContext";
 import { useProfile } from "../context/ProfileContext";
 import Achievements from "./Achievements";
@@ -7,6 +8,8 @@ import LoginModal from "./auth/LoginModal";
 import SignupModal from "./auth/SignupModal";
 import DailyStreak from "./DailyStreak";
 import Leaderboard from "./Leaderboard";
+import MarkdownRenderer from "./MarkdownRenderer";
+import RequestHintPointsModal from "./RequestHintPointsModal";
 import Rewards from "./Rewards";
 import SettingsModal from "./SettingsModal";
 import SurveyModal from "./SurveyModal";
@@ -49,6 +52,15 @@ export default function Header({
   const [showRewards, setShowRewards] = useState(false);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [showSurvey, setShowSurvey] = useState(false);
+  const [showWrongAnswers, setShowWrongAnswers] = useState(false);
+  const [showRequestHintForm, setShowRequestHintForm] = useState(false);
+  const [userTransactions, setUserTransactions] = useState(null);
+  const [loadingTransactions, setLoadingTransactions] = useState(false);
+
+  // Helper to check if user has ultimate package
+  const hasUltimatePackage = userTransactions?.some(
+    (tx) => tx.selectedPackage === "ultimate"
+  );
 
   // Close popovers when clicking outside
   useEffect(() => {
@@ -92,6 +104,24 @@ export default function Header({
     setShowLoginModal(false);
     setShowSignupModal(false);
   }, []);
+
+  const handleWrongAnswersClick = async () => {
+    if (!user?.token || !profile?.username) return;
+    setLoadingTransactions(true);
+    try {
+      const response = await api.get(`/api/transactions/user/${profile.username}`);
+      setUserTransactions(response.data);
+      if (response.data.some((tx) => tx.selectedPackage === "ultimate")) {
+        setShowWrongAnswers(true);
+      } else {
+        setShowRequestHintForm(true);
+      }
+    } catch (err) {
+      setShowRequestHintForm(true);
+    } finally {
+      setLoadingTransactions(false);
+    }
+  };
 
   return (
     <>
@@ -221,6 +251,21 @@ export default function Header({
               </div>
             )}
           </div>
+
+          {/* Wrong Answers Button */}
+          {user?.token && (
+            <button
+              onClick={handleWrongAnswersClick}
+              className="flex items-center gap-2 px-3 py-2 rounded-lg bg-red-500/80 hover:bg-red-600 text-white font-bold shadow transition-all duration-200 text-sm sm:text-base"
+              style={{ marginLeft: 4 }}
+              title="Your Wrong Answers"
+              disabled={loadingTransactions}
+            >
+              <span>❌</span>
+              <span className="hidden sm:inline">Your Wrong Answers</span>
+              <span className="ml-1 bg-white/80 text-red-600 rounded-full px-2 py-0.5 text-xs font-bold">{profile?.wrongAnswers?.length || 0}</span>
+            </button>
+          )}
         </div>
       </header>
 
@@ -291,6 +336,60 @@ export default function Header({
       {showRewards && <Rewards isOpen={showRewards} onClose={() => setShowRewards(false)} />}
       {showLeaderboard && <Leaderboard isOpen={showLeaderboard} onClose={() => setShowLeaderboard(false)} />}
       {showSurvey && <SurveyModal isOpen={showSurvey} onClose={() => setShowSurvey(false)} token={user?.token} />}
+
+      {/* Wrong Answers Modal */}
+      {showWrongAnswers && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+          <div className="bg-white/95 rounded-2xl shadow-2xl p-6 max-w-2xl w-full mx-4 border-4 border-red-300 relative max-h-[80vh] overflow-y-auto">
+            <button
+              onClick={() => setShowWrongAnswers(false)}
+              className="absolute top-3 right-3 text-gray-600 hover:text-red-600 text-2xl font-bold w-8 h-8 flex items-center justify-center rounded-full hover:bg-red-100 transition-colors"
+              aria-label="Close wrong answers modal"
+            >
+              ×
+            </button>
+            <h2 className="text-2xl font-bold text-red-600 mb-4 text-center">Your Wrong Answers ({profile?.wrongAnswers?.length || 0})</h2>
+            {profile?.wrongAnswers?.length > 0 ? (
+              <>
+                <ul className="space-y-4 mb-6">
+                  {profile.wrongAnswers.map((wa, idx) => (
+                    <li key={idx} className="bg-red-50 border-l-4 border-red-400 rounded-lg p-4 shadow">
+                      <div className="font-semibold text-gray-800 mb-1">Level {wa.levelNumber}</div>
+                      <div className="text-gray-700 mb-1"><span className="font-bold">Q:</span> <MarkdownRenderer content={wa.question} className="inline" proseClassName="prose prose-sm max-w-none inline" /></div>
+                      <div className="text-gray-600"><span className="font-bold">A:</span> <MarkdownRenderer content={wa.answer} className="inline" proseClassName="prose prose-sm max-w-none inline" /></div>
+                    </li>
+                  ))}
+                </ul>
+                <button
+                  onClick={async () => {
+                    if (!profile?.username) return;
+                    try {
+                      await api.patch(`/api/profile/${profile.username}`, { wrongAnswers: [] });
+                      setProfile((prev) => ({ ...prev, wrongAnswers: [] }));
+                      setShowWrongAnswers(false);
+                    } catch (err) {
+                      alert("Failed to empty wrong answers. Please try again.");
+                    }
+                  }}
+                  className="w-full py-3 bg-red-600 text-white font-bold rounded-lg shadow hover:bg-red-700 transition-colors mb-2"
+                >
+                  Empty Now all wrong Answer
+                </button>
+              </>
+            ) : (
+              <div className="text-center text-gray-500">No wrong answers yet! 🎉</div>
+            )}
+          </div>
+        </div>
+      )}
+      {/* Request Hint Points Modal */}
+      <RequestHintPointsModal
+        isOpen={showRequestHintForm}
+        onClose={() => setShowRequestHintForm(false)}
+        user={user}
+        profile={profile}
+        setProfile={setProfile}
+      />
     </>
   );
 }

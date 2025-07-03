@@ -196,10 +196,46 @@ export default function Home() {
         setMark("❌");
         setStreakCount(0); // reset streak on wrong answer
         setStreaksAchieved(0); // reset streaksAchieved on wrong answer
+
+        // Add wrong answer to profile if logged in
+        if (profile?.username && user?.token) {
+          const wrongAnswer = {
+            question: level.question,
+            options: level.options,
+            hint: level.hint,
+            answer: level.answer,
+            explanation: level.explanation,
+            category: level.category,
+            levelNumber: levelIndex + 1
+          };
+          try {
+            const response = await api.patch(
+              `/api/profile/${profile.username}/wrong-answer`,
+              { wrongAnswer },
+              { headers: { Authorization: `Bearer ${user.token}` } }
+            );
+            if (response.status === 200 && response.data?.profile) {
+              setProfile(response.data.profile);
+            } else {
+              // fallback: update local wrongAnswers
+              setProfile((prev) => ({
+                ...prev,
+                wrongAnswers: [...(prev.wrongAnswers || []), wrongAnswer]
+              }));
+            }
+          } catch (err) {
+            // fallback: update local wrongAnswers
+            setProfile((prev) => ({
+              ...prev,
+              wrongAnswers: [...(prev.wrongAnswers || []), wrongAnswer]
+            }));
+          }
+        }
+
         setTimeout(() => setMark(""), 1500);
       }
     },
-    [levelIndex, maxLevel, updateMaxLevel, profile, setProfile]
+    [levelIndex, maxLevel, updateMaxLevel, profile, setProfile, user?.token]
   );
 
   const handleExplationNextButtonClick = useCallback(() => {
