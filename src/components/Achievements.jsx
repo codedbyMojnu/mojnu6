@@ -212,7 +212,7 @@ export default function Achievements({ isOpen, onClose }) {
 
   return (
     <div className="modal-overlay animate-fade-in">
-      <div className="modal-content p-6 max-w-sm mx-4 animate-bounce-in relative">
+      <div className="modal-content p-4 sm:p-6 max-w-2xl w-full mx-2 sm:mx-4 animate-bounce-in relative">
         <button
           onClick={onClose}
           className="absolute top-0 right-0 text-gray-500 hover:text-gray-700 text-2xl font-bold w-8 h-8 rounded-full hover:bg-gray-100 transition-colors flex items-center justify-center"
