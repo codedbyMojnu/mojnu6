@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:5000", // Update with your backend URL
+  baseURL: "https://brain-test-server.onrender.com", // Update with your backend URL
 });
 
 // Leaderboard API functions
