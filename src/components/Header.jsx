@@ -16,7 +16,16 @@ import SurveyModal from "./SurveyModal";
 
 // Zenith Icons
 const ZenithMenuIcon = () => (
-  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+  <svg
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
     <rect x="3" y="3" width="7" height="7"></rect>
     <rect x="14" y="3" width="7" height="7"></rect>
     <rect x="3" y="14" width="7" height="7"></rect>
@@ -73,8 +82,8 @@ export default function Header({
       }
     };
 
-    document.addEventListener('click', handleClickOutside);
-    return () => document.removeEventListener('click', handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
   }, [showProfilePopover, showZenithMenu]);
 
   const handleLogout = useCallback(() => {
@@ -109,7 +118,9 @@ export default function Header({
     if (!user?.token || !profile?.username) return;
     setLoadingTransactions(true);
     try {
-      const response = await api.get(`/api/transactions/user/${profile.username}`);
+      const response = await api.get(
+        `/api/transactions/user/${profile.username}`
+      );
       setUserTransactions(response.data);
       if (response.data.some((tx) => tx.selectedPackage === "ultimate")) {
         setShowWrongAnswers(true);
@@ -127,146 +138,293 @@ export default function Header({
     <>
       <header
         className="sticky top-0 z-40 w-full bg-white text-gray-900 flex flex-col sm:flex-row items-center justify-between px-2 sm:px-6 py-2 sm:py-4 border-b border-gray-200 font-sans"
-        style={{ fontFamily: 'system-ui, sans-serif' }}
+        style={{ fontFamily: "system-ui, sans-serif" }}
       >
-        {/* Left: Logo & Level Selector */}
-        <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 w-full sm:w-auto">
-          <h1 className="text-lg sm:text-2xl font-bold text-blue-700 tracking-tight mb-1 sm:mb-0">Mojnu6 InterviewPrep</h1>
-          <button
-            onClick={(e) => {
-              e.stopPropagation();
-              setShowLevelsModal(true);
-            }}
-            className="flex items-center gap-2 px-3 py-2 rounded-md bg-blue-100 border border-blue-200 font-semibold text-blue-700 text-base hover:bg-blue-200 focus:bg-blue-200 transition-all duration-200 outline-none focus:ring-2 focus:ring-blue-300 focus:ring-opacity-60 w-full sm:w-auto"
-            style={{ minWidth: '110px', letterSpacing: '0.01em' }}
-          >
-            <span className="text-lg">🎯</span>
-            <span className="font-semibold">Level {(showingExplanationForLevel != null ? showingExplanationForLevel : levelIndex) + 1}</span>
-            <svg className="w-5 h-5 text-blue-300 ml-2" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24"><path d="M19 9l-7 7-7-7"/></svg>
-          </button>
-          {/* Profile Stats Area */}
-          {user?.token && (
-            <div className="hidden sm:flex items-center gap-3 ml-2 px-2 py-1 rounded bg-gray-100 border border-gray-200 text-xs font-semibold">
-              <span title="Total Points" className="flex items-center gap-1"><span role="img" aria-label="points">⭐</span> {profile?.totalPoints ?? 0}</span>
-              <span className="mx-1 text-gray-400">|</span>
-              <span title="Hint Points" className="flex items-center gap-1"><span role="img" aria-label="hint points">💡</span> {profile?.hintPoints ?? 0}</span>
-              <span className="mx-1 text-gray-400">|</span>
-              <span title="Max Level" className="flex items-center gap-1"><span role="img" aria-label="max level">🏁</span> {profile?.maxLevel ?? 0}</span>
+        <div className="flex flex-col sm:flex-row items-center justify-between w-full">
+          {/* Row 1: Title and Level Selector */}
+          <div className="flex items-center justify-between w-full sm:w-auto order-1 sm:order-none">
+            <h1 className="text-lg sm:text-2xl font-bold text-blue-700 tracking-tight">
+              Mojnu6 InterviewPrep
+            </h1>
+            <div className="sm:hidden">
+              {/* Mobile Profile/Login and Zenith Menu */}
+              <div className="flex items-center gap-2">
+                {user?.token ? (
+                  <div className="relative">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        setShowProfilePopover(!showProfilePopover);
+                      }}
+                      className="flex items-center gap-2 px-3 py-2 rounded-md bg-gray-100 font-bold hover:bg-gray-200 transition-all duration-200 text-sm"
+                    >
+                      <span>👤</span>
+                    </button>
+                    {showProfilePopover && (
+                      <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg border border-gray-200 z-50">
+                        <div className="p-4">
+                          <p className="font-bold text-gray-800">
+                            {profile?.username}
+                          </p>
+                          <p className="text-sm text-gray-600">
+                            Hint Points: {profile?.hintPoints || 0}
+                          </p>
+                        </div>
+                        <div className="border-t border-gray-200">
+                          <button
+                            onClick={handleLogout}
+                            className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 transition-colors"
+                          >
+                            Logout
+                          </button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <button
+                    onClick={handleLoginClick}
+                    className="flex items-center gap-2 px-3 py-2 rounded-md bg-blue-500 text-white font-bold hover:bg-blue-600 transition-all duration-200 text-sm"
+                  >
+                    <span>🔐</span>
+                  </button>
+                )}
+                <div className="relative">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setShowZenithMenu(!showZenithMenu);
+                    }}
+                    className="p-2 rounded-md hover:bg-gray-200 transition-all duration-200"
+                  >
+                    <ZenithMenuIcon />
+                  </button>
+                  {showZenithMenu && (
+                    <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg border border-gray-200 z-50">
+                      <div className="py-2">
+                        <button
+                          onClick={() => {
+                            setShowLeaderboard(true);
+                            setShowZenithMenu(false);
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 transition-colors"
+                        >
+                          🏆 Leaderboard
+                        </button>
+                        <button
+                          onClick={() => {
+                            setShowAchievements(true);
+                            setShowZenithMenu(false);
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 transition-colors"
+                        >
+                          🎖️ Achievements
+                        </button>
+                        <button
+                          onClick={() => {
+                            setShowRewards(true);
+                            setShowZenithMenu(false);
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 transition-colors"
+                        >
+                          🎁 Rewards
+                        </button>
+                        <button
+                          onClick={() => {
+                            setShowDailyStreak(true);
+                            setShowZenithMenu(false);
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 transition-colors"
+                        >
+                          🔥 Daily Streak
+                        </button>
+                        <button
+                          onClick={() => {
+                            setShowSettings(true);
+                            setShowZenithMenu(false);
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 transition-colors"
+                        >
+                          ⚙️ Settings
+                        </button>
+                        <button
+                          onClick={() => {
+                            setShowSurvey(true);
+                            setShowZenithMenu(false);
+                          }}
+                          className="w-full text-left px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 transition-colors"
+                        >
+                          📊 Survey
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
-          )}
-        </div>
+          </div>
 
-        {/* Right: User Info or Login & Zenith Menu */}
-        <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 w-full sm:w-auto mt-2 sm:mt-0">
-          {user?.token ? (
-            <div className="relative w-full sm:w-auto">
+          {/* Row 2: Level Selector and Wrong Answers */}
+          <div className="flex items-center justify-between w-full mt-2 sm:mt-0 order-2 sm:order-none">
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowLevelsModal(true);
+              }}
+              className="flex items-center gap-2 px-3 py-2 rounded-md bg-blue-100 border border-blue-200 font-semibold text-blue-700 text-base hover:bg-blue-200 focus:bg-blue-200 transition-all duration-200 outline-none focus:ring-2 focus:ring-blue-300 focus:ring-opacity-60"
+              style={{ minWidth: "110px", letterSpacing: "0.01em" }}
+            >
+              <span className="text-lg">🎯</span>
+              <span className="font-semibold">
+                Level{" "}
+                {(showingExplanationForLevel != null
+                  ? showingExplanationForLevel
+                  : levelIndex) + 1}
+              </span>
+              <svg
+                className="w-5 h-5 text-blue-300 ml-2"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+              >
+                <path d="M19 9l-7 7-7-7" />
+              </svg>
+            </button>
+            {user?.token && (
+              <button
+                onClick={handleWrongAnswersClick}
+                className="flex items-center gap-2 px-3 py-2 rounded-md bg-red-100 hover:bg-red-200 text-red-700 font-bold transition-all duration-200 text-sm"
+                title="Your Wrong Answers"
+                disabled={loadingTransactions}
+              >
+                <span>❌</span>
+                <span className="hidden sm:inline">Your Wrong Answers</span>
+                <span className="ml-1 bg-white text-red-600 rounded-full px-2 py-0.5 text-xs font-bold">
+                  {profile?.wrongAnswers?.length || 0}
+                </span>
+              </button>
+            )}
+          </div>
+
+          {/* Desktop Profile/Login and Zenith Menu */}
+          <div className="hidden sm:flex items-center gap-4 order-3 sm:order-none">
+            {user?.token ? (
+              <div className="relative">
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowProfilePopover(!showProfilePopover);
+                  }}
+                  className="flex items-center gap-2 px-3 py-2 rounded-md bg-gray-100 font-bold hover:bg-gray-200 transition-all duration-200 text-sm sm:text-base"
+                >
+                  <span>👤</span>
+                  <span className="hidden sm:inline">
+                    {profile?.username || "User"}
+                  </span>
+                </button>
+                {showProfilePopover && (
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg border border-gray-200 z-50">
+                    <div className="p-4">
+                      <p className="font-bold text-gray-800">
+                        {profile?.username}
+                      </p>
+                      <p className="text-sm text-gray-600">
+                        Hint Points: {profile?.hintPoints || 0}
+                      </p>
+                    </div>
+                    <div className="border-t border-gray-200">
+                      <button
+                        onClick={handleLogout}
+                        className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 transition-colors"
+                      >
+                        Logout
+                      </button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={handleLoginClick}
+                className="flex items-center gap-2 px-3 py-2 rounded-md bg-blue-500 text-white font-bold hover:bg-blue-600 transition-all duration-200 text-sm sm:text-base"
+              >
+                <span>🔐</span>
+                <span className="hidden sm:inline">Login</span>
+              </button>
+            )}
+            <div className="relative">
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  setShowProfilePopover(!showProfilePopover);
+                  setShowZenithMenu(!showZenithMenu);
                 }}
-                className="flex items-center gap-2 px-3 py-2 rounded-md bg-gray-100 font-bold hover:bg-gray-200 transition-all duration-200 text-sm sm:text-base w-full sm:w-auto"
+                className="p-2 rounded-md hover:bg-gray-200 transition-all duration-200"
               >
-                <span>👤</span>
-                <span className="hidden sm:inline">{profile?.username || "User"}</span>
-                <span className="sm:hidden">User</span>
+                <ZenithMenuIcon />
               </button>
-              {showProfilePopover && (
-                <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg border border-gray-200 z-50">
-                  <div className="p-4">
-                    <p className="font-bold text-gray-800">{profile?.username}</p>
-                    <p className="text-sm text-gray-600">Hint Points: {profile?.hintPoints || 0}</p>
-                  </div>
-                  <div className="border-t border-gray-200">
-                    <button 
-                      onClick={handleLogout} 
-                      className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-gray-100 transition-colors"
+              {showZenithMenu && (
+                <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg border border-gray-200 z-50">
+                  <div className="py-2">
+                    <button
+                      onClick={() => {
+                        setShowLeaderboard(true);
+                        setShowZenithMenu(false);
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 transition-colors"
                     >
-                      Logout
+                      🏆 Leaderboard
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowAchievements(true);
+                        setShowZenithMenu(false);
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 transition-colors"
+                    >
+                      🎖️ Achievements
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowRewards(true);
+                        setShowZenithMenu(false);
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 transition-colors"
+                    >
+                      🎁 Rewards
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowDailyStreak(true);
+                        setShowZenithMenu(false);
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 transition-colors"
+                    >
+                      🔥 Daily Streak
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowSettings(true);
+                        setShowZenithMenu(false);
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 transition-colors"
+                    >
+                      ⚙️ Settings
+                    </button>
+                    <button
+                      onClick={() => {
+                        setShowSurvey(true);
+                        setShowZenithMenu(false);
+                      }}
+                      className="w-full text-left px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 transition-colors"
+                    >
+                      📊 Survey
                     </button>
                   </div>
                 </div>
               )}
             </div>
-          ) : (
-            <button
-              onClick={handleLoginClick}
-              className="flex items-center gap-2 px-3 py-2 rounded-md bg-blue-500 text-white font-bold hover:bg-blue-600 transition-all duration-200 text-sm sm:text-base w-full sm:w-auto"
-            >
-              <span>🔐</span>
-              <span className="hidden sm:inline">Login</span>
-              <span className="sm:hidden">Login</span>
-            </button>
-          )}
-
-          <div className="relative w-full sm:w-auto">
-            <button 
-              onClick={(e) => {
-                e.stopPropagation();
-                setShowZenithMenu(!showZenithMenu);
-              }} 
-              className="p-2 rounded-md hover:bg-gray-200 transition-all duration-200 w-full sm:w-auto"
-            >
-              <ZenithMenuIcon />
-            </button>
-            {showZenithMenu && (
-              <div className="absolute right-0 mt-2 w-56 bg-white rounded-lg border border-gray-200 z-50">
-                <div className="py-2">
-                  <button 
-                    onClick={() => { setShowLeaderboard(true); setShowZenithMenu(false); }} 
-                    className="w-full text-left px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 transition-colors"
-                  >
-                    🏆 Leaderboard
-                  </button>
-                  <button 
-                    onClick={() => { setShowAchievements(true); setShowZenithMenu(false); }} 
-                    className="w-full text-left px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 transition-colors"
-                  >
-                    🎖️ Achievements
-                  </button>
-                  <button 
-                    onClick={() => { setShowRewards(true); setShowZenithMenu(false); }} 
-                    className="w-full text-left px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 transition-colors"
-                  >
-                    🎁 Rewards
-                  </button>
-                  <button 
-                    onClick={() => { setShowDailyStreak(true); setShowZenithMenu(false); }} 
-                    className="w-full text-left px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 transition-colors"
-                  >
-                    🔥 Daily Streak
-                  </button>
-                  <button 
-                    onClick={() => { setShowSettings(true); setShowZenithMenu(false); }} 
-                    className="w-full text-left px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 transition-colors"
-                  >
-                    ⚙️ Settings
-                  </button>
-                  <button 
-                    onClick={() => { setShowSurvey(true); setShowZenithMenu(false); }} 
-                    className="w-full text-left px-4 py-2 text-sm text-gray-800 hover:bg-gray-100 transition-colors"
-                  >
-                    📊 Survey
-                  </button>
-                </div>
-              </div>
-            )}
           </div>
-
-          {/* Wrong Answers Button */}
-          {user?.token && (
-            <button
-              onClick={handleWrongAnswersClick}
-              className="flex items-center gap-2 px-3 py-2 rounded-md bg-red-100 hover:bg-red-200 text-red-700 font-bold transition-all duration-200 text-sm sm:text-base w-full sm:w-auto"
-              style={{ marginLeft: 0 }}
-              title="Your Wrong Answers"
-              disabled={loadingTransactions}
-            >
-              <span>❌</span>
-              <span className="hidden sm:inline">Your Wrong Answers</span>
-              <span className="ml-1 bg-white text-red-600 rounded-full px-2 py-0.5 text-xs font-bold">{profile?.wrongAnswers?.length || 0}</span>
-            </button>
-          )}
         </div>
       </header>
 
@@ -305,7 +463,9 @@ export default function Header({
             >
               ×
             </button>
-            <h3 className="text-lg font-bold text-center mb-4 text-gray-800">Select Level</h3>
+            <h3 className="text-lg font-bold text-center mb-4 text-gray-800">
+              Select Level
+            </h3>
             <div className="grid grid-cols-4 gap-2">
               {levels?.map((level, index) => (
                 <button
@@ -332,11 +492,34 @@ export default function Header({
           </div>
         </div>
       )}
-      {showDailyStreak && <DailyStreak isOpen={showDailyStreak} onClose={() => setShowDailyStreak(false)} />}
-      {showAchievements && <Achievements isOpen={showAchievements} onClose={() => setShowAchievements(false)} />}
-      {showRewards && <Rewards isOpen={showRewards} onClose={() => setShowRewards(false)} />}
-      {showLeaderboard && <Leaderboard isOpen={showLeaderboard} onClose={() => setShowLeaderboard(false)} />}
-      {showSurvey && <SurveyModal isOpen={showSurvey} onClose={() => setShowSurvey(false)} token={user?.token} />}
+      {showDailyStreak && (
+        <DailyStreak
+          isOpen={showDailyStreak}
+          onClose={() => setShowDailyStreak(false)}
+        />
+      )}
+      {showAchievements && (
+        <Achievements
+          isOpen={showAchievements}
+          onClose={() => setShowAchievements(false)}
+        />
+      )}
+      {showRewards && (
+        <Rewards isOpen={showRewards} onClose={() => setShowRewards(false)} />
+      )}
+      {showLeaderboard && (
+        <Leaderboard
+          isOpen={showLeaderboard}
+          onClose={() => setShowLeaderboard(false)}
+        />
+      )}
+      {showSurvey && (
+        <SurveyModal
+          isOpen={showSurvey}
+          onClose={() => setShowSurvey(false)}
+          token={user?.token}
+        />
+      )}
 
       {/* Wrong Answers Modal */}
       {showWrongAnswers && (
@@ -349,15 +532,36 @@ export default function Header({
             >
               ×
             </button>
-            <h2 className="text-2xl font-bold text-red-600 mb-4 text-center">Your Wrong Answers ({profile?.wrongAnswers?.length || 0})</h2>
+            <h2 className="text-2xl font-bold text-red-600 mb-4 text-center">
+              Your Wrong Answers ({profile?.wrongAnswers?.length || 0})
+            </h2>
             {profile?.wrongAnswers?.length > 0 ? (
               <>
                 <ul className="space-y-4 mb-6">
                   {profile.wrongAnswers.map((wa, idx) => (
-                    <li key={idx} className="bg-red-50 border-l-4 border-red-400 rounded-lg p-4 shadow">
-                      <div className="font-semibold text-gray-800 mb-1">Level {wa.levelNumber}</div>
-                      <div className="text-gray-700 mb-1"><span className="font-bold">Q:</span> <MarkdownRenderer content={wa.question} className="inline" proseClassName="prose prose-sm max-w-none inline" /></div>
-                      <div className="text-gray-600"><span className="font-bold">A:</span> <MarkdownRenderer content={wa.answer} className="inline" proseClassName="prose prose-sm max-w-none inline" /></div>
+                    <li
+                      key={idx}
+                      className="bg-red-50 border-l-4 border-red-400 rounded-lg p-4 shadow"
+                    >
+                      <div className="font-semibold text-gray-800 mb-1">
+                        Level {wa.levelNumber}
+                      </div>
+                      <div className="text-gray-700 mb-1">
+                        <span className="font-bold">Q:</span>{" "}
+                        <MarkdownRenderer
+                          content={wa.question}
+                          className="inline"
+                          proseClassName="prose prose-sm max-w-none inline"
+                        />
+                      </div>
+                      <div className="text-gray-600">
+                        <span className="font-bold">A:</span>{" "}
+                        <MarkdownRenderer
+                          content={wa.answer}
+                          className="inline"
+                          proseClassName="prose prose-sm max-w-none inline"
+                        />
+                      </div>
                     </li>
                   ))}
                 </ul>
@@ -365,7 +569,9 @@ export default function Header({
                   onClick={async () => {
                     if (!profile?.username) return;
                     try {
-                      await api.patch(`/api/profile/${profile.username}`, { wrongAnswers: [] });
+                      await api.patch(`/api/profile/${profile.username}`, {
+                        wrongAnswers: [],
+                      });
                       setProfile((prev) => ({ ...prev, wrongAnswers: [] }));
                       setShowWrongAnswers(false);
                     } catch (err) {
@@ -378,7 +584,9 @@ export default function Header({
                 </button>
               </>
             ) : (
-              <div className="text-center text-gray-500">No wrong answers yet! 🎉</div>
+              <div className="text-center text-gray-500">
+                No wrong answers yet! 🎉
+              </div>
             )}
           </div>
         </div>
