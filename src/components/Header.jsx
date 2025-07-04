@@ -114,7 +114,7 @@ export default function Header({
 
   const handleWrongAnswersClick = () => {
     if (!user?.token || !profile?.username) return;
-    
+
     if (hasUltimatePackage) {
       setShowWrongAnswers(true);
     } else {
@@ -131,7 +131,7 @@ export default function Header({
         <div className="flex flex-col sm:flex-row items-center justify-between w-full">
           {/* Row 1: Title and Level Selector */}
           <div className="flex items-center justify-between w-full sm:w-auto order-1 sm:order-none">
-            <h1 className="text-lg sm:text-2xl font-bold text-blue-700 tracking-tight">
+            <h1 className="text-lg sm:text-2xl font-bold text-blue-700 tracking-tight md:mr-3 lg:mr-3">
               Mojnu6 InterviewPrep
             </h1>
             <div className="sm:hidden">
@@ -282,7 +282,7 @@ export default function Header({
             {user?.token && (
               <button
                 onClick={handleWrongAnswersClick}
-                className="flex items-center gap-2 px-3 py-2 rounded-md bg-red-100 hover:bg-red-200 text-red-700 font-bold transition-all duration-200 text-sm"
+                className="flex items-center gap-2 px-3 py-2 rounded-md bg-red-100 hover:bg-red-200 text-red-700 font-bold transition-all duration-200 text-sm md:mr-3 lg:mr-3"
                 title="Your Wrong Answers"
               >
                 <span>❌</span>
@@ -296,6 +296,35 @@ export default function Header({
 
           {/* Desktop Profile/Login and Zenith Menu */}
           <div className="hidden sm:flex items-center gap-4 order-3 sm:order-none">
+            {/* User Stats Display - Medium and Large Devices */}
+            {user?.token && (
+              <div className="hidden md:flex items-center gap-3 bg-gray-50 rounded-lg px-3 py-2 border border-gray-200">
+                {/* Hint Points */}
+                <div className="flex items-center gap-1.5">
+                  <span className="text-lg">💎</span>
+                  <span className="text-sm font-semibold text-blue-600">
+                    {profile?.hintPoints || 0}
+                  </span>
+                </div>
+
+                {/* Total Points */}
+                <div className="flex items-center gap-1.5">
+                  <span className="text-lg">⭐</span>
+                  <span className="text-sm font-semibold text-yellow-600">
+                    {profile?.totalPoints || 0}
+                  </span>
+                </div>
+
+                {/* Max Level */}
+                <div className="flex items-center gap-1.5">
+                  <span className="text-lg">🏆</span>
+                  <span className="text-sm font-semibold text-purple-600">
+                    {profile?.maxLevel || 0}
+                  </span>
+                </div>
+              </div>
+            )}
+
             {user?.token ? (
               <div className="relative">
                 <button

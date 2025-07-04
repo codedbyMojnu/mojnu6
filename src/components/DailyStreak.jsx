@@ -1,22 +1,28 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import api from "../api";
 import { useAuth } from "../context/AuthContext";
 import { useProfile } from "../context/ProfileContext";
 import checkUserType from "../utils/checkUserType";
 
 export default function DailyStreak({ isOpen, onClose }) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [streakData, setStreakData] = useState(null);
   const [showReward, setShowReward] = useState(false);
   const [rewardMessage, setRewardMessage] = useState("");
   const [pointsEarned, setPointsEarned] = useState(0);
   const { user } = useAuth();
   const { profile, setProfile } = useProfile();
 
+  // Use cached data from ProfileContext instead of making API calls
+  const streakData = profile ? {
+    currentStreak: profile.currentStreak || 0,
+    longestStreak: profile.longestStreak || 0,
+    totalPoints: profile.totalPoints || 0,
+    hintPoints: profile.hintPoints || 0
+  } : null;
+
+  // Only make API call if we need to manually trigger daily streak check
   const checkDailyStreak = async () => {
     if (!user?.token || !profile?.username) return;
 
-    setIsLoading(true);
     try {
       const { username } = checkUserType(user.token);
       const response = await api.post(
@@ -49,21 +55,14 @@ export default function DailyStreak({ isOpen, onClose }) {
             hintPoints: updatedProfile.hintPoints,
           });
         }
-
-        setStreakData(updatedProfile);
       }
     } catch (error) {
       console.error("Failed to check daily streak:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
-  useEffect(() => {
-    if (isOpen && user?.token && profile?.username) {
-      checkDailyStreak();
-    }
-  }, [isOpen, user?.token, profile?.username]);
+  // Remove the useEffect that automatically calls API on modal open
+  // The data is already cached in ProfileContext
 
   if (!isOpen) return null;
 
@@ -73,7 +72,7 @@ export default function DailyStreak({ isOpen, onClose }) {
         <button
           onClick={onClose}
           className="absolute top-0 right-0 text-gray-500 hover:text-gray-700 text-2xl font-bold w-8 h-8 rounded-full hover:bg-gray-100 transition-colors flex items-center justify-center"
-          aria-label="Close login modal"
+          aria-label="Close daily streak modal"
         >
           ×
         </button>
@@ -89,14 +88,14 @@ export default function DailyStreak({ isOpen, onClose }) {
             </p>
           </div>
 
-          {isLoading ? (
+          {!streakData ? (
             <div className="py-8">
               <div className="w-12 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
               <p className="text-responsive-sm text-gray-600">
-                Checking your streak...
+                Loading your streak data...
               </p>
             </div>
-          ) : streakData ? (
+          ) : (
             <div className="space-y-6">
               {/* Current Streak */}
               <div className="bg-gradient-to-r from-orange-100 to-red-100 rounded-xl p-4 border-2 border-orange-200">
@@ -131,6 +130,17 @@ export default function DailyStreak({ isOpen, onClose }) {
                 </p>
               </div>
 
+              {/* Hint Points */}
+              <div className="bg-gradient-to-r from-blue-100 to-indigo-100 rounded-xl p-4 border-2 border-blue-200">
+                <div className="text-3xl mb-2">💎</div>
+                <h3 className="text-responsive-lg font-bold text-blue-800 mb-1">
+                  Hint Points
+                </h3>
+                <p className="text-responsive-2xl font-bold text-blue-600">
+                  {streakData.hintPoints}
+                </p>
+              </div>
+
               {/* Daily Reward Info */}
               <div className="bg-blue-50 rounded-lg p-4 border border-blue-200">
                 <h4 className="text-responsive-sm font-semibold text-blue-800 mb-2">
@@ -140,12 +150,16 @@ export default function DailyStreak({ isOpen, onClose }) {
                   Earn <strong>10 points</strong> every day you play!
                 </p>
               </div>
-            </div>
-          ) : (
-            <div className="py-8">
-              <p className="text-responsive-sm text-gray-600">
-                Failed to load streak data
-              </p>
+
+              {/* Manual Refresh Button */}
+              <div className="mt-4">
+                <button
+                  onClick={checkDailyStreak}
+                  className="btn btn-secondary btn-animated w-full text-responsive-sm"
+                >
+                  🔄 Refresh Streak
+                </button>
+              </div>
             </div>
           )}
 

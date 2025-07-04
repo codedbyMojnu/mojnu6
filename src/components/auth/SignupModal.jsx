@@ -57,7 +57,7 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
           password: formData.password,
         });
 
-        if (response.statusText === "Created") {
+        if (response.status === 201) {
           setSuccess(true);
           setTimeout(() => {
             onSwitchToLogin();
@@ -94,7 +94,7 @@ export default function SignupModal({ isOpen, onClose, onSwitchToLogin }) {
         <button
           onClick={handleClose}
           className="absolute top-0 right-0 text-gray-500 hover:text-gray-700 text-2xl font-bold w-8 h-8 rounded-full hover:bg-gray-100 transition-colors flex items-center justify-center"
-          aria-label="Close login modal"
+          aria-label="Close signup modal"
         >
           ×
         </button>
