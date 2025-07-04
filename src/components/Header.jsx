@@ -53,7 +53,7 @@ export default function Header({
   const [showSignupModal, setShowSignupModal] = useState(false);
   const [showZenithMenu, setShowZenithMenu] = useState(false);
   const { user } = useAuth();
-  const { profile, setProfile } = useProfile();
+  const { profile, setProfile, userTransactions } = useProfile();
   const navigate = useNavigate();
 
   const [showDailyStreak, setShowDailyStreak] = useState(false);
@@ -63,8 +63,6 @@ export default function Header({
   const [showSurvey, setShowSurvey] = useState(false);
   const [showWrongAnswers, setShowWrongAnswers] = useState(false);
   const [showRequestHintForm, setShowRequestHintForm] = useState(false);
-  const [userTransactions, setUserTransactions] = useState(null);
-  const [loadingTransactions, setLoadingTransactions] = useState(false);
 
   // Helper to check if user has ultimate package
   const hasUltimatePackage = userTransactions?.some(
@@ -114,23 +112,13 @@ export default function Header({
     setShowSignupModal(false);
   }, []);
 
-  const handleWrongAnswersClick = async () => {
+  const handleWrongAnswersClick = () => {
     if (!user?.token || !profile?.username) return;
-    setLoadingTransactions(true);
-    try {
-      const response = await api.get(
-        `/api/transactions/user/${profile.username}`
-      );
-      setUserTransactions(response.data);
-      if (response.data.some((tx) => tx.selectedPackage === "ultimate")) {
-        setShowWrongAnswers(true);
-      } else {
-        setShowRequestHintForm(true);
-      }
-    } catch (err) {
+    
+    if (hasUltimatePackage) {
+      setShowWrongAnswers(true);
+    } else {
       setShowRequestHintForm(true);
-    } finally {
-      setLoadingTransactions(false);
     }
   };
 
@@ -296,7 +284,6 @@ export default function Header({
                 onClick={handleWrongAnswersClick}
                 className="flex items-center gap-2 px-3 py-2 rounded-md bg-red-100 hover:bg-red-200 text-red-700 font-bold transition-all duration-200 text-sm"
                 title="Your Wrong Answers"
-                disabled={loadingTransactions}
               >
                 <span>❌</span>
                 <span className="hidden sm:inline">Your Wrong Answers</span>

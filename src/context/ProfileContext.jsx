@@ -18,6 +18,7 @@ export default function ProfileProvider({ children }) {
     lastPlayedDate: null,
     totalPoints: 0
   });
+  const [userTransactions, setUserTransactions] = useState(null);
   const { user } = useAuth();
   const [error, setError] = useState("");
 
@@ -38,10 +39,22 @@ export default function ProfileProvider({ children }) {
     }
   };
 
+  // Function to fetch user transactions
+  const fetchTransactions = async (username) => {
+    try {
+      const response = await api.get(`/api/transactions/user/${username}`);
+      setUserTransactions(response.data);
+    } catch (err) {
+      console.error("Error fetching transactions:", err);
+      setUserTransactions([]);
+    }
+  };
+
   useEffect(() => {
     if (user?.token) {
       const { username } = checkUserType(user?.token);
       fetchProfile(username);
+      fetchTransactions(username);
 
       // Automatically trigger daily streak update on login
       const updateDailyStreak = async () => {
@@ -71,6 +84,7 @@ export default function ProfileProvider({ children }) {
       // Set up polling every 15 seconds to check for profile updates
       const pollInterval = setInterval(() => {
         fetchProfile(username);
+        fetchTransactions(username);
       }, 15000); // 15 seconds
 
       // Cleanup interval on unmount or when user changes
@@ -79,7 +93,15 @@ export default function ProfileProvider({ children }) {
   }, [user?.token]);
 
   return (
-    <ProfileContext.Provider value={{ profile, setProfile, error, fetchProfile }}>
+    <ProfileContext.Provider value={{ 
+      profile, 
+      setProfile, 
+      userTransactions, 
+      setUserTransactions, 
+      error, 
+      fetchProfile,
+      fetchTransactions 
+    }}>
       {children}
     </ProfileContext.Provider>
   );
