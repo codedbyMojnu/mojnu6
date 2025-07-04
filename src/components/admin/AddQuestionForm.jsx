@@ -13,7 +13,7 @@ export default function AddQuestionForm() {
     explanation: "",
     hint: "",
     options: [],
-    category: "General",
+    category: "JAVASCRIPT",
   });
   const { user } = useAuth();
   const { levels, setLevels } = useLevels();
@@ -89,7 +89,7 @@ export default function AddQuestionForm() {
         explanation: "",
         hint: "",
         options: [],
-        category: "General",
+        category: "JAVASCRIPT",
       });
     }
   }, [params?.id, levels]);
@@ -107,7 +107,7 @@ export default function AddQuestionForm() {
       explanation: "",
       hint: "",
       options: [],
-      category: "General",
+      category: "JAVASCRIPT",
     });
   }
 
