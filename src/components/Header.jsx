@@ -64,10 +64,6 @@ export default function Header({
   const [showWrongAnswers, setShowWrongAnswers] = useState(false);
   const [showRequestHintForm, setShowRequestHintForm] = useState(false);
 
-  // Helper to check if user has ultimate package
-  const hasUltimatePackage = userTransactions?.some(
-    (tx) => tx.selectedPackage === "ultimate"
-  );
 
   // Close popovers when clicking outside
   useEffect(() => {
@@ -281,15 +277,15 @@ export default function Header({
             </button>
             {user?.token && (
               <button
-                onClick={handleWrongAnswersClick}
-                className="flex items-center gap-2 px-3 py-2 rounded-md bg-red-100 hover:bg-red-200 text-red-700 font-bold transition-all duration-200 text-sm md:mr-3 lg:mr-3"
+                 disabled
+                className="flex items-center gap-2 px-3 py-3 rounded-md bg-red-100 hover:bg-red-200 text-red-700 font-bold transition-all duration-200 text-sm md:mr-3 lg:mr-3"
                 title="Your Wrong Answers"
               >
-                <span>❌</span>
-                <span className="hidden sm:inline">Your Wrong Answers</span>
+                <span className="hidden sm:inline">ভুল উত্তর</span>
                 <span className="ml-1 bg-white text-red-600 rounded-full px-2 py-0.5 text-xs font-bold">
                   {profile?.wrongAnswers?.length || 0}
                 </span>
+                বার
               </button>
             )}
           </div>

@@ -91,12 +91,11 @@ export default function AnswerForm({ onAnswer, mark, levelIndex, showLogin, onRe
           headers: { Authorization: `Bearer ${user?.token}` },
         });
 
-        if (response.statusText === "Created") {
+        if (response.status === 201 || response.status === 200) {
           setShowRequestForm(false);
           setShowWaitModal(true);
           setTransactionId("");
           setSelectedPackage("");
-
           setShowSuccessNotification(true);
           setTimeout(() => setShowSuccessNotification(false), 5000);
         }
