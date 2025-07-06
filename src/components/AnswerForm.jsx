@@ -9,12 +9,9 @@ import Marker from "./Marker";
 
 export default function AnswerForm({ onAnswer, mark, levelIndex, showLogin, onRestart }) {
   const [userAnswer, setUserAnswer] = useState("");
-  const [showHints, setShowHints] = useState(false);
   const [showRequestForm, setShowRequestForm] = useState(false);
   const [showWaitModal, setShowWaitModal] = useState(false);
   const [showSkipModal, setShowSkipModal] = useState(false);
-  const [selectedOption, setSelectedOption] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccessNotification, setShowSuccessNotification] = useState(false);
   const [inputError, setInputError] = useState("");
   const { levels } = useLevels();
@@ -31,17 +28,12 @@ export default function AnswerForm({ onAnswer, mark, levelIndex, showLogin, onRe
       return;
     }
     setInputError("");
-    setIsSubmitting(true);
-    try {
-      await onAnswer(trimmedAnswer, levels[levelIndex]);
-    } finally {
-      setIsSubmitting(false);
-    }
+    // Remove loading state - let points update happen in background
+    onAnswer(trimmedAnswer, levels[levelIndex]);
   }, [userAnswer, onAnswer, levels, levelIndex]);
 
   const handleOptionAnswer = useCallback(
     (option) => {
-      setSelectedOption(option);
       onAnswer(option, levels[levelIndex]);
     },
     [onAnswer, levels, levelIndex]
@@ -77,8 +69,6 @@ export default function AnswerForm({ onAnswer, mark, levelIndex, showLogin, onRe
         return;
       }
 
-      setIsSubmitting(true);
-
       try {
         const { username } = checkUserType(user?.token);
         const transactionData = {
@@ -102,8 +92,6 @@ export default function AnswerForm({ onAnswer, mark, levelIndex, showLogin, onRe
       } catch (error) {
         console.error("Failed to submit transaction:", error);
         alert("Failed to submit transaction. Please try again.");
-      } finally {
-        setIsSubmitting(false);
       }
     },
     [selectedPackage, transactionId, user?.token]
@@ -225,43 +213,17 @@ export default function AnswerForm({ onAnswer, mark, levelIndex, showLogin, onRe
             <button
               type="button"
               onClick={handleTextAnswer}
-              disabled={isSubmitting || !userAnswer.trim()}
+              disabled={!userAnswer.trim()}
               className={`w-full py-3 rounded-md text-white font-bold text-lg transition-all duration-200 border border-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-200 focus:ring-opacity-70
                 ${
-                  isSubmitting || !userAnswer.trim()
+                  !userAnswer.trim()
                     ? "bg-gray-400 cursor-not-allowed"
                     : "bg-blue-600 hover:bg-blue-700"
                 }`}
             >
-              {isSubmitting ? (
-                <span className="flex items-center justify-center">
-                  <svg
-                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                  >
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                    ></circle>
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                    ></path>
-                  </svg>
-                  Submitting...
-                </span>
-              ) : (
-                <span className="flex items-center justify-center">
-                  Submit Answer <span className="ml-2">🚀</span>
-                </span>
-              )}
+              <span className="flex items-center justify-center">
+                Submit Answer <span className="ml-2">🚀</span>
+              </span>
             </button>
         </div>
         )}
@@ -345,10 +307,9 @@ export default function AnswerForm({ onAnswer, mark, levelIndex, showLogin, onRe
                 <div className="flex gap-3 mt-2">
                   <button
                     type="submit"
-                    disabled={isSubmitting}
-                    className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition-colors disabled:opacity-50"
+                    className="flex-1 px-4 py-2 bg-blue-600 text-white rounded-lg font-bold hover:bg-blue-700 transition-colors"
                   >
-                    {isSubmitting ? "Submitting..." : "Submit"}
+                    Submit
                   </button>
                   <button
                     type="button"

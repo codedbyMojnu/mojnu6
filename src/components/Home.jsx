@@ -155,6 +155,17 @@ export default function Home() {
       if (normalizeAnswer(level.answer) === normalizeAnswer(userAnswer)) {
         playSound("/sounds/right.mp3", 0.25);
         setMark("✔️");
+        
+        // Add +1 point for correct answer immediately
+        const currentPoints = profile?.totalPoints || 0;
+        const newPoints = currentPoints + 1;
+        
+        // Update profile locally first for immediate UI feedback
+        setProfile((prevProfile) => ({
+          ...prevProfile,
+          totalPoints: newPoints,
+        }));
+        
         setStreakCount((prev) => {
           const newStreak = prev + 1;
           // Consistency streak logic
@@ -172,7 +183,7 @@ export default function Home() {
                   ...(profile?.achievements || []),
                   ach.id,
                 ];
-                const updatedPoints = (profile?.totalPoints || 0) + ach.points;
+                const updatedPoints = newPoints + ach.points;
                 setProfile((prevProfile) => ({
                   ...prevProfile,
                   achievements: updatedAchievements,
@@ -184,6 +195,8 @@ export default function Home() {
                   points: ach.points,
                 });
                 setTimeout(() => setAchievementNotification(null), 4000);
+                
+                // Update backend with achievement and points
                 if (profile?.username && user?.token) {
                   api.patch(
                     `/api/profile/${profile.username}`,
@@ -192,7 +205,9 @@ export default function Home() {
                       totalPoints: updatedPoints,
                     },
                     { headers: { Authorization: `Bearer ${user.token}` } }
-                  );
+                  ).catch(error => {
+                    console.error("Failed to update achievement points:", error);
+                  });
                 }
               }
             }
@@ -226,6 +241,18 @@ export default function Home() {
           }
           return newStreak;
         });
+        
+        // Update backend with +1 point for correct answer (background update)
+        if (profile?.username && user?.token) {
+          api.patch(
+            `/api/profile/${profile.username}`,
+            { totalPoints: newPoints },
+            { headers: { Authorization: `Bearer ${user.token}` } }
+          ).catch(error => {
+            console.error("Failed to update totalPoints:", error);
+          });
+        }
+        
         // Only update maxLevel in backend, do not update levelIndex here
         if (levelIndex >= maxLevel) {
           updateMaxLevel(levelIndex + 1);

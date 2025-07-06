@@ -153,6 +153,12 @@ export default function Header({
                           <p className="text-sm text-gray-600">
                             Hint Points: {profile?.hintPoints || 0}
                           </p>
+                          <p>
+                          <span className="text-lg">⭐</span>
+                  <span className="text-sm font-semibold text-yellow-600">
+                    {profile?.totalPoints || 0}
+                  </span>
+                          </p>
                         </div>
                         <div className="border-t border-gray-200">
                           <button
@@ -295,12 +301,13 @@ export default function Header({
             {/* User Stats Display - Medium and Large Devices */}
             {user?.token && (
               <div className="hidden md:flex items-center gap-3 bg-gray-50 rounded-lg px-3 py-2 border border-gray-200">
-                {/* Hint Points */}
+                 
                 <div className="flex items-center gap-1.5">
                   <span className="text-lg">💎</span>
                   <span className="text-sm font-semibold text-blue-600">
                     {profile?.hintPoints || 0}
                   </span>
+                 
                 </div>
 
                 {/* Total Points */}
