@@ -1,9 +1,9 @@
-# 🎯 Mojnu6 InterviewPrep
+# 🎯 Mojnu6
 
 > **A comprehensive frontend interview preparation platform with gamified learning, real-time chat, and achievement system**
 
 [![Live Demo](https://img.shields.io/badge/Live%20Demo-View%20Site-blue?style=for-the-badge&logo=vercel)](https://mojnu6.vercel.app/)
-[![Tech Stack](https://img.shields.io/badge/Tech%20Stack-MERN%20Stack-green?style=for-the-badge&logo=javascript)](https://github.com/your-username/mojnu6-interviewprep)
+[![Tech Stack](https://img.shields.io/badge/Tech%20Stack-MERN%20Stack-green?style=for-the-badge&logo=javascript)](https://github.com/codedbymojnu/mojnu6)
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
 
 ## 📋 Table of Contents
@@ -102,8 +102,8 @@ Mojnu6 InterviewPrep is a modern, gamified web application designed to help fron
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-username/mojnu6-interviewprep.git
-   cd mojnu6-interviewprep
+   git clone https://github.com/codedbymojnu/mojnu6.git
+   cd mojnu6
    ```
 
 2. **Install frontend dependencies**
