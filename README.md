@@ -1,186 +1,351 @@
-## **প্রজেক্টের নাম:** mojnu6 InterviewPrep
+# 🎯 Mojnu6 InterviewPrep
 
-Live Site: [mojnu6 InterviewPrep](https://mojnu6.vercel.app/)
+> **A comprehensive frontend interview preparation platform with gamified learning, real-time chat, and achievement system**
 
----
+[![Live Demo](https://img.shields.io/badge/Live%20Demo-View%20Site-blue?style=for-the-badge&logo=vercel)](https://mojnu6.vercel.app/)
+[![Tech Stack](https://img.shields.io/badge/Tech%20Stack-MERN%20Stack-green?style=for-the-badge&logo=javascript)](https://github.com/your-username/mojnu6-interviewprep)
+[![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
 
-### **১. Project Scope**
+## 📋 Table of Contents
 
-এই প্রকল্পটি একটি ওয়েব অ্যাপ্লিকেশন যা ফ্রন্টএন্ড ডেভেলপারদের সাক্ষাৎকারের প্রস্তুতির জন্য তৈরি করা হয়েছে। ব্যবহারকারীরা এখানে বিভিন্ন স্তরের প্রশ্ন সমাধান করে নিজেদের জ্ঞান পরীক্ষা করতে পারবেন। কুইজের পাশাপাশি তারা লিডারবোর্ডে নিজেদের অবস্থান দেখতে পারবেন এবং অন্য ব্যবহারকারীদের সাথে প্রতিযোগিতা করতে পারবেন।
+- [Overview](#-overview)
+- [Features](#-features)
+- [Tech Stack](#-tech-stack)
+- [Getting Started](#-getting-started)
+- [Project Structure](#-project-structure)
+- [API Documentation](#-api-documentation)
+- [Contributing](#-contributing)
+- [License](#-license)
 
-- **মূল উদ্দেশ্য:** ব্যবহারকারীদের _ফ্রন্টএন্ড ইন্টারভিউ_ এর জন্য প্রস্তুত করা।
-- **প্রযুক্তি:** এই অ্যাপ্লিকেশনটি MERN স্ট্যাক (MongoDB, Express.js, React, Node.js) ব্যবহার করে তৈরি করা হয়েছে।
-- **প্ল্যাটফর্ম:** এটি একটি ওয়েব অ্যাপ্লিকেশন, যা যেকোনো আধুনিক ব্রাউজারে চলবে।
+## 🎯 Overview
 
----
+Mojnu6 InterviewPrep is a modern, gamified web application designed to help frontend developers prepare for technical interviews. Built with the MERN stack, it offers an interactive learning experience with real-time features, achievement systems, and community engagement.
 
-### \*\*২. Target User/Audience
+### Key Highlights
 
-এই অ্যাপ্লিকেশনের মূল ব্যবহারকারী হলেন:
+- **🎮 Gamified Learning**: Level-based progression with points, streaks, and achievements
+- **💬 Real-time Chat**: Community chat rooms for collaborative learning
+- **🏆 Leaderboards**: Global, weekly, and monthly rankings
+- **🎯 Daily Challenges**: Streak-based daily login rewards
+- **📊 Analytics**: Detailed progress tracking and performance metrics
+- **🔐 Secure Authentication**: JWT-based authentication with password reset
+- **📱 Responsive Design**: Mobile-first approach with modern UI/UX
 
-- **লার্নার:** যারা ফ্রন্টএন্ড ডেভেলপমেন্ট শিখছেন এবং চাকরির জন্য প্রস্তুতি নিচ্ছেন।
-- **জুনিয়র ডেভেলপার:** যারা তাদের প্রথম ফ্রন্টএন্ড চাকরির জন্য আবেদন করছেন।
-- **অভিজ্ঞ ডেভেলপার:** যারা তাদের জ্ঞান ঝালিয়ে নিতে চান এবং নতুন বিষয় শিখতে চান।
+## ✨ Features
 
----
+### 🎓 Learning System
+- **Progressive Levels**: 100+ carefully curated frontend interview questions
+- **Multiple Choice & Text Input**: Flexible answer formats
+- **Instant Feedback**: Real-time answer validation with explanations
+- **Hint System**: Cost-based hint points for challenging questions
+- **Skip Protection**: Encourages learning through completion
 
-### **৩. ফিচার তালিকা (Feature List)**
+### 🏆 Achievement & Rewards
+- **Point System**: Earn points for correct answers and daily streaks
+- **Achievement Badges**: Unlock achievements for milestones
+- **Consistency Rewards**: Special rewards for maintaining streaks
+- **Daily Login Bonus**: 10 points for daily participation
 
-- **ব্যবহারকারী অ্যাকাউন্ট:**
-  - রেজিস্ট্রেশন ও লগইন
-  - পাসওয়ার্ড রিসেট করার সুবিধা
-- **কুইজ:**
-  - বিভিন্ন স্তরের প্রশ্ন
-  - প্রশ্নের উত্তর দেওয়ার জন্য ইনপুট ফিল্ড ও অপশন
-  - সঠিক ও ভুল উত্তরের জন্য তাৎক্ষণিক ফিডব্যাক
-  - প্রতিটি প্রশ্নের জন্য হিন্ট পাওয়ার সুবিধা
-- **লিডারবোর্ড:**
-  - গ্লোবাল, সাপ্তাহিক ও মাসিক লিডারবোর্ড
-  - ব্যবহারকারীরা নিজেদের র‍্যাংকিং দেখতে পারবেন
-- **প্রোফাইল:**
-  - ব্যবহারকারীর সর্বোচ্চ লেভেল, পয়েন্ট ও অন্যান্য তথ্য দেখা যাবে
-  - ভুল উত্তরগুলো পরে দেখার সুযোগ
-- **অ্যাডমিন প্যানেল:**
-  - অ্যাডমিন নতুন প্রশ্ন যোগ, এডিট ও ডিলেট করতে পারবেন
-  - ব্যবহারকারীদের লেনদেন অনুমোদন করার সুবিধা
-  - ব্যবহারকারীদের মতামত দেখার সুযোগ
-- **অন্যান্য ফিচার:**
-  - সাউন্ড ও ব্যাকগ্রাউন্ড মিউজিক চালু/বন্ধ করার অপশন
-  - দৈনিক কুইজ খেলে পয়েন্ট অর্জনের সুযোগ
-  - অ্যাচিভমেন্ট ও রিওয়ার্ড সিস্টেম
-  - ব্যবহারকারীরা নিজেদের মধ্যে চ্যাট করতে পারবেন
+### 👥 Community Features
+- **Real-time Chat**: Socket.io-powered chat rooms
+- **Leaderboards**: Global, weekly, and monthly rankings
+- **User Profiles**: Detailed progress and achievement tracking
+- **Wrong Answer Tracking**: Review and learn from mistakes
 
----
+### 🎨 User Experience
+- **Modern UI**: Clean, responsive design with Tailwind CSS
+- **Sound Effects**: Immersive audio feedback
+- **Animations**: Smooth transitions and micro-interactions
+- **Dark/Light Mode**: Theme customization (planned)
 
-## ভবিষ্যত ফিচার (Future Features):
+### 🔧 Admin Features
+- **Question Management**: Add, edit, and delete questions
+- **Transaction Approval**: Manage hint point purchases
+- **User Analytics**: Monitor user engagement and progress
+- **Survey Management**: Collect and analyze user feedback
 
-- ক্যাটাগরি ভিত্তিক কুইজ (ক্যাটাগরি অনুযায়ী লেভেল আপডেট)
-- কমিউনিটি মার্কেটপ্লেস, যেখানে ব্যবহারকারীরা নিজেদের তৈরি কুইজ শেয়ার করতে পারবেন
-- SSL Commerce ইন্টিগ্রেশন, যাতে ব্যবহারকারীরা পেমেন্ট করতে পারেন
+## 🛠 Tech Stack
 
-### **৪. UI ডিজাইন (Sketch or Screenshot)**
+### Frontend
+- **React 19** - Modern React with hooks and context
+- **Vite** - Fast build tool and development server
+- **Tailwind CSS 4** - Utility-first CSS framework
+- **React Router** - Client-side routing
+- **Socket.io Client** - Real-time communication
+- **Axios** - HTTP client for API calls
 
-অ্যাপ্লিকেশনটির UI ডিজাইন বেশ আকর্ষণীয় এবং ব্যবহারকারী-বান্ধব। নিচে কয়েকটি স্ক্রিনের বর্ণনা দেওয়া হলো:
+### Backend
+- **Node.js** - JavaScript runtime
+- **Express.js** - Web application framework
+- **MongoDB** - NoSQL database
+- **Mongoose** - MongoDB object modeling
+- **Socket.io** - Real-time bidirectional communication
+- **JWT** - JSON Web Token authentication
+- **bcryptjs** - Password hashing
+- **SendGrid** - Email service integration
 
-- **ওয়েলকাম স্ক্রিন:** ব্যবহারকারীদের স্বাগত জানানোর জন্য একটি সুন্দর স্ক্রিন রয়েছে, যেখানে অ্যাপ্লিকেশনের ফিচারগুলো তুলে ধরা হয়েছে।
-- **হোমপেজ:** এখানে ব্যবহারকারীরা লগইন বা রেজিস্ট্রেশন করতে পারেন এবং কুইজ শুরু করতে পারেন।
-- **কুইজ স্ক্রিন:** প্রতিটি প্রশ্নের জন্য একটি পরিষ্কার ইন্টারফেস রয়েছে, যেখানে প্রশ্ন, উত্তর দেওয়ার জায়গা এবং হিন্ট ও স্কিপ করার বাটন রয়েছে।
-- **লিডারবোর্ড:** লিডারবোর্ডে ব্যবহারকারীদের র‍্যাংকিং, পয়েন্ট ও অন্যান্য তথ্য দেখানো হয়।
-- **অ্যাডমিন ড্যাশবোর্ড:** অ্যাডমিনরা প্রশ্ন যোগ, এডিট ও ব্যবহারকারীদের তথ্য দেখতে পারেন।
+### Development Tools
+- **ESLint** - Code linting and formatting
+- **Git** - Version control
+- **Vercel** - Frontend deployment
+- **Render** - Backend deployment
 
----
+## 🚀 Getting Started
 
-### **৫. কম্পোনেন্ট হায়ারার্কি (Component Hierarchy)**
+### Prerequisites
 
-অ্যাপ্লিকেশনটির কম্পোনেন্ট হায়ারার্কি নিচে দেওয়া হলো:
+- Node.js (v18 or higher)
+- MongoDB (local or cloud instance)
+- Git
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-username/mojnu6-interviewprep.git
+   cd mojnu6-interviewprep
+   ```
+
+2. **Install frontend dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Install backend dependencies**
+   ```bash
+   cd server
+   npm install
+   ```
+
+4. **Environment Setup**
+
+   Create `.env` files in both root and server directories:
+
+   **Root `.env**:**
+   ```env
+   VITE_API_URL=http://localhost:5000
+   ```
+
+   **Server `.env**:**
+   ```env
+   MONGODB_URI=your_mongodb_connection_string
+   JWT_SECRET=your_jwt_secret_key
+   SENDGRID_API_KEY=your_sendgrid_api_key
+   PORT=5000
+   ```
+
+5. **Start the development servers**
+
+   **Backend (Terminal 1):**
+   ```bash
+   cd server
+   npm run dev
+   ```
+
+   **Frontend (Terminal 2):**
+   ```bash
+   npm run dev
+   ```
+
+6. **Access the application**
+   - Frontend: http://localhost:5173
+   - Backend API: http://localhost:5000
+
+### Production Deployment
+
+1. **Frontend (Vercel)**
+   ```bash
+   npm run build
+   # Deploy to Vercel
+   ```
+
+2. **Backend (Render/Railway)**
+   ```bash
+   cd server
+   npm start
+   # Deploy to your preferred platform
+   ```
+
+## 📁 Project Structure
 
 ```
-App
-├── AuthProvider
-│   └── LevelProvider
-│       └── ProfileProvider
-│           └── BrowserRouter
-│               └── Routes
-│                   ├── Home
-│                   │   ├── Header
-│                   │   ├── WelcomeToGame
-│                   │   ├── AnswerForm
-│                   │   ├── Explanation
-│                   │   └── Login/Signup Modals
-│                   ├── CommunityMarketplace
-│                   ├── PuzzleCreator
-│                   └── PrivateRoutes (Admin)
-│                       └── DashboardLayout
-│                           ├── Sidebar
-│                           └── Outlet
-│                               ├── WelcomeAdminDashboard
-│                               ├── AddQuestionForm
-│                               ├── TransactionList
-│                               └── ...
-└── ...
+mojnu6-interviewprep/
+├── src/                          # Frontend source code
+│   ├── components/               # React components
+│   │   ├── admin/               # Admin dashboard components
+│   │   ├── auth/                # Authentication components
+│   │   └── ...                  # Other UI components
+│   ├── context/                 # React Context providers
+│   ├── hooks/                   # Custom React hooks
+│   ├── utils/                   # Utility functions
+│   ├── api/                     # API configuration
+│   └── assets/                  # Static assets
+├── server/                      # Backend source code
+│   ├── controllers/             # Route controllers
+│   ├── models/                  # MongoDB schemas
+│   ├── routes/                  # API routes
+│   ├── middleware/              # Express middleware
+│   ├── config/                  # Configuration files
+│   └── server.js               # Main server file
+├── public/                      # Public assets
+├── html_template/               # HTML templates
+└── docs/                        # Documentation
 ```
 
+### Key Components
+
+- **AnswerForm**: Handles question submission and validation
+- **Home**: Main game interface with level progression
+- **ChatRoom**: Real-time community chat
+- **Leaderboard**: User rankings and statistics
+- **Admin Dashboard**: Question and user management
+
+## 🔌 API Documentation
+
+### Authentication
+- `POST /api/auth/register` - User registration
+- `POST /api/auth/login` - User login
+- `POST /api/auth/forgot-password` - Password reset
+
+### Levels & Questions
+- `GET /api/levels` - Fetch all levels
+- `GET /api/levels/:id` - Get specific level
+
+### User Profiles
+- `GET /api/profile/:username` - Get user profile
+- `PATCH /api/profile/:username` - Update profile
+- `POST /api/profile/:username/daily-streak` - Update daily streak
+
+### Leaderboard
+- `GET /api/leaderboard` - Get global leaderboard
+- `GET /api/leaderboard/weekly` - Weekly rankings
+- `GET /api/leaderboard/monthly` - Monthly rankings
+
+### Chat
+- `GET /api/chat/:roomId` - Get chat messages
+- `POST /api/chat/:roomId` - Send message
+
+### Admin Routes
+- `POST /api/levels` - Add new question
+- `PUT /api/levels/:id` - Update question
+- `DELETE /api/levels/:id` - Delete question
+
+## 🎮 Game Mechanics
+
+### Point System
+- **Correct Answer**: +1 point
+- **Daily Login**: +10 points
+- **Achievements**: Variable points based on milestone
+- **Streak Bonus**: Additional points for consecutive days
+
+### Achievement System
+- **Consistency Achievements**: Rewards for maintaining streaks
+- **Level Completion**: Milestones for completing levels
+- **Community Engagement**: Rewards for active participation
+
+### Progression
+- **Level-based**: Progressive difficulty
+- **Max Level Tracking**: Resume from last completed level
+- **Wrong Answer Review**: Learn from mistakes
+
+## 🤝 Contributing
+
+We welcome contributions! Please follow these steps:
+
+1. **Fork the repository**
+2. **Create a feature branch**
+   ```bash
+   git checkout -b feature/your-feature-name
+   ```
+3. **Make your changes**
+4. **Add tests** (if applicable)
+5. **Commit your changes**
+   ```bash
+   git commit -m "Add: your feature description"
+   ```
+6. **Push to the branch**
+   ```bash
+   git push origin feature/your-feature-name
+   ```
+7. **Create a Pull Request**
+
+### Development Guidelines
+
+- Follow ESLint configuration
+- Write meaningful commit messages
+- Test your changes thoroughly
+- Update documentation as needed
+
+## 📊 Performance & Optimization
+
+### Frontend Optimizations
+- **Code Splitting**: Lazy loading for better performance
+- **Image Optimization**: Compressed assets
+- **Bundle Analysis**: Regular bundle size monitoring
+- **Caching**: Efficient caching strategies
+
+### Backend Optimizations
+- **Database Indexing**: Optimized MongoDB queries
+- **Connection Pooling**: Efficient database connections
+- **Rate Limiting**: API protection
+- **Error Handling**: Comprehensive error management
+
+## 🔒 Security Features
+
+- **JWT Authentication**: Secure token-based auth
+- **Password Hashing**: bcrypt for password security
+- **Input Validation**: Comprehensive data validation
+- **CORS Configuration**: Cross-origin request handling
+- **Rate Limiting**: API abuse prevention
+
+## 📈 Analytics & Monitoring
+
+- **User Engagement**: Track user activity and retention
+- **Performance Metrics**: Monitor application performance
+- **Error Tracking**: Comprehensive error logging
+- **User Feedback**: Survey and feedback collection
+
+## 🚀 Roadmap
+
+### Phase 1 (Current)
+- ✅ Core game mechanics
+- ✅ Real-time chat
+- ✅ Achievement system
+- ✅ Admin dashboard
+
+### Phase 2 (Planned)
+- 🔄 SSL Commerce integration
+- 🔄 Category-based quizzes
+- 🔄 Community marketplace
+- 🔄 Advanced analytics
+
+### Phase 3 (Future)
+- 📋 Mobile app development
+- 📋 AI-powered question generation
+- 📋 Video explanations
+- 📋 Interview simulation
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- **React Team** - For the amazing framework
+- **Tailwind CSS** - For the utility-first CSS framework
+- **Vercel** - For seamless deployment
+- **MongoDB** - For the flexible database solution
+- **Socket.io** - For real-time communication
+
+## 📞 Support
+
+- **Live Demo**: [https://mojnu6.vercel.app/](https://mojnu6.vercel.app/)
+- **Issues**: [GitHub Issues](https://github.com/your-username/mojnu6-interviewprep/issues)
+- **Email**: thisismojnu@gmail.com
+
 ---
 
-### **৬. স্টেট প্ল্যানিং (State Planning)**
-
-অ্যাপ্লিকেশনটির স্টেট ম্যানেজমেন্টের জন্য React Context API ব্যবহার করা হয়েছে।
-
-- **AuthContext:** ব্যবহারকারীর লগইন অবস্থা ও টোকেন ম্যানেজ করে।
-- **LevelContext:** কুইজের প্রশ্ন ও লেভেল সংক্রান্ত তথ্য ম্যানেজ করে।
-- **ProfileContext:** ব্যবহারকারীর প্রোফাইল, পয়েন্ট, সর্বোচ্চ লেভেল ও অন্যান্য তথ্য ম্যানেজ করে।
-
-এছাড়াও, প্রতিটি কম্পোনেন্টে `useState` এবং `useEffect` হুক ব্যবহার করে লোকাল স্টেট ম্যানেজ করা হয়েছে।
-
----
-
-### **৭. রাউটিং প্ল্যানিং (Routing Planning)**
-
-অ্যাপ্লিকেশনটির রাউটিং `react-router-dom` ব্যবহার করে করা হয়েছে।
-
-- **`/`**: হোমপেজ, যেখানে ব্যবহারকারীরা কুইজ শুরু করতে পারেন।
-- **`/community`**: কমিউনিটি পাজল মার্কেটপ্লেস। (ফিউচারে আসবে)
-- **`/create-puzzle`**: কমিনিটি নতুন পাজল তৈরি করার পেজ। (ফিউচারে আসবে)
-- **`/dashboard`**: অ্যাডমিনদের জন্য ড্যাশবোর্ড, যা একটি প্রাইভেট রুট।
-  - **`/dashboard/add`**: নতুন প্রশ্ন যোগ করার পেজ।
-  - **`/dashboard/edit/:id`**: নির্দিষ্ট প্রশ্ন এডিট করার পেজ।
-  - **`/dashboard/transactions`**: লেনদেন তালিকা দেখার পেজ।
-  - **`/dashboard/survey`**: ব্যবহারকারীদের মতামত দেখার পেজ।
-
----
-
-### **৮. ফোল্ডার স্ট্রাকচার (Folder Structure)**
-
-প্রজেক্টটির ফোল্ডার স্ট্রাকচার বেশ গোছানো এবং মডুলার।
-
-```
-src/
-├── api/
-│   └── index.js
-├── assets/
-├── components/
-│   ├── admin/
-│   │   ├── AddQuestionForm.jsx
-│   │   ├── DashboardLayout.jsx
-│   │   └── ...
-│   ├── auth/
-│   │   ├── LoginModal.jsx
-│   │   ├── SignupModal.jsx
-│   │   └── ...
-│   ├── Achievements.jsx
-│   ├── AnswerForm.jsx
-│   ├── ChatRoom.jsx
-│   ├── ...
-├── context/
-│   ├── AuthContext.jsx
-│   ├── LevelContext.jsx
-│   └── ProfileContext.jsx
-├── hooks/
-│   ├── useProfiles.jsx
-│   └── useWebSocket.jsx
-├── icons/
-│   ├── SoundOff.jsx
-│   └── SoundOn.jsx
-├── utils/
-│   ├── checkUserType.jsx
-│   ├── playSound.jsx
-│   └── PrivateRoutes.jsx
-├── App.jsx
-├── index.css
-└── main.jsx
-```
-
----
-
-### **৯. সফটওয়্যার ডেভেলপমেন্ট লাইফ সাইকেল (SDLC)**
-
-এই অ্যাপ্লিকেশনটির জন্য SDLC মডেল হিসেবে **অ্যাজাইল (Agile)** মডেল ব্যবহার করা হবে। এই মডেলটি ফিচার ডেভেলপমেন্টের জন্য খুবই উপযোগী এবং এটি দ্রুত পরিবর্তন ও আপডেটের সুবিধা দেয়।
-
-- **প্ল্যানিং (Planning):** প্রতিটি স্প্রিন্টের শুরুতে ফিচারগুলো পরিকল্পনা করা হবে। যেমন: নতুন কুইজ ক্যাটাগরি যোগ করা বা লিডারবোর্ডের উন্নতি করা।
-- **ডিজাইন (Design):** নতুন ফিচারের জন্য UI/UX ডিজাইন করা হবে এবং কম্পোনেন্ট হায়ারার্কি তৈরি করা হবে।
-- **ডেভেলপমেন্ট (Development):** React কম্পোনেন্ট ও API ইন্টিগ্রেশন করা হবে।
-- **টেস্টিং (Testing):** প্রতিটি ফিচার টেস্টিং করা হবে, বিশেষ করে ব্যবহারকারীর ইনপুট ও API রেসপন্স।
-- **ডিপ্লয়মেন্ট (Deployment):** ফিচারটি লাইভ সার্ভারে ডিপ্লয় করা হবে।
-- **মেইনটেন্যান্স (Maintenance):** ব্যবহারকারীদের ফিডব্যাক অনুযায়ী বাগ ফিক্সিং ও উন্নতি করা হবে।
-
-এই মডেলটি অনুসরণ করলে অ্যাপ্লিকেশনটি নিয়মিত আপডেট করা যাবে এবং ব্যবহারকারীদের চাহিদা অনুযায়ী নতুন ফিচার যোগ করা সহজ হবে।
+<div align="center">
+  <p>Made with ❤️ by the Mojnu6 Team</p>
+  <p>⭐ Star this repository if you found it helpful!</p>
+</div>
