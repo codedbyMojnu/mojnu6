@@ -307,27 +307,111 @@ We welcome contributions! Please follow these steps:
 
 ## 🚀 Roadmap
 
-### Phase 1 (Current)
-- ✅ Core game mechanics
-- ✅ Real-time chat
-- ✅ Achievement system
-- ✅ Admin dashboard
+### Phase 1 (Current) ✅
+- **Core Game Mechanics**: Level-based progression with points and achievements
+- **Real-time Chat**: Socket.io-powered community chat rooms
+- **Achievement System**: Unlockable achievements and rewards
+- **Admin Dashboard**: Complete content and user management
+- **Authentication**: JWT-based secure authentication
+- **Leaderboards**: Global, weekly, and monthly rankings
 
-### Phase 2 (Planned)
-- 🔄 SSL Commerce integration
-- 🔄 Category-based quizzes
-- 🔄 Community marketplace
-- 🔄 Advanced analytics
+### Phase 2 (Planned) 🔄
+- **SSL Commerce Integration**: Secure payment processing for hint points
+- **Category-based Quizzes**: Specialized questions by frontend topics
+- **Community Marketplace**: User-generated content sharing
+- **Advanced Analytics**: Detailed user performance insights
+- **Email Notifications**: Automated achievement and progress alerts
+- **Mobile Optimization**: Enhanced mobile experience
 
-### Phase 3 (Future)
-- 📋 Mobile app development
-- 📋 AI-powered question generation
-- 📋 Video explanations
-- 📋 Interview simulation
+### Phase 3 (Future) 📋
+- **Mobile App Development**: Native iOS and Android applications
+- **AI-powered Question Generation**: Dynamic question creation
+- **Video Explanations**: Multimedia learning content
+- **Interview Simulation**: Mock interview scenarios
+- **Advanced Gamification**: More complex achievement systems
+- **Social Features**: User profiles and networking
+
+## 📊 Project Analysis
+
+### Architecture Overview
+The Mojnu6 InterviewPrep platform follows a modern **MERN stack architecture** with clear separation of concerns:
+
+```
+Frontend (React + Vite) ←→ Backend (Node.js + Express) ←→ Database (MongoDB)
+```
+
+### Key Strengths
+- **🎯 Focused Purpose**: Specialized for frontend interview preparation
+- **🎮 Gamification**: Engaging learning through points, streaks, and achievements
+- **💬 Real-time Features**: Live chat and instant feedback
+- **📱 Responsive Design**: Mobile-first approach with modern UI
+- **🔐 Security**: JWT authentication with proper validation
+- **📊 Analytics**: Comprehensive user progress tracking
+
+### Technical Highlights
+- **Modern React**: Uses React 19 with hooks and context
+- **Real-time Communication**: Socket.io for live features
+- **Progressive Enhancement**: Works without JavaScript for basic functionality
+- **Performance Optimized**: Code splitting and lazy loading
+- **SEO Friendly**: Server-side rendering capabilities
+- **Accessibility**: WCAG compliant design patterns
+
+### Scalability Considerations
+- **Database Design**: Optimized MongoDB schemas for performance
+- **Caching Strategy**: Efficient data caching mechanisms
+- **API Design**: RESTful endpoints with proper versioning
+- **Deployment**: Containerized deployment with Docker support
+- **Monitoring**: Comprehensive logging and error tracking
+
+### Security Implementation
+- **Authentication**: JWT tokens with secure storage
+- **Authorization**: Role-based access control (RBAC)
+- **Input Validation**: Comprehensive data sanitization
+- **Rate Limiting**: API abuse prevention
+- **CORS Configuration**: Proper cross-origin handling
 
 ## 📄 License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+### License Details
+
+**MIT License** - A permissive license that allows for:
+- ✅ Commercial use
+- ✅ Modification
+- ✅ Distribution
+- ✅ Private use
+- ✅ Patent use
+
+**Limitations:**
+- ❌ Liability
+- ❌ Warranty
+
+### License Text
+
+```
+MIT License
+
+Copyright (c) 2024 Mojnu6 InterviewPrep
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
 
 ## 🙏 Acknowledgments
 
@@ -342,10 +426,74 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Live Demo**: [https://mojnu6.vercel.app/](https://mojnu6.vercel.app/)
 - **Issues**: [GitHub Issues](https://github.com/your-username/mojnu6-interviewprep/issues)
 - **Email**: thisismojnu@gmail.com
+- **Documentation**: [Server README](./server/README.md)
+
+## 🔗 Related Documentation
+
+### Frontend & Backend Alignment
+This project consists of two main components that work together seamlessly:
+
+| Component | Technology | Purpose | Documentation |
+|-----------|------------|---------|---------------|
+| **Frontend** | React + Vite | User interface and interactions | This README |
+| **Backend** | Node.js + Express | API and business logic | [Server README](./server/README.md) |
+
+### Quick Links
+- **[Server API Documentation](./server/README.md#-api-documentation)** - Complete backend API reference
+- **[Database Schema](./server/README.md#-database-schema)** - MongoDB models and relationships
+- **[Real-time Features](./server/README.md#-real-time-features)** - Socket.io implementation
+- **[Deployment Guide](./server/README.md#-deployment)** - Production deployment instructions
+
+## 🏗️ Architecture Comparison
+
+### Frontend vs Backend Responsibilities
+
+| Feature | Frontend Responsibility | Backend Responsibility |
+|---------|------------------------|------------------------|
+| **Authentication** | Token storage, UI forms | JWT generation, validation |
+| **Real-time Chat** | Socket connection, UI | Message handling, broadcasting |
+| **Game Logic** | UI state, user interactions | Data persistence, business rules |
+| **File Upload** | File selection, preview | Storage, processing |
+| **Analytics** | Event tracking | Data aggregation, reporting |
+
+### Technology Stack Alignment
+
+**Frontend Stack:**
+- React 19 + Vite for fast development
+- Tailwind CSS 4 for styling
+- Socket.io client for real-time features
+- Axios for HTTP requests
+
+**Backend Stack:**
+- Node.js + Express for API
+- MongoDB + Mongoose for data
+- Socket.io for real-time communication
+- JWT + bcrypt for security
+
+## 🎯 Development Workflow
+
+### Local Development
+1. **Clone repository** and install dependencies
+2. **Start backend** (`cd server && npm run dev`)
+3. **Start frontend** (`npm run dev`)
+4. **Access application** at http://localhost:5173
+
+### Production Deployment
+1. **Backend**: Deploy to Render/Railway/Heroku
+2. **Frontend**: Deploy to Vercel/Netlify
+3. **Database**: Use MongoDB Atlas
+4. **Environment**: Configure production variables
+
+### Testing Strategy
+- **Frontend**: Component testing with React Testing Library
+- **Backend**: API testing with Postman collection
+- **Integration**: End-to-end testing with Cypress
+- **Performance**: Load testing with Artillery
 
 ---
 
 <div align="center">
   <p>Made with ❤️ by the Mojnu6 Team</p>
   <p>⭐ Star this repository if you found it helpful!</p>
+  <p>📚 Check out the <a href="./server/README.md">Server Documentation</a> for backend details</p>
 </div>
