@@ -12,6 +12,7 @@ import ChatRoom from "./ChatRoom";
 import Confetti from "./Confetti";
 import Explanation from "./Explanation";
 import Header from "./Header";
+import Loader from "./Loader/Loader.jsx";
 import WelcomeToGame from "./WelcomeToGame.jsx";
 
 export default function Home() {
@@ -155,17 +156,17 @@ export default function Home() {
       if (normalizeAnswer(level.answer) === normalizeAnswer(userAnswer)) {
         playSound("/sounds/right.mp3", 0.25);
         setMark("✔️");
-        
+
         // Add +1 point for correct answer immediately
         const currentPoints = profile?.totalPoints || 0;
         const newPoints = currentPoints + 1;
-        
+
         // Update profile locally first for immediate UI feedback
         setProfile((prevProfile) => ({
           ...prevProfile,
           totalPoints: newPoints,
         }));
-        
+
         setStreakCount((prev) => {
           const newStreak = prev + 1;
           // Consistency streak logic
@@ -195,19 +196,24 @@ export default function Home() {
                   points: ach.points,
                 });
                 setTimeout(() => setAchievementNotification(null), 4000);
-                
+
                 // Update backend with achievement and points
                 if (profile?.username && user?.token) {
-                  api.patch(
-                    `/api/profile/${profile.username}`,
-                    {
-                      achievements: updatedAchievements,
-                      totalPoints: updatedPoints,
-                    },
-                    { headers: { Authorization: `Bearer ${user.token}` } }
-                  ).catch(error => {
-                    console.error("Failed to update achievement points:", error);
-                  });
+                  api
+                    .patch(
+                      `/api/profile/${profile.username}`,
+                      {
+                        achievements: updatedAchievements,
+                        totalPoints: updatedPoints,
+                      },
+                      { headers: { Authorization: `Bearer ${user.token}` } }
+                    )
+                    .catch((error) => {
+                      console.error(
+                        "Failed to update achievement points:",
+                        error
+                      );
+                    });
                 }
               }
             }
@@ -241,18 +247,20 @@ export default function Home() {
           }
           return newStreak;
         });
-        
+
         // Update backend with +1 point for correct answer (background update)
         if (profile?.username && user?.token) {
-          api.patch(
-            `/api/profile/${profile.username}`,
-            { totalPoints: newPoints },
-            { headers: { Authorization: `Bearer ${user.token}` } }
-          ).catch(error => {
-            console.error("Failed to update totalPoints:", error);
-          });
+          api
+            .patch(
+              `/api/profile/${profile.username}`,
+              { totalPoints: newPoints },
+              { headers: { Authorization: `Bearer ${user.token}` } }
+            )
+            .catch((error) => {
+              console.error("Failed to update totalPoints:", error);
+            });
         }
-        
+
         // Only update maxLevel in backend, do not update levelIndex here
         if (levelIndex >= maxLevel) {
           updateMaxLevel(levelIndex + 1);
@@ -378,17 +386,9 @@ export default function Home() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen w-full bg-white flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-blue-400 border-t-transparent rounded-full animate-spin mx-auto mb-3"></div>
-          <h2
-            className="text-xl font-bold text-gray-800"
-            style={{ fontFamily: "system-ui, sans-serif" }}
-          >
-            Loading mojnu6...
-          </h2>
-        </div>
-      </div>
+      
+        <Loader />
+      
     );
   }
 
